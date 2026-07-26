@@ -160,8 +160,7 @@ function flashScreen() {
 }
 
 
-const emailSubmitButton =
-    document.getElementById("emailSubmitButton");
+
 
 emailForm.addEventListener("submit", async (event) => {
     event.preventDefault();
