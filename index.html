@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ZombOS Login</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="terminal">
+
+        <div class="scanlines"></div>
+
+        <!-- LOGIN SCREEN -->
+
+        <section
+            id="loginScreen"
+            class="screen active"
+        >
+
+            <p class="top-label">
+                ZOMB LABS SECURE TERMINAL
+            </p>
+
+            <div class="login-box">
+
+                <h1>ZOMB LABS</h1>
+
+                <p class="warning">
+                    AUTHORIZED PERSONNEL ONLY
+                </p>
+
+                <div class="login-field">
+
+                    <label for="username">
+                        User:
+                    </label>
+
+                    <input
+                        id="username"
+                        type="text"
+                        value="ZOMB"
+                        readonly
+                    >
+
+                </div>
+
+                <div class="login-field">
+
+                    <label for="password">
+                        Password:
+                    </label>
+
+                    <input
+                        id="password"
+                        type="text"
+                        value="*********************************"
+                        readonly
+                    >
+
+                </div>
+
+                <button id="loginButton">
+                    ACCESS SYSTEM
+                </button>
+
+            </div>
+
+            <p class="bottom-label">
+                CREDENTIAL CACHE DETECTED
+            </p>
+
+        </section>
+
+
+        <!-- LOGGING IN SCREEN -->
+
+        <section
+            id="loadingScreen"
+            class="screen"
+        >
+
+            <div class="center-content">
+
+                <p class="status">
+                    AUTHENTICATION ACCEPTED
+                </p>
+
+                <h2>LOGGING IN...</h2>
+
+                <div class="progress-shell">
+
+                    <div
+                        id="loginProgress"
+                        class="progress-bar"
+                    ></div>
+
+                </div>
+
+                <p id="loginPercent">
+                    0%
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOOT SCREEN -->
+
+        <section
+            id="bootScreen"
+            class="screen"
+        >
+
+            <div class="boot-content">
+
+                <p class="boot-heading">
+                    &gt; INITIALIZING ZombOS
+                </p>
+
+                <div id="bootLines"></div>
+
+                <div class="boot-progress-area">
+
+                    <p>
+                        BOOT SEQUENCE:
+                        <span id="bootPercent">0%</span>
+                    </p>
+
+                    <div class="progress-shell">
+
+                        <div
+                            id="bootProgress"
+                            class="progress-bar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FINAL SCREEN -->
+
+        <section
+            id="finalScreen"
+            class="screen"
+        >
+
+            <div class="center-content final-content">
+
+                <p>&gt; ZombOS v1.0.0</p>
+
+                <h2 class="zombos-title">
+                    ZombOS
+                </h2>
+
+                <p class="welcome">
+                    WELCOME TO ZombOS
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- ZOMBOS DESKTOP -->
+
+        <section
+            id="desktopScreen"
+            class="screen"
+        >
+            <div class="desktop">
+
+                <header class="desktop-header">
+
+                    <div>
+                        <p class="system-label">
+                            ZombOS / PUBLIC ACCESS TERMINAL
+                        </p>
+
+                        <h1>ZOMB LABS</h1>
+                    </div>
+
+                    <p class="system-status">
+                        SYSTEM ONLINE
+                    </p>
+
+                </header>
+
+
+                <div class="desktop-grid">
+
+                    <!-- SOCIALS -->
+
+                    <section class="system-window">
+
+                        <div class="window-header">
+                            SOCIAL_NETWORK.exe
+                        </div>
+
+                        <div class="window-content">
+
+                            <p class="window-description">
+                                Connect to the Zomb Labs network.
+                            </p>
+
+                            <div class="social-links">
+
+                                <a
+                                    href="https://kick.com/zomblabs"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    KICK
+                                </a>
+
+                                <a
+                                    href="https://www.youtube.com/@Zomblabs"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    YOUTUBE
+                                </a>
+
+                                <a
+                                    href="https://www.tiktok.com/@zomb.labs"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    TIKTOK
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- EMAIL SIGNUP -->
+
+                    <section class="system-window">
+
+                        <div class="window-header">
+                            SYSTEM_UPDATE.exe
+                        </div>
+
+                        <div class="window-content">
+
+                            <p class="window-description">
+                                Join the update system for new broadcasts,
+                                experiments and releases.
+                            </p>
+
+                            <form id="emailForm">
+
+                                <label for="emailInput">
+                                    ENTER EMAIL ADDRESS:
+                                </label>
+
+                                <input
+                                    id="emailInput"
+                                    type="email"
+                                    placeholder="survivor@email.com"
+                                    required
+                                >
+
+                                <button type="submit">
+                                    REGISTER FOR UPDATES
+                                </button>
+
+                            </form>
+
+                            <p
+                                id="emailMessage"
+                                class="email-message"
+                            ></p>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+
+                <footer class="desktop-footer">
+
+                    <span>ZombOS v1.0.0</span>
+
+                    <span>
+                        CONNECTION:
+                        <strong>SECURE</strong>
+                    </span>
+
+                </footer>
+
+            </div>
+        </section>
+
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

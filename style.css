@@ -1,0 +1,692 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --green: #65ff7d;
+    --dark-green: #14391d;
+    --black: #030704;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #0b180e 0%,
+            #020403 70%
+        );
+
+    color: var(--green);
+
+    font-family:
+        "Courier New",
+        Courier,
+        monospace;
+
+    overflow: hidden;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+.terminal {
+    position: relative;
+
+    width: 100vw;
+    min-height: 100vh;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            rgba(20, 255, 80, 0.025),
+            rgba(0, 0, 0, 0.04)
+        );
+}
+
+.scanlines {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: 20;
+
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.025) 0,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+.screen {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: scale(0.98);
+
+    transition:
+        opacity 0.4s ease,
+        transform 0.4s ease,
+        visibility 0.4s;
+}
+
+.screen.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+
+    transform: scale(1);
+}
+
+#loginScreen {
+    align-items: center;
+    justify-content: center;
+}
+
+.top-label,
+.bottom-label {
+    position: absolute;
+
+    left: 30px;
+
+    margin: 0;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+
+    opacity: 0.55;
+}
+
+.top-label {
+    top: 25px;
+}
+
+.bottom-label {
+    bottom: 25px;
+}
+
+.login-box {
+    width: min(520px, 90vw);
+
+    padding: 38px;
+
+    border: 1px solid var(--green);
+
+    background: rgba(0, 15, 5, 0.75);
+
+    box-shadow:
+        0 0 8px rgba(101, 255, 125, 0.25),
+        inset 0 0 35px rgba(32, 255, 75, 0.05);
+}
+
+.login-box h1 {
+    margin: 0;
+
+    text-align: center;
+
+    font-size: clamp(34px, 7vw, 62px);
+    letter-spacing: 8px;
+
+    text-shadow:
+        0 0 10px rgba(101, 255, 125, 0.8);
+}
+
+.warning {
+    margin: 10px 0 35px;
+
+    text-align: center;
+
+    font-size: 13px;
+    letter-spacing: 3px;
+
+    opacity: 0.75;
+}
+
+.login-field {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+}
+
+.login-field label {
+    font-size: 15px;
+}
+
+.login-field input {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    color: var(--green);
+    background: rgba(50, 255, 100, 0.04);
+
+    border: 1px solid rgba(101, 255, 125, 0.5);
+
+    outline: none;
+
+    box-shadow:
+        inset 0 0 12px rgba(101, 255, 125, 0.06);
+}
+
+#loginButton {
+    display: block;
+
+    width: 100%;
+
+    margin-top: 28px;
+    padding: 14px;
+
+    color: var(--green);
+    background: rgba(50, 255, 100, 0.05);
+
+    border: 1px solid var(--green);
+
+    cursor: pointer;
+
+    letter-spacing: 3px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#loginButton:hover {
+    color: #001705;
+    background: var(--green);
+
+    box-shadow:
+        0 0 18px rgba(101, 255, 125, 0.6);
+}
+
+#loginButton:active {
+    transform: scale(0.98);
+}
+
+.center-content {
+    margin: auto;
+
+    width: min(700px, 85vw);
+
+    text-align: center;
+}
+
+.status {
+    letter-spacing: 3px;
+}
+
+.center-content h2 {
+    margin: 25px 0;
+
+    font-size: clamp(24px, 5vw, 44px);
+    letter-spacing: 5px;
+}
+
+.progress-shell {
+    width: 100%;
+    height: 28px;
+
+    padding: 4px;
+
+    border: 1px solid var(--green);
+
+    background: rgba(20, 255, 80, 0.03);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            var(--green) 0,
+            var(--green) 14px,
+            transparent 14px,
+            transparent 18px
+        );
+
+    box-shadow:
+        0 0 12px rgba(101, 255, 125, 0.5);
+
+    transition: width 0.08s linear;
+}
+
+#loginPercent {
+    margin-top: 15px;
+
+    font-size: 18px;
+}
+
+.boot-content {
+    width: min(800px, 90vw);
+
+    margin: auto;
+}
+
+.boot-heading {
+    margin-bottom: 35px;
+
+    font-size: 20px;
+    letter-spacing: 2px;
+}
+
+.boot-line {
+    display: flex;
+    justify-content: space-between;
+
+    margin: 16px 0;
+
+    opacity: 0;
+
+    transform: translateX(-15px);
+
+    animation: showLine 0.25s forwards;
+}
+
+.boot-line span:last-child {
+    margin-left: 20px;
+}
+
+.boot-progress-area {
+    margin-top: 50px;
+}
+
+.boot-progress-area p {
+    letter-spacing: 2px;
+}
+
+.final-content {
+    text-align: center;
+}
+
+.zombos-title {
+    margin: 40px 0 25px !important;
+
+    font-size: clamp(60px, 14vw, 160px) !important;
+    letter-spacing: 12px !important;
+
+    text-shadow:
+        3px 0 rgba(101, 255, 125, 0.25),
+        -3px 0 rgba(101, 255, 125, 0.25),
+        0 0 18px rgba(101, 255, 125, 0.7);
+
+    animation: titleGlitch 2s infinite;
+}
+
+.online {
+    display: inline-block;
+
+    padding: 10px 30px;
+
+    border-left: 1px solid var(--green);
+    border-right: 1px solid var(--green);
+
+    letter-spacing: 4px;
+}
+
+.welcome {
+    margin-top: 40px;
+
+    letter-spacing: 5px;
+
+    animation: blink 1.2s infinite;
+}
+
+.screen-flash {
+    animation: flash 0.15s;
+}
+
+@keyframes showLine {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0.35;
+    }
+}
+
+@keyframes flash {
+    50% {
+        filter: brightness(2.5);
+    }
+}
+
+@keyframes titleGlitch {
+    0%,
+    88%,
+    100% {
+        transform: translateX(0);
+    }
+
+    90% {
+        transform: translateX(-3px);
+    }
+
+    92% {
+        transform: translateX(4px);
+    }
+
+    94% {
+        transform: translateX(-2px);
+    }
+}
+
+@media (max-width: 600px) {
+    .login-box {
+        padding: 25px 20px;
+    }
+
+    .login-field {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .boot-line {
+        font-size: 13px;
+    }
+
+    .top-label,
+    .bottom-label {
+        left: 15px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* --------------------------------
+   ZOMBOS DESKTOP
+-------------------------------- */
+
+#desktopScreen {
+    overflow-y: auto;
+}
+
+.desktop {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 35px;
+
+    background:
+        linear-gradient(
+            rgba(0, 255, 80, 0.025),
+            rgba(0, 0, 0, 0.2)
+        ),
+        radial-gradient(
+            circle at top,
+            #102416,
+            #020403 70%
+        );
+}
+
+.desktop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    padding-bottom: 22px;
+
+    border-bottom: 1px solid
+        rgba(101, 255, 125, 0.45);
+}
+
+.desktop-header h1 {
+    margin: 5px 0 0;
+
+    font-size: clamp(34px, 6vw, 72px);
+    letter-spacing: 8px;
+
+    text-shadow:
+        0 0 15px
+        rgba(101, 255, 125, 0.5);
+}
+
+.system-label {
+    margin: 0;
+
+    font-size: 12px;
+    letter-spacing: 2px;
+
+    opacity: 0.6;
+}
+
+.system-status {
+    margin: 0;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--green);
+
+    font-size: 12px;
+    letter-spacing: 2px;
+
+    animation: blink 1.5s infinite;
+}
+
+.desktop-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 30px;
+
+    max-width: 1100px;
+
+    margin: 60px auto;
+}
+
+.system-window {
+    min-height: 330px;
+
+    border: 1px solid var(--green);
+
+    background:
+        rgba(0, 15, 5, 0.78);
+
+    box-shadow:
+        0 0 12px
+        rgba(101, 255, 125, 0.16);
+}
+
+.window-header {
+    padding: 12px 16px;
+
+    color: #001705;
+    background: var(--green);
+
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.window-content {
+    padding: 28px;
+}
+
+.window-description {
+    min-height: 50px;
+
+    line-height: 1.6;
+
+    opacity: 0.8;
+}
+
+.social-links {
+    display: grid;
+    gap: 14px;
+
+    margin-top: 30px;
+}
+
+.social-links a {
+    padding: 15px;
+
+    color: var(--green);
+
+    border: 1px solid
+        rgba(101, 255, 125, 0.65);
+
+    text-align: center;
+    text-decoration: none;
+
+    letter-spacing: 3px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.social-links a:hover {
+    color: #001705;
+    background: var(--green);
+
+    transform: translateX(5px);
+}
+
+#emailForm {
+    display: grid;
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+#emailForm label {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+#emailInput {
+    width: 100%;
+
+    padding: 14px;
+
+    color: var(--green);
+    background:
+        rgba(50, 255, 100, 0.04);
+
+    border: 1px solid
+        rgba(101, 255, 125, 0.65);
+
+    outline: none;
+}
+
+#emailInput:focus {
+    box-shadow:
+        0 0 10px
+        rgba(101, 255, 125, 0.35);
+}
+
+#emailForm button {
+    padding: 14px;
+
+    color: var(--green);
+    background: transparent;
+
+    border: 1px solid var(--green);
+
+    cursor: pointer;
+
+    letter-spacing: 2px;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+#emailForm button:hover {
+    color: #001705;
+    background: var(--green);
+}
+
+.email-message {
+    min-height: 24px;
+
+    margin-top: 18px;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.email-message.success {
+    color: var(--green);
+}
+
+.email-message.error {
+    color: #ff6868;
+}
+
+.desktop-footer {
+    display: flex;
+    justify-content: space-between;
+
+    padding-top: 20px;
+
+    border-top: 1px solid
+        rgba(101, 255, 125, 0.45);
+
+    font-size: 12px;
+    letter-spacing: 2px;
+
+    opacity: 0.7;
+}
+
+.desktop-footer strong {
+    color: var(--green);
+}
+
+@media (max-width: 750px) {
+    .desktop {
+        padding: 20px;
+    }
+
+    .desktop-grid {
+        grid-template-columns: 1fr;
+
+        margin: 35px auto;
+    }
+
+    .desktop-header {
+        display: block;
+    }
+
+    .system-status {
+        display: inline-block;
+
+        margin-top: 20px;
+    }
+
+    .desktop-footer {
+        display: grid;
+        gap: 12px;
+    }
+}
