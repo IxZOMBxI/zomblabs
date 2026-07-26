@@ -24,6 +24,9 @@ const emailInput =
 const emailMessage =
     document.getElementById("emailMessage");
 
+const emailSubmitButton =
+    document.getElementById("emailSubmitButton");
+
 
 
 
@@ -157,7 +160,10 @@ function flashScreen() {
 }
 
 
-emailForm.addEventListener("submit", (event) => {
+const emailSubmitButton =
+    document.getElementById("emailSubmitButton");
+
+emailForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const email = emailInput.value
@@ -173,33 +179,57 @@ emailForm.addEventListener("submit", (event) => {
         return;
     }
 
-    const savedEmails = JSON.parse(
-        localStorage.getItem("zombLabsEmails")
-        || "[]"
-    );
-
-    if (savedEmails.includes(email)) {
-        showEmailMessage(
-            "USER ALREADY REGISTERED.",
-            "error"
-        );
-
-        return;
-    }
-
-    savedEmails.push(email);
-
-    localStorage.setItem(
-        "zombLabsEmails",
-        JSON.stringify(savedEmails)
-    );
+    emailSubmitButton.disabled = true;
+    emailSubmitButton.textContent = "TRANSMITTING...";
 
     showEmailMessage(
-        "REGISTRATION COMPLETE. SYSTEM UPDATES ENABLED.",
+        "> CONNECTING TO HORDE NETWORK...",
         "success"
     );
 
-    emailForm.reset();
+    try {
+        const response = await fetch(
+            "https://formsubmit.co/ajax/zomblabsmain@gmail.com",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    _subject: "New Zomb Labs System Update Subscriber",
+                    _template: "table"
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || "Submission failed"
+            );
+        }
+
+        showEmailMessage(
+            "REGISTRATION COMPLETE. SYSTEM UPDATES ENABLED.",
+            "success"
+        );
+
+        emailForm.reset();
+    } catch (error) {
+        console.error(error);
+
+        showEmailMessage(
+            "TRANSMISSION FAILED. PLEASE TRY AGAIN.",
+            "error"
+        );
+    } finally {
+        emailSubmitButton.disabled = false;
+        emailSubmitButton.textContent =
+            "ENABLE SYSTEM UPDATES";
+    }
 });
 
 function showEmailMessage(message, type) {

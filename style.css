@@ -573,6 +573,10 @@ input {
     transform: translateX(5px);
 }
 
+.honey-field {
+    display: none;
+}
+
 #emailForm {
     display: grid;
     gap: 15px;
