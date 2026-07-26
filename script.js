@@ -83,7 +83,7 @@ function startBootSequence() {
         bootProgress.style.width = `${progress}%`;
         bootPercent.textContent = `${progress}%`;
 
-        flashScreen();
+        //flashScreen();
 
         if (currentLine >= bootMessages.length) {
             clearInterval(lineInterval);
