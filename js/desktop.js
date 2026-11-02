@@ -11,7 +11,16 @@ taskbar.setAttribute('aria-label', 'Running applications');
 taskbar.hidden = workspace.hidden;
 document.body.append(taskbar);
 new MutationObserver(() => { taskbar.hidden = workspace.hidden; }).observe(workspace, { attributes: true, attributeFilter: ['hidden'] });
-const manager = new WindowManager(workspace, taskbar);
+const startButton = document.createElement('button');
+startButton.id = 'startButton';
+startButton.textContent = '▣ START';
+startButton.setAttribute('aria-expanded', 'false');
+startButton.setAttribute('aria-controls', 'startMenu');
+const runningApps = document.createElement('div');
+runningApps.id = 'runningApps';
+runningApps.setAttribute('aria-label', 'Running windows');
+taskbar.append(startButton, runningApps);
+const manager = new WindowManager(workspace, runningApps);
 const apps = new AppRegistry(manager);
 apps.register({
     id: 'sample',
@@ -28,19 +37,21 @@ apps.register({
         // Future apps may return a cleanup function. Shared services belong outside window content.
     }
 });
-document.getElementById('openSample').addEventListener('click', () => apps.open('sample'));
+
 
 const audioService = new AudioService([]);
 apps.register(radioApp(audioService));
-let radioWindow;
-function openRadio() {
-    if (manager.windows.has(radioWindow)) manager.focus(radioWindow, true);
-    else radioWindow = apps.open('radio');
+const instances = new Map();
+function launch(id) {
+    const existing = instances.get(id);
+    if (manager.windows.has(existing)) manager.focus(existing, true);
+    else instances.set(id, apps.open(id));
 }
+function openRadio() { launch('radio'); }
 const radioIndicator = document.createElement('button');
 radioIndicator.id = 'radioIndicator';
 radioIndicator.addEventListener('click', openRadio);
-taskbar.prepend(radioIndicator);
+taskbar.append(radioIndicator);
 audioService.subscribe(() => {
     radioIndicator.textContent = audioService.error ? 'RADIO: SIGNAL ERROR' : audioService.loading ? 'RADIO: LOADING' : audioService.audio.paused ? 'RADIO: STANDBY' : 'RADIO: PLAYING';
     radioIndicator.setAttribute('aria-label', `${radioIndicator.textContent}. Open RADIO.exe`);
@@ -54,3 +65,82 @@ loadMediaCatalog().then(catalog => {
     audioService.error = 'Media library unavailable. Reload the page to retry.';
     audioService.emit();
 });
+
+// Move original nodes rather than cloning them: existing form listeners and state survive.
+for (const [id, title, contentId] of [
+    ['social', 'SOCIAL_NETWORK.exe', 'socialContent'],
+    ['updates', 'SYSTEM_UPDATE.exe', 'updateContent']
+]) {
+    const content = document.getElementById(contentId);
+    apps.register({ id, title, mount(container) {
+        container.append(content);
+        return () => document.getElementById('appStorage').append(content);
+    }});
+}
+const installed = [
+    { id: 'social', title: 'SOCIAL_NETWORK.exe', symbol: '[↗]' },
+    { id: 'updates', title: 'SYSTEM_UPDATE.exe', symbol: '[✉]' },
+    { id: 'radio', title: 'RADIO.exe', symbol: '[♫]' }
+];
+for (const app of installed) {
+    const icon = document.createElement('button');
+    icon.className = 'desktop-icon';
+    icon.dataset.app = app.id;
+    const symbol = document.createElement('span');
+    symbol.className = 'desktop-icon-symbol'; symbol.textContent = app.symbol;
+    symbol.setAttribute('aria-hidden', 'true');
+    const label = document.createElement('span'); label.textContent = app.title;
+    icon.append(symbol, label);
+    icon.addEventListener('dblclick', () => launch(app.id));
+    icon.addEventListener('click', event => {
+        if (event.detail === 0 || event.pointerType === 'touch' || event.pointerType === 'pen') launch(app.id);
+    });
+    document.getElementById('desktopIcons').append(icon);
+}
+const menu = document.createElement('div');
+menu.id = 'startMenu'; menu.hidden = true;
+menu.setAttribute('aria-label', 'Installed applications');
+document.body.append(menu);
+function closeMenu(returnFocus = false) {
+    menu.hidden = true; startButton.setAttribute('aria-expanded', 'false');
+    if (returnFocus) startButton.focus();
+}
+for (const app of [...installed, { id: 'sample', title: 'SAMPLE.exe' }]) {
+    if (app.id === 'sample') {
+        const heading = document.createElement('p'); heading.textContent = 'DEVELOPMENT / UTILITIES'; menu.append(heading);
+    }
+    const button = document.createElement('button'); button.textContent = app.title;
+    button.dataset.app = app.id;
+    button.addEventListener('click', () => { closeMenu(); launch(app.id); });
+    menu.append(button);
+}
+startButton.addEventListener('click', () => {
+    menu.hidden = !menu.hidden;
+    startButton.setAttribute('aria-expanded', String(!menu.hidden));
+    if (!menu.hidden) menu.querySelector('button').focus();
+});
+document.addEventListener('pointerdown', event => {
+    if (!menu.contains(event.target) && !startButton.contains(event.target)) closeMenu();
+});
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !menu.hidden) { closeMenu(true); }
+});
+menu.addEventListener('keydown', event => {
+    const buttons = [...menu.querySelectorAll('button')];
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const offset = event.key === 'ArrowDown' ? 1 : -1;
+        buttons[(buttons.indexOf(document.activeElement) + offset + buttons.length) % buttons.length].focus();
+    }
+});
+const status = document.createElement('div');
+status.id = 'desktopStatus';
+const online = document.createElement('span'); online.textContent = '● ONLINE';
+const clock = document.createElement('time');
+status.append(online, clock); taskbar.append(status);
+function updateClock() {
+    const now = new Date(); clock.dateTime = now.toISOString();
+    clock.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    clock.title = now.toLocaleDateString();
+}
+updateClock(); setInterval(updateClock, 1000);
