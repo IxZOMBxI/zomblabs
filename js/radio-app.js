@@ -1,7 +1,7 @@
 const time = value => Number.isFinite(value) ? `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}` : '0:00';
 export function radioApp(service) {
     return {
-        id: 'radio', title: 'RADIO.exe', width: 420, height: 490, minWidth: 300, minHeight: 360,
+        id: 'radio', title: 'RADIO.exe', width: 440, height: 700, minWidth: 300, minHeight: 420,
         mount(container) {
             container.classList.add('radio');
             container.innerHTML = `<div class="radio-heading">ZOMB LABS · RADIO / 01</div>

@@ -2,7 +2,7 @@ name: Update media library
 on:
   push:
     branches: [main]
-    paths: ['media/**', 'tools/generate-media.py', '.github/workflows/media-library.yml']
+    paths: ['media/**', 'tools/generate-media.py', 'tools/id3_artist.py', '.github/workflows/media-library.yml']
   workflow_dispatch:
 permissions:
   contents: write

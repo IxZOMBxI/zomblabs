@@ -134,3 +134,10 @@
 
 .radio > :not([data-library]) { flex-shrink: 0; }
 .radio-cover > [hidden] { display: none; }
+/* Artwork-first Now Playing; independent scrolling keeps transport reachable. */
+.radio .radio-display { flex-direction: column; align-items: center; text-align: center; min-height: 100px; max-height: 48%; overflow: auto; flex: 0 1 auto; }
+.radio .radio-cover { width: 100%; height: auto; min-height: 100px; flex-shrink: 0; border: 0; }
+.radio .radio-cover [data-art] { position: static; width: 100%; height: auto; max-height: none; object-fit: contain; }
+.radio .radio-cover [data-placeholder] { padding: 18px; }
+.radio .radio-now { flex-shrink: 0; width: 100%; align-items: center; }
+.radio .radio-now strong, .radio .radio-now span { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }

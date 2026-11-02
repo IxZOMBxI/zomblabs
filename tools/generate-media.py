@@ -4,6 +4,7 @@ import pathlib
 import sys
 import unicodedata
 from urllib.parse import quote
+from id3_artist import read_artist
 
 def matching_stem(value):
     return unicodedata.normalize('NFC', value).casefold()
@@ -58,7 +59,7 @@ def generate(root):
             relative = path.relative_to(media).as_posix()
             entries.append(dict(id=relative, section=section, src=quote(relative, safe='/'),
                                 title=text('title', path.stem.replace('_', ' ').replace('-', ' ')),
-                                artist=text('artist', 'Unknown artist'), album=text('album'),
+                                artist=text('artist', read_artist(path) or 'Unknown artist'), album=text('album'),
                                 description=text('description'), artwork=artwork, order=order))
     entries.sort(key=lambda entry: (0 if entry['section'] == 'music' else 1, entry['order'], entry['title'].casefold(), entry['id']))
     return {'version': 1, 'entries': entries}

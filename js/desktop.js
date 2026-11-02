@@ -24,7 +24,7 @@ const manager = new WindowManager(workspace, runningApps);
 const apps = new AppRegistry(manager);
 apps.register({
     id: 'sample',
-    title: 'SAMPLE.exe',
+    title: 'SAMPLE.exe', width: 380, height: 300, minWidth: 280, minHeight: 220,
     mount(container) {
         const text = document.createElement('p');
         text.textContent = 'WINDOW SYSTEM ONLINE. Drag this title bar or focus it and use arrow keys. Open another sample to test overlapping windows.';
@@ -72,7 +72,7 @@ for (const [id, title, contentId] of [
     ['updates', 'SYSTEM_UPDATE.exe', 'updateContent']
 ]) {
     const content = document.getElementById(contentId);
-    apps.register({ id, title, mount(container) {
+    apps.register({ id, title, width: 440, height: id === 'social' ? 420 : 460, minWidth: 300, minHeight: 280, mount(container) {
         container.append(content);
         return () => document.getElementById('appStorage').append(content);
     }});

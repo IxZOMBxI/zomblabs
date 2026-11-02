@@ -88,3 +88,18 @@ It initializes only on Play; unsupported browsers retain playback without a live
 spectrum. Closing the window stops its drawing loop, not its audio. Stop pauses and
 rewinds; Pause retains position. Music/Broadcast tabs filter the visible playlist,
 while transport controls retain the shared catalog queue.
+
+## MP3 artists and player sizing
+
+When no nonempty `artist` override is supplied, the generator reads MP3 ID3 artist
+metadata (TPE1/TP1 in ID3v2.2–v2.4, or the ID3v1 artist field). A sidecar artist
+always wins. Unsupported, malformed, encrypted/compressed, or oversized tags are
+ignored safely; files without a readable artist display Unknown artist. Only the
+artist is extracted; titles still use explicit metadata or filenames.
+
+RADIO defaults to 440×700 with a 300×420 minimum, constrained to the visible desktop.
+Social defaults to 440×420; signup to 440×460 (both minimum 300×280); SAMPLE defaults
+to 380×300 (minimum 280×220). Smaller screens take precedence over these minimums.
+Large artwork retains its natural aspect ratio; the artwork/information area can
+scroll independently so playback controls remain accessible. The playlist uses
+remaining height and scrolls independently.
