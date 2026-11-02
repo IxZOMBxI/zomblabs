@@ -1,0 +1,43 @@
+name: Update media library
+on:
+  push:
+    branches: [main]
+    paths: ['media/**', 'tools/generate-media.py', '.github/workflows/media-library.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: media-library
+  cancel-in-progress: false
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Verify existing Pages publishing source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/pages" > /tmp/pages.json
+          python3 - <<'PY'
+          import json
+          p = json.load(open('/tmp/pages.json'))
+          assert p.get('build_type') == 'legacy' and p.get('source') == {'branch': 'main', 'path': '/'}, 'Requires existing branch-based Pages from main / (root). Do not replace an existing Actions deployment; integrate generation into its build instead.'
+          PY
+      - run: python3 tools/generate-media.py
+      - name: Commit catalog and request existing Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add media/library.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Update generated media catalog'
+            git push origin HEAD:main
+          fi
+          # Token-created commits do not automatically trigger Pages builds.
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"

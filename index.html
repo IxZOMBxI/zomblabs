@@ -11,6 +11,7 @@
     <title>ZombOS Login</title>
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="windows.css">
 </head>
 
 <body>
@@ -200,6 +201,8 @@
                 </header>
 
 
+                <button id="openSample" type="button">OPEN SAMPLE.exe</button>
+
                 <div class="desktop-grid">
 
                     <!-- SOCIALS -->
@@ -321,7 +324,9 @@
 
     </main>
 
+    <div id="windowWorkspace" aria-label="Application windows" hidden></div>
     <script src="script.js"></script>
+    <script type="module" src="js/desktop.js"></script>
 
 </body>
 </html>
