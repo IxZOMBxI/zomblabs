@@ -31,6 +31,7 @@ export class AudioService extends EventTarget {
     subscribe(listener) { this.addEventListener('change', listener); listener(); return () => this.removeEventListener('change', listener); }
     async play() {
         if (!this.track) return;
+        this.enableAnalyzer();
         const request = ++this.request;
         if (!this.audio.src || this.audio.error) { this.audio.src = this.track.src; this.audio.load(); }
         this.error = ''; this.loading = true; this.emit();
@@ -42,6 +43,28 @@ export class AudioService extends EventTarget {
             this.emit();
         }
     }
+    enableAnalyzer() {
+        const Context = globalThis.AudioContext || globalThis.webkitAudioContext;
+        if (!Context || this.visualizationUnavailable) return;
+        try {
+            if (!this.context) {
+                this.context = new Context();
+                this.analyzer = this.context.createAnalyser();
+                this.analyzer.fftSize = 256;
+                this.source = this.context.createMediaElementSource(this.audio);
+                // Direct output stays independent of the visualization branch.
+                this.source.connect(this.context.destination);
+                this.source.connect(this.analyzer);
+            }
+            this.context.resume().catch(() => { this.visualizationUnavailable = true; });
+        } catch {
+            this.visualizationUnavailable = true;
+            if (this.source && this.context) {
+                try { this.source.connect(this.context.destination); } catch { /* Already connected. */ }
+            }
+        }
+    }
+    stop() { this.pause(); this.seek(0); this.emit(); }
     pause() { ++this.request; this.audio.pause(); this.loading = false; this.emit(); }
     select(index, play = false) {
         if (!this.catalog[index]) return;

@@ -72,3 +72,19 @@ catalog displays a reload-to-retry message without blocking desktop startup.
 Playback survives window closure but not page reload. Shuffle chooses another catalog
 entry; Previous follows catalog order. Repeat cycles off/all/one. Music precedes broadcasts
 in the shared playback queue. Selecting while paused does not start playback.
+
+## Matching song covers
+
+Upload `Song Name.wav` to `media/tracks` and `Song Name.png` to `media/artwork`.
+The generator automatically pairs matching stems, including MP3/OGG/M4A and
+case-insensitive PNG names. Spaces, Unicode, `#`, and `&` are URL-encoded safely.
+Explicit sidecar `artwork` overrides automatic matching; `"artwork": null` disables
+artwork for that recording. Invalid explicit paths are omitted rather than silently
+replaced. If multiple covers match, a unique exact-case match wins; otherwise the
+ambiguous cover is omitted. This matching also works for broadcasts.
+
+RADIO.exe's spectrum uses Web Audio frequency data from the persistent player.
+It initializes only on Play; unsupported browsers retain playback without a live
+spectrum. Closing the window stops its drawing loop, not its audio. Stop pauses and
+rewinds; Pause retains position. Music/Broadcast tabs filter the visible playlist,
+while transport controls retain the shared catalog queue.

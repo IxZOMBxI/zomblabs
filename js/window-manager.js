@@ -77,7 +77,7 @@ export class WindowManager {
         const content = document.createElement('div');
         content.className = 'zomb-window-content';
         element.append(header, content);
-        const state = { element, width: 380, height: 280, maximized: false, minimized: false, x: 24 + this.windows.size * 28, y: 24 + this.windows.size * 28, returnFocus: document.activeElement };
+        const state = { element, width: app.width || 380, height: app.height || 280, minWidth: app.minWidth || 260, minHeight: app.minHeight || 140, maximized: false, minimized: false, x: 24 + this.windows.size * 28, y: 24 + this.windows.size * 28, returnFocus: document.activeElement };
         const task = document.createElement('button');
         task.type = 'button';
         task.textContent = `${app.title} [${this.sequence}]`;
@@ -119,7 +119,7 @@ export class WindowManager {
                 if (!resize || resize.pointer !== event.pointerId) return;
                 const dx = event.clientX - resize.x, dy = event.clientY - resize.y;
                 const right = resize.left + resize.width, bottom = resize.top + resize.height;
-                const minW = Math.min(260, this.workspace.clientWidth), minH = Math.min(140, this.workspace.clientHeight);
+                const minW = Math.min(state.minWidth, this.workspace.clientWidth), minH = Math.min(state.minHeight, this.workspace.clientHeight);
                 if (edge.includes('w')) {
                     state.x = Math.max(0, Math.min(resize.left + dx, right - minW));
                     state.width = right - state.x;
@@ -168,8 +168,8 @@ export class WindowManager {
             if (!direction) return;
             event.preventDefault();
             if (event.shiftKey) {
-                state.width = Math.max(Math.min(260, this.workspace.clientWidth), Math.min(state.element.offsetWidth + direction[0] * 10, this.workspace.clientWidth - state.x));
-                state.height = Math.max(Math.min(140, this.workspace.clientHeight), Math.min(state.element.offsetHeight + direction[1] * 10, this.workspace.clientHeight - state.y));
+                state.width = Math.max(Math.min(state.minWidth, this.workspace.clientWidth), Math.min(state.element.offsetWidth + direction[0] * 10, this.workspace.clientWidth - state.x));
+                state.height = Math.max(Math.min(state.minHeight, this.workspace.clientHeight), Math.min(state.element.offsetHeight + direction[1] * 10, this.workspace.clientHeight - state.y));
             } else {
                 state.x += direction[0] * 10;
                 state.y += direction[1] * 10;
