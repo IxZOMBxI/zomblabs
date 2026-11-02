@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import { readFileSync } from 'node:fs';
+const properties=new Map();const document={documentElement:{dataset:{},style:{setProperty:(k,v)=>properties.set(k,v),removeProperty:k=>properties.delete(k)}}};let saved=null;
+const context=vm.createContext({window:{},document,localStorage:{getItem:()=>saved,setItem:(k,v)=>saved=v}});
+const schemaCode=readFileSync(new URL('../js/theme-schema.js',import.meta.url),'utf8');const stateCode=readFileSync(new URL('../js/settings-state.js',import.meta.url),'utf8');
+vm.runInContext(schemaCode,context);vm.runInContext(stateCode,context);
+const schema=context.window.ZombThemeSchema,store=context.window.ZombSettings;
+const theme={version:1,name:'Test',colors:schema.palette('amber')};assert.equal(schema.validate(theme).name,'Test');
+for(const invalid of [{...theme,version:2},{...theme,extra:1},{...theme,colors:{...theme.colors,accent:'red'}},{...theme,colors:{accent:'#123456'}},{...theme,name:'x'.repeat(61)}])assert.throws(()=>schema.validate(invalid));
+store.preview({theme:'custom',custom:theme});assert.equal(document.documentElement.dataset.theme,'custom');assert.equal(saved,null);store.cancelPreview();assert.equal(document.documentElement.dataset.theme,'toxic');store.apply({theme:'custom',custom:theme});assert.equal(JSON.parse(saved).custom.name,'Test');store.apply({showHiddenFiles:true});assert.equal(store.get().theme,'custom');
+vm.runInContext(stateCode,context);assert.equal(context.window.ZombSettings.get().theme,'custom');
+saved='{"theme":"custom","custom":{"version":999}}';vm.runInContext(stateCode,context);assert.equal(context.window.ZombSettings.get().theme,'toxic');
+console.log('PASS strict theme schema, preview/cancel, persistence, independent hidden preference, outdated fallback');

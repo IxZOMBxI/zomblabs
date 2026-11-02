@@ -1,25 +1,42 @@
 # Appearance settings
 
-Settings is registered as `settings`; application IDs remain stable. Window manager
-`title` fields are presentation labels and can use any clean display name.
+The first-class Settings app uses the shared `ZombSettings` state service. Theme
+preferences and Explorer hidden-file visibility share one local persistence key.
+Application IDs remain stable; window titles are presentation labels.
 
-`js/settings-state.js` owns defaults, validation, the built-in theme list, local
-persistence (`zombos.settings.v1`), and subscriptions. It runs before styles to reduce
-first-paint flashes. `get()` returns a copy, `apply({theme})` validates and applies,
-`reset()` restores Toxic Green, and `subscribe(listener)` returns an unsubscribe
-function. Failed storage writes still apply for the current visit. Corrupt or unknown
-saved themes fall back to Toxic Green. No preferences are transmitted.
+## M12 advanced theme editor
 
-`js/settings-app.js` owns category navigation and draft controls. Add future categories
-to its category list, with a mount function returning cleanup. Extend the state schema
-and validation explicitly when adding new preferences. Preview changes are local to
-the preview; Apply commits them, Reset discards unapplied changes, Restore Default
-immediately applies and saves Toxic Green.
+`theme-schema.js` defines grouped semantic color keys, preset seed palettes and the
+strict version-1 JSON format. It loads before settings restoration. Existing preset
+CSS values stay intact; custom palettes set `--ui-*` variables and legacy aliases
+through the same settings service, with scoped chrome rules in windows.css.
 
-`themes.css` is the central color palette, including original Toxic Green values,
-translucent effects, spectrum colors. Album artwork keeps its original colors. Legacy CSS aliases `--green`,
-`--dark-green`, and `--black` remain for compatibility but vary with the selected theme.
-Radio visualization reads the active palette without recreating its audio graph.
+Settings offers native color inputs and editable #RRGGBB fields. All valid edits and
+preset selections preview immediately; Apply commits, Cancel or window closure
+reverts unsaved changes, Reset to default previews Toxic Green, and Save custom
+stores a custom snapshot. Only one named custom slot is maintained. Presets are
+never overwritten. Export downloads the current palette; Import previews a validated
+file, requiring Apply to persist. JSON must have exactly version/name/colors, all
+supported color keys, six-digit hexadecimal values, and a name of at most 60
+characters. Files over 32 KB, unknown keys, invalid colors and unsupported versions
+are rejected without replacing the current palette.
 
-Explorer shares `showHiddenFiles` (boolean, default false) in this store. Partial
-updates preserve the other preference; resetting Appearance does not change it.
+Saved preferences retain the existing storage key and hidden-files preference.
+Invalid/outdated custom themes fall back to Toxic Green. Storage failure leaves
+changes active for the visit. `preview()` and `cancelPreview()` do not write storage.
+No remote requests are involved. Closing Settings cancels an unapplied preview.
+
+Contrast warnings check common text/background pairs against 4.5:1. They are advisory,
+not a full accessibility audit; deliberate low-contrast palettes remain allowed.
+Semantic tokens cover active/inactive titles, surfaces, text, links, controls,
+selection/focus, scrollbars, chrome and individual application interfaces. Tooltip
+variables apply to authored role=tooltip elements; native browser title tooltips,
+color dialogs and file dialogs remain controlled by the browser/OS.
+
+Artwork/photos/video and DEAD SPRINT canvas graphics are not recolored. Radio's
+spectrum is an interface visualization and follows its separate accent/background.
+The Editor is scrollable at minimum size; grouped fields collapse independently.
+
+Run `node tests/theme-schema.test.mjs` for validation/restoration behavior. Browser
+checks cover actual CSS, import/export, presets, persistence, mobile layouts and
+background audio. No framework, build step, or new dependency is introduced.

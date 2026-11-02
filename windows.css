@@ -201,21 +201,68 @@
 .zombnet [data-panel] > div { display: flex; gap: 8px; align-items: center; margin: 5px 0; }
 .zombnet a { color: inherit; overflow-wrap: anywhere; }
 .zombnet [data-status], .zombnet [data-title] { overflow-wrap: anywhere; flex-shrink: 0; }
-.zombnet-page { flex: 1 0 100px; min-height: 100px; overflow: auto; padding: 18px; background: #08140c; color: #b5edc0; border: 2px inset var(--dark-green); }
-.zombnet-page[data-site="radio"] { background: #101a20; color: #c5e9ee; }
-.zombnet-page[data-site="error"] { background: #211515; color: #ffd3c9; }
+.zombnet-page { flex: 1 0 100px; min-height: 100px; overflow: auto; padding: 18px; background: var(--ui-pageBackground); color: var(--ui-pageText); border: 2px inset var(--dark-green); }
+.zombnet-page[data-site="radio"] { background: var(--ui-radioPageBackground); color: var(--ui-radioPageText); }
+.zombnet-page[data-site="error"] { background: var(--ui-errorPageBackground); color: var(--ui-errorPageText); }
 .zombnet-page h1 { font-size: clamp(22px, 4vw, 32px); margin-top: 0; }
 .zombnet-page > a { display: block; margin-top: 12px; }
 .zombnet-page button { color: inherit; border-color: currentColor; background: transparent; }
 .zombnet :focus-visible { outline: 2px dashed currentColor; outline-offset: -2px; }
-.arcade { color: #a6ff85; background: #0b1010; padding: 12px; }
+.arcade { color: var(--ui-arcadeText); background: var(--ui-arcadeBackground); padding: 12px; }
 .arcade h2 { margin: 0 0 10px; letter-spacing: 2px; }
-.arcade-card { padding: 16px; border: 1px solid #9270be; background: #14151b; }
-.arcade-card h3 { color: #caa1ff; font-size: 24px; margin: 0; }
-.arcade button { font: inherit; color: #a6ff85; background: #142219; border: 1px outset #a6ff85; padding: 8px 12px; cursor: pointer; }
+.arcade-card { padding: 16px; border: 1px solid var(--ui-arcadeBorder); background: var(--ui-arcadePanel); }
+.arcade-card h3 { color: var(--ui-arcadeAccent); font-size: 24px; margin: 0; }
+.arcade button { font: inherit; color: var(--ui-arcadeText); background: var(--ui-arcadeButton); border: 1px outset var(--ui-arcadeText); padding: 8px 12px; cursor: pointer; }
 .arcade button:disabled { opacity: .5; }
-.sprint-canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; touch-action: none; border: 1px solid #9270be; }
-.sprint-canvas:focus-visible { outline: 2px dashed #a6ff85; outline-offset: -3px; }
+.sprint-canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; touch-action: none; border: 1px solid var(--ui-arcadeBorder); }
+.sprint-canvas:focus-visible { outline: 2px dashed var(--ui-arcadeText); outline-offset: -3px; }
 .sprint-hud { font-size: 12px; padding: 10px 0; font-variant-numeric: tabular-nums; }
 .sprint-controls { display: flex; gap: 8px; margin-top: 8px; }
 .sprint-status { font-size: 12px; margin-bottom: 0; }
+/* Semantic overrides target chrome, never images/video or game canvas pixels. */
+html[data-theme="custom"] body { color: var(--ui-textPrimary); background: var(--ui-desktopBackground); }
+html[data-theme="custom"] .desktop { background: var(--ui-desktopBackground); }
+html[data-theme="custom"] .desktop-icon { color: var(--ui-desktopLabels); }
+html[data-theme="custom"] .zomb-window { background: var(--ui-windowBackground); border-color: var(--ui-border); box-shadow: 0 0 12px var(--ui-shadow); }
+html[data-theme="custom"] .zomb-window-header { background: var(--ui-titleInactive); color: var(--ui-titleInactiveText); }
+html[data-theme="custom"] .zomb-window.is-focused .zomb-window-header { background: var(--ui-titleActive); color: var(--ui-titleText); }
+html[data-theme="custom"] #zombTaskbar { background: var(--ui-taskbar); border-color: var(--ui-border); }
+html[data-theme="custom"] #startMenu { background: var(--ui-startMenu); color: var(--ui-textPrimary); border-color: var(--ui-border); }
+html[data-theme="custom"] .explorer-menus details > div { background: var(--ui-menu); }
+html[data-theme="custom"] :is(button,summary,select) { color: var(--ui-buttonText); background: var(--ui-buttonBackground); border-color: var(--ui-border); }
+html[data-theme="custom"] :is(select,option) { background: var(--ui-dropdown); color: var(--ui-textPrimary); }
+html[data-theme="custom"] :is(input:not([type="color"]),textarea) { background: var(--ui-inputBackground); color: var(--ui-inputText); border-color: var(--ui-border); accent-color: var(--ui-accent); }
+html[data-theme="custom"] :is(button,a,summary):hover { background: var(--ui-hoverBackground); color: var(--ui-hoverText); }
+html[data-theme="custom"] a { color: var(--ui-link); }
+html[data-theme="custom"] a:visited { color: var(--ui-linkVisited); }
+html[data-theme="custom"] a:hover { color: var(--ui-linkHover); }
+html[data-theme="custom"] :is(button,input):disabled { color: var(--ui-textDisabled); opacity: 1; }
+html[data-theme="custom"] :is(small,.system-label,.window-description) { color: var(--ui-textSecondary); }
+html[data-theme="custom"] :is(.desktop-hint,.desktop-footer,.radio-now small) { color: var(--ui-textMuted); opacity: 1; }
+html[data-theme="custom"] :focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -2px; }
+html[data-theme="custom"] ::selection { background: var(--ui-selectionBackground); color: var(--ui-selectionText); }
+html[data-theme="custom"] :is([aria-selected="true"],button[aria-pressed="true"],button[aria-current="true"]) { background: var(--ui-selectionBackground); color: var(--ui-selectionText); }
+html[data-theme="custom"] :is(.explorer th,.theme-preview strong,.zombnet [data-panel]) { background: var(--ui-panel); }
+html[data-theme="custom"] .explorer-divider { background: var(--ui-divider); }
+html[data-theme="custom"] .explorer { background: var(--ui-explorerBackground); }
+html[data-theme="custom"] .zombnet { background: var(--ui-browserBackground); }
+html[data-theme="custom"] .radio-display { background: var(--ui-radioBackground); }
+html[data-theme="custom"] .radio input[type="range"] { accent-color: var(--ui-radioAccent); }
+html[data-theme="custom"] * { scrollbar-color: var(--ui-scrollbarThumb) var(--ui-scrollbarTrack); }
+html[data-theme="custom"] [role="tooltip"] { background: var(--ui-tooltipBackground); color: var(--ui-tooltipText); }
+.theme-editor { min-width: 0; }
+.theme-editor > p { font-size: 12px; }
+.theme-editor details { margin: 8px 0; border: 1px solid var(--green); padding: 6px; }
+.theme-editor summary { cursor: pointer; padding: 5px; }
+.settings-app .theme-color-row { display: grid; grid-template-columns: minmax(0,1fr) 38px 82px; gap: 6px; margin: 8px 0; font-size: 12px; }
+.theme-color-row input[type="color"] { width: 38px; height: 32px; padding: 1px; }
+.theme-color-row input[type="text"] { width: 82px; padding: 5px; }
+.theme-editor > label input, .theme-editor select { max-width: 100%; min-width: 0; }
+.theme-editor .theme-import { padding: 5px; border: 1px solid var(--green); }
+.theme-import input { max-width: 100%; font-size: 11px; }
+html[data-theme="custom"] :is(#zombTaskbar,#startMenu,.radio,.settings-app,.explorer,.zombnet,.arcade,#emailForm) button { background: var(--ui-buttonBackground); color: var(--ui-buttonText); border-color: var(--ui-border); }
+html[data-theme="custom"] :is(#zombTaskbar,#startMenu,.radio,.settings-app,.explorer,.zombnet,.arcade,#emailForm) button:hover { background: var(--ui-hoverBackground); color: var(--ui-hoverText); }
+html[data-theme="custom"] :is(#zombTaskbar,#startMenu,.radio,.settings-app,.explorer,.zombnet,.arcade,#emailForm) button:disabled { color: var(--ui-textDisabled); }
+html[data-theme="custom"] :is(#zombTaskbar,.radio,.explorer) button:is([aria-pressed="true"],[aria-current="true"],[aria-selected="true"]) { background: var(--ui-selectionBackground); color: var(--ui-selectionText); }
+html[data-theme="custom"] #emailInput { color: var(--ui-inputText); background: var(--ui-inputBackground); border-color: var(--ui-border); }
+html[data-theme="custom"] :is(#zombTaskbar button,#startMenu button,.settings-app button,.settings-app input,.settings-app select,.radio button,.radio input,.explorer button,.explorer input,.zombnet button,.zombnet input):focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -2px; }

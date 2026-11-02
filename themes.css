@@ -174,3 +174,59 @@
   --tone-29: #070309;
   --tone-30: rgba(211, 160, 255, .25);
 }
+
+/* Semantic interface palette; custom values are applied by the shared state service. */
+:root {
+  --ui-desktopBackground: var(--black);
+  --ui-desktopLabels: var(--green);
+  --ui-windowBackground: var(--black);
+  --ui-titleActive: var(--green);
+  --ui-titleInactive: var(--dark-green);
+  --ui-titleText: var(--black);
+  --ui-titleInactiveText: var(--green);
+  --ui-border: var(--green);
+  --ui-shadow: var(--dark-green);
+  --ui-taskbar: var(--black);
+  --ui-startMenu: var(--black);
+  --ui-menu: var(--black);
+  --ui-dropdown: var(--black);
+  --ui-textPrimary: var(--green);
+  --ui-textSecondary: var(--green);
+  --ui-textMuted: var(--green);
+  --ui-textDisabled: var(--dark-green);
+  --ui-link: var(--green);
+  --ui-linkHover: var(--green);
+  --ui-linkVisited: var(--green);
+  --ui-buttonBackground: var(--black);
+  --ui-buttonText: var(--green);
+  --ui-hoverBackground: var(--dark-green);
+  --ui-hoverText: var(--green);
+  --ui-inputBackground: var(--black);
+  --ui-inputText: var(--green);
+  --ui-selectionBackground: var(--green);
+  --ui-selectionText: var(--black);
+  --ui-focus: var(--green);
+  --ui-accent: var(--green);
+  --ui-panel: var(--dark-green);
+  --ui-divider: var(--dark-green);
+  --ui-scrollbarThumb: var(--green);
+  --ui-scrollbarTrack: var(--black);
+  --ui-tooltipBackground: var(--black);
+  --ui-tooltipText: var(--green);
+  --ui-radioBackground: #001204;
+  --ui-radioAccent: var(--green);
+  --ui-explorerBackground: var(--black);
+  --ui-browserBackground: var(--black);
+  --ui-pageBackground: #08140c;
+  --ui-pageText: #b5edc0;
+  --ui-radioPageBackground: #101a20;
+  --ui-radioPageText: #c5e9ee;
+  --ui-errorPageBackground: #211515;
+  --ui-errorPageText: #ffd3c9;
+  --ui-arcadeBackground: #0b1010;
+  --ui-arcadeText: #a6ff85;
+  --ui-arcadePanel: #14151b;
+  --ui-arcadeAccent: #caa1ff;
+  --ui-arcadeBorder: #9270be;
+  --ui-arcadeButton: #142219;
+}
