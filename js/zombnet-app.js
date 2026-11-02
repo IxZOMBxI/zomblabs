@@ -8,6 +8,7 @@ export function zombnetApp(network, state, launch) {
                 <form class="zombnet-address"><label>Address <input aria-label="ZombNET address" spellcheck="false"></label><button>Go</button></form>
                 <strong data-title></strong><aside data-panel hidden></aside><article class="zombnet-page" tabindex="0" aria-label="Internal webpage"></article><div data-status role="status"></div>`;
             const get = selector => container.querySelector(selector);
+            let pageCleanup;
             let current = 'zomb://home', stack = [current], cursor = 0, panel = null;
             const status = message => { get('[data-status]').textContent = message; };
             function external(url) {
@@ -65,6 +66,7 @@ export function zombnetApp(network, state, launch) {
             }
             function updateButtons() { get('[data-back]').disabled = cursor === 0; get('[data-forward]').disabled = cursor === stack.length - 1; }
             function render() {
+                pageCleanup?.(); pageCleanup = null;
                 status('Loading internal page…');
                 const page = network.get(current), viewport = get('.zombnet-page'); viewport.replaceChildren();
                 get('input').value = current; get('[data-title]').textContent = page?.title || '404 — Destination unavailable';
@@ -81,6 +83,7 @@ export function zombnetApp(network, state, launch) {
                     else if (block.type === 'action') { const button = document.createElement('button'); button.textContent = block.label; button.onclick = () => launch(block.appId); viewport.append(button); }
                     else if (block.type === 'text') { const paragraph = document.createElement('p'); paragraph.textContent = block.text; viewport.append(paragraph); }
                 }
+                if (page?.mount) { viewport.replaceChildren(); pageCleanup = page.mount(viewport); }
                 viewport.scrollTop = 0;
                 state.visit(current, page?.title || current); updateButtons(); renderPanel();
                 status(page ? 'Ready · Fictional internal ZombNET page' : '404 · Unknown or unavailable internal destination');
@@ -93,7 +96,7 @@ export function zombnetApp(network, state, launch) {
             for (const name of ['bookmarks','history']) get(`[data-${name}]`).onclick = () => { panel = panel === name ? null : name; renderPanel(); };
             const changed = () => render(); network.addEventListener('change', changed);
             render();
-            return () => network.removeEventListener('change', changed);
+            return () => { pageCleanup?.(); network.removeEventListener('change', changed); };
         }
     };
 }

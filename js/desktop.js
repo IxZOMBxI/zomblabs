@@ -1,3 +1,4 @@
+import { mountArcade } from './arcade.js';
 import { ZombNetwork } from './zombnet-network.js';
 import { ZombnetState } from './zombnet-state.js';
 import { zombnetApp } from './zombnet-app.js';
@@ -58,13 +59,15 @@ function launch(id) {
 let networkStorage;
 try { networkStorage = window.localStorage; } catch { /* In-memory browsing remains available. */ }
 apps.register(zombnetApp(new ZombNetwork(), new ZombnetState(networkStorage), launch));
+apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
 const installed = [
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
     { id: 'updates', title: 'System Update', symbol: '[✉]' },
     { id: 'radio', title: 'Radio', symbol: '[♫]' },
     { id: 'settings', title: 'Settings', symbol: '[⚙]' },
     { id: 'explorer', title: 'File Explorer', symbol: '[▣]' },
-    { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' }
+    { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' },
+    { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' }
 ];
 const virtualFilesystem = new VirtualFilesystem(filesystemContent(installed, []));
 function previewFile(entry, properties) {

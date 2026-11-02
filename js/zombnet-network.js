@@ -1,8 +1,10 @@
+import { mountArcade } from './arcade.js';
 // Public fictional pages. Hidden/unlocked flags are presentation, not security.
 export function parseAddress(value) {
     if (typeof value !== 'string' || value.length > 2048) return null;
     try {
-        const url = new URL(value.trim());
+        const input = value.trim();
+        const url = new URL(/^arcade\.zomb\/?$/i.test(input) ? 'zomb://arcade' : input);
         if (url.username || url.password) return null;
         if (url.protocol === 'https:') return { kind: 'external', url: url.href };
         if (url.protocol !== 'zomb:' || !url.hostname || url.port) return null;
@@ -10,6 +12,7 @@ export function parseAddress(value) {
     } catch { return null; }
 }
 export const internalPages = [
+    { url: 'zomb://arcade', title: 'ZombNET Arcade', heading: 'Arcade', layout: 'arcade', listed: true, mount: mountArcade },
     { url: 'zomb://home', title: 'ZombNET — Network Directory', layout: 'directory', listed: true,
         heading: 'ZombNET', description: 'The Zomb Labs internal network. Fictional pages stay here; HTTPS websites open in a separate browser tab.', directory: true },
     { url: 'zomb://radio', title: 'Zomb Labs Radio', layout: 'radio', listed: true,

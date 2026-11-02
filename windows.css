@@ -208,3 +208,14 @@
 .zombnet-page > a { display: block; margin-top: 12px; }
 .zombnet-page button { color: inherit; border-color: currentColor; background: transparent; }
 .zombnet :focus-visible { outline: 2px dashed currentColor; outline-offset: -2px; }
+.arcade { color: #a6ff85; background: #0b1010; padding: 12px; }
+.arcade h2 { margin: 0 0 10px; letter-spacing: 2px; }
+.arcade-card { padding: 16px; border: 1px solid #9270be; background: #14151b; }
+.arcade-card h3 { color: #caa1ff; font-size: 24px; margin: 0; }
+.arcade button { font: inherit; color: #a6ff85; background: #142219; border: 1px outset #a6ff85; padding: 8px 12px; cursor: pointer; }
+.arcade button:disabled { opacity: .5; }
+.sprint-canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; touch-action: none; border: 1px solid #9270be; }
+.sprint-canvas:focus-visible { outline: 2px dashed #a6ff85; outline-offset: -3px; }
+.sprint-hud { font-size: 12px; padding: 10px 0; font-variant-numeric: tabular-nums; }
+.sprint-controls { display: flex; gap: 8px; margin-top: 8px; }
+.sprint-status { font-size: 12px; margin-bottom: 0; }
