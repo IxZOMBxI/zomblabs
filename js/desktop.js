@@ -1,3 +1,5 @@
+import { VirtualFilesystem } from './virtual-filesystem.js';
+import { explorerApp } from './explorer-app.js';
 import { settingsApp } from './settings-app.js';
 import { AudioService } from './audio-service.js';
 import { loadMediaCatalog } from './media-catalog.js';
@@ -49,6 +51,26 @@ function launch(id) {
     if (manager.windows.has(existing)) manager.focus(existing, true);
     else instances.set(id, apps.open(id));
 }
+const virtualFilesystem = new VirtualFilesystem();
+function previewFile(entry, properties) {
+    const id = `file-view:${properties ? 'properties' : 'text'}:${entry.path}`;
+    if (!apps.apps.has(id)) apps.register({
+        id, title: properties ? `${entry.name} — Properties` : entry.name,
+        width: 440, height: 340, minWidth: 280, minHeight: 220,
+        mount(container) {
+            const text = document.createElement('pre'); text.className = 'file-preview';
+            text.textContent = properties
+                ? [`Name: ${entry.name}`, `Virtual path: ${entry.path}`, `Type: ${entry.type || 'Unknown'}`,
+                    `Size: ${Number.isFinite(entry.size) ? entry.size + ' B' : 'Not supplied'}`,
+                    `Modified: ${entry.modified || 'Not supplied'}`, `Hidden: ${Boolean(entry.hidden)}`, `System: ${Boolean(entry.system)}`,
+                    entry.description || '', 'Read-only virtual item.'].join('\n')
+                : entry.content || 'This document is empty.';
+            container.append(text);
+        }
+    });
+    launch(id);
+}
+apps.register(explorerApp(virtualFilesystem, launch, previewFile));
 function openRadio() { launch('radio'); }
 const radioIndicator = document.createElement('button');
 radioIndicator.id = 'radioIndicator';
@@ -83,7 +105,8 @@ const installed = [
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
     { id: 'updates', title: 'System Update', symbol: '[✉]' },
     { id: 'radio', title: 'Radio', symbol: '[♫]' },
-    { id: 'settings', title: 'Settings', symbol: '[⚙]' }
+    { id: 'settings', title: 'Settings', symbol: '[⚙]' },
+    { id: 'explorer', title: 'File Explorer', symbol: '[▣]' }
 ];
 for (const app of installed) {
     const icon = document.createElement('button');
