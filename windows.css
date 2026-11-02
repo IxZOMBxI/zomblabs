@@ -141,3 +141,8 @@
 .radio .radio-cover [data-placeholder] { padding: 18px; }
 .radio .radio-now { flex-shrink: 0; width: 100%; align-items: center; }
 .radio .radio-now strong, .radio .radio-now span { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+
+/* Bound cover height to the player, leaving room for information and playlist. */
+.zomb-window-content.radio { container-type: size; }
+.radio .radio-cover { min-height: 0; }
+.radio .radio-cover [data-art] { max-height: clamp(90px, 30cqh, 360px); }

@@ -97,9 +97,15 @@ always wins. Unsupported, malformed, encrypted/compressed, or oversized tags are
 ignored safely; files without a readable artist display Unknown artist. Only the
 artist is extracted; titles still use explicit metadata or filenames.
 
-RADIO defaults to 440×700 with a 300×420 minimum, constrained to the visible desktop.
+RADIO defaults to 440×620 with a 300×420 minimum, constrained to the visible desktop.
 Social defaults to 440×420; signup to 440×460 (both minimum 300×280); SAMPLE defaults
 to 380×300 (minimum 280×220). Smaller screens take precedence over these minimums.
 Large artwork retains its natural aspect ratio; the artwork/information area can
 scroll independently so playback controls remain accessible. The playlist uses
 remaining height and scrolls independently.
+
+To update an artist: edit the MP3 Artist field in your audio tag editor, save and
+upload the revised file, then regenerate the catalog (locally: `python3 tools/generate-media.py`).
+Alternatively set `artist` in the adjacent `.mp3.json` sidecar. Remove that override
+when you want the embedded artist to be used again. Reload the site after its
+catalog is updated; browser playback alone cannot regenerate metadata.
