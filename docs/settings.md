@@ -17,6 +17,6 @@ the preview; Apply commits them, Reset discards unapplied changes, Restore Defau
 immediately applies and saves Toxic Green.
 
 `themes.css` is the central color palette, including original Toxic Green values,
-translucent effects, spectrum colors and artwork tint. Legacy CSS aliases `--green`,
+translucent effects, spectrum colors. Album artwork keeps its original colors. Legacy CSS aliases `--green`,
 `--dark-green`, and `--black` remain for compatibility but vary with the selected theme.
 Radio visualization reads the active palette without recreating its audio graph.

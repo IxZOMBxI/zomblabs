@@ -1,6 +1,5 @@
 /* Central palette tokens. Toxic preserves original color values. */
 :root, [data-theme="toxic"] {
-  --art-filter: grayscale(1) sepia(1) hue-rotate(65deg);
   --green: #65ff7d; --dark-green: #14391d; --black: #030704;
   --spectrum-bg: #030704; --spectrum-fg: #65ff7d;
   --tone-0: #0b180e;
@@ -36,7 +35,6 @@
   --tone-30: rgba(101,255,125,.25);
 }
 [data-theme="amber"] {
-  --art-filter: grayscale(1) sepia(1) hue-rotate(0deg);
   --green: #ffd16a; --dark-green: #493415; --black: #090601;
   --spectrum-bg: #090601; --spectrum-fg: #ffd16a;
   --tone-0: #493415;
@@ -72,7 +70,6 @@
   --tone-30: rgba(255, 209, 106, .25);
 }
 [data-theme="ice"] {
-  --art-filter: grayscale(1) sepia(1) hue-rotate(155deg);
   --green: #8cdfff; --dark-green: #173b49; --black: #030709;
   --spectrum-bg: #030709; --spectrum-fg: #8cdfff;
   --tone-0: #173b49;
@@ -108,7 +105,6 @@
   --tone-30: rgba(140, 223, 255, .25);
 }
 [data-theme="blood"] {
-  --art-filter: grayscale(1) sepia(1) hue-rotate(300deg);
   --green: #ff9696; --dark-green: #481b22; --black: #090304;
   --spectrum-bg: #090304; --spectrum-fg: #ff9696;
   --tone-0: #481b22;
@@ -144,7 +140,6 @@
   --tone-30: rgba(255, 150, 150, .25);
 }
 [data-theme="violet"] {
-  --art-filter: grayscale(1) sepia(1) hue-rotate(220deg);
   --green: #d3a0ff; --dark-green: #352044; --black: #070309;
   --spectrum-bg: #070309; --spectrum-fg: #d3a0ff;
   --tone-0: #352044;
