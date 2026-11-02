@@ -3,6 +3,15 @@ export function mountThemeEditor(container, settings) {
     container.classList.add('theme-editor');
     container.innerHTML = `<label>Theme <select data-theme-choice></select></label><label>Custom theme name <input data-theme-name maxlength="60"></label><p>Changes preview immediately. Apply to keep them; Cancel or closing Settings reverts unsaved changes.</p><div data-colors></div><p data-contrast role="status"></p><div class="settings-actions"><button data-apply>Apply</button><button data-save>Save custom theme</button><button data-reset>Cancel</button><button data-default>Reset to default</button><button data-export>Export JSON</button><label class="theme-import">Import JSON<input data-import type="file" accept="application/json,.json"></label></div><p data-result role="status"></p>`;
     const get = name => container.querySelector(`[data-${name}]`);
+    const crtLabel = document.createElement('label');
+    const crtEffects = document.createElement('input'); crtEffects.type = 'checkbox';
+    crtEffects.checked = settings.get().crtEffects;
+    crtLabel.append(crtEffects, 'Enable CRT Effects'); container.prepend(crtLabel);
+    crtEffects.onchange = () => {
+        const saved = settings.apply({crtEffects:crtEffects.checked});
+        preview();
+        get('result').textContent = saved ? 'CRT preference saved on this device.' : 'Applied for this visit; storage unavailable.';
+    };
     const schema = settings.schema;
     let draft, active = true;
     const controls = new Map();
