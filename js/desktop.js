@@ -1,3 +1,4 @@
+import { settingsApp } from './settings-app.js';
 import { AudioService } from './audio-service.js';
 import { loadMediaCatalog } from './media-catalog.js';
 import { radioApp } from './radio-app.js';
@@ -22,9 +23,10 @@ runningApps.setAttribute('aria-label', 'Running windows');
 taskbar.append(startButton, runningApps);
 const manager = new WindowManager(workspace, runningApps);
 const apps = new AppRegistry(manager);
+apps.register(settingsApp(window.ZombSettings));
 apps.register({
     id: 'sample',
-    title: 'SAMPLE.exe', width: 380, height: 300, minWidth: 280, minHeight: 220,
+    title: 'Sample', width: 380, height: 300, minWidth: 280, minHeight: 220,
     mount(container) {
         const text = document.createElement('p');
         text.textContent = 'WINDOW SYSTEM ONLINE. Drag this title bar or focus it and use arrow keys. Open another sample to test overlapping windows.';
@@ -54,7 +56,7 @@ radioIndicator.addEventListener('click', openRadio);
 taskbar.append(radioIndicator);
 audioService.subscribe(() => {
     radioIndicator.textContent = audioService.error ? 'RADIO: SIGNAL ERROR' : audioService.loading ? 'RADIO: LOADING' : audioService.audio.paused ? 'RADIO: STANDBY' : 'RADIO: PLAYING';
-    radioIndicator.setAttribute('aria-label', `${radioIndicator.textContent}. Open RADIO.exe`);
+    radioIndicator.setAttribute('aria-label', `${radioIndicator.textContent}. Open Radio`);
 });
 
 // Catalog loading does not block boot or the desktop. Register the app immediately.
@@ -68,8 +70,8 @@ loadMediaCatalog().then(catalog => {
 
 // Move original nodes rather than cloning them: existing form listeners and state survive.
 for (const [id, title, contentId] of [
-    ['social', 'SOCIAL_NETWORK.exe', 'socialContent'],
-    ['updates', 'SYSTEM_UPDATE.exe', 'updateContent']
+    ['social', 'Social Network', 'socialContent'],
+    ['updates', 'System Update', 'updateContent']
 ]) {
     const content = document.getElementById(contentId);
     apps.register({ id, title, width: 440, height: id === 'social' ? 420 : 460, minWidth: 300, minHeight: 280, mount(container) {
@@ -78,9 +80,10 @@ for (const [id, title, contentId] of [
     }});
 }
 const installed = [
-    { id: 'social', title: 'SOCIAL_NETWORK.exe', symbol: '[↗]' },
-    { id: 'updates', title: 'SYSTEM_UPDATE.exe', symbol: '[✉]' },
-    { id: 'radio', title: 'RADIO.exe', symbol: '[♫]' }
+    { id: 'social', title: 'Social Network', symbol: '[↗]' },
+    { id: 'updates', title: 'System Update', symbol: '[✉]' },
+    { id: 'radio', title: 'Radio', symbol: '[♫]' },
+    { id: 'settings', title: 'Settings', symbol: '[⚙]' }
 ];
 for (const app of installed) {
     const icon = document.createElement('button');
@@ -105,7 +108,7 @@ function closeMenu(returnFocus = false) {
     menu.hidden = true; startButton.setAttribute('aria-expanded', 'false');
     if (returnFocus) startButton.focus();
 }
-for (const app of [...installed, { id: 'sample', title: 'SAMPLE.exe' }]) {
+for (const app of [...installed, { id: 'sample', title: 'Sample' }]) {
     if (app.id === 'sample') {
         const heading = document.createElement('p'); heading.textContent = 'DEVELOPMENT / UTILITIES'; menu.append(heading);
     }

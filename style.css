@@ -3,9 +3,7 @@
 }
 
 :root {
-    --green: #65ff7d;
-    --dark-green: #14391d;
-    --black: #030704;
+
 }
 
 body {
@@ -15,8 +13,8 @@ body {
     background:
         radial-gradient(
             circle at center,
-            #0b180e 0%,
-            #020403 70%
+            var(--tone-0) 0%,
+            var(--tone-1) 70%
         );
 
     color: var(--green);
@@ -44,8 +42,8 @@ input {
 
     background:
         linear-gradient(
-            rgba(20, 255, 80, 0.025),
-            rgba(0, 0, 0, 0.04)
+            var(--tone-2),
+            var(--tone-3)
         );
 }
 
@@ -59,8 +57,8 @@ input {
     background:
         repeating-linear-gradient(
             to bottom,
-            rgba(255, 255, 255, 0.025) 0,
-            rgba(255, 255, 255, 0.025) 1px,
+            var(--tone-4) 0,
+            var(--tone-4) 1px,
             transparent 1px,
             transparent 4px
         );
@@ -126,11 +124,11 @@ input {
 
     border: 1px solid var(--green);
 
-    background: rgba(0, 15, 5, 0.75);
+    background: var(--tone-5);
 
     box-shadow:
-        0 0 8px rgba(101, 255, 125, 0.25),
-        inset 0 0 35px rgba(32, 255, 75, 0.05);
+        0 0 8px var(--tone-6),
+        inset 0 0 35px var(--tone-7);
 }
 
 .login-box h1 {
@@ -142,7 +140,7 @@ input {
     letter-spacing: 8px;
 
     text-shadow:
-        0 0 10px rgba(101, 255, 125, 0.8);
+        0 0 10px var(--tone-8);
 }
 
 .warning {
@@ -175,14 +173,14 @@ input {
     padding: 12px 14px;
 
     color: var(--green);
-    background: rgba(50, 255, 100, 0.04);
+    background: var(--tone-9);
 
-    border: 1px solid rgba(101, 255, 125, 0.5);
+    border: 1px solid var(--tone-10);
 
     outline: none;
 
     box-shadow:
-        inset 0 0 12px rgba(101, 255, 125, 0.06);
+        inset 0 0 12px var(--tone-11);
 }
 
 #loginButton {
@@ -194,7 +192,7 @@ input {
     padding: 14px;
 
     color: var(--green);
-    background: rgba(50, 255, 100, 0.05);
+    background: var(--tone-12);
 
     border: 1px solid var(--green);
 
@@ -209,11 +207,11 @@ input {
 }
 
 #loginButton:hover {
-    color: #001705;
+    color: var(--tone-13);
     background: var(--green);
 
     box-shadow:
-        0 0 18px rgba(101, 255, 125, 0.6);
+        0 0 18px var(--tone-14);
 }
 
 #loginButton:active {
@@ -247,7 +245,7 @@ input {
 
     border: 1px solid var(--green);
 
-    background: rgba(20, 255, 80, 0.03);
+    background: var(--tone-15);
 }
 
 .progress-bar {
@@ -264,7 +262,7 @@ input {
         );
 
     box-shadow:
-        0 0 12px rgba(101, 255, 125, 0.5);
+        0 0 12px var(--tone-10);
 
     transition: width 0.08s linear;
 }
@@ -324,9 +322,9 @@ input {
     letter-spacing: 12px !important;
 
     text-shadow:
-        3px 0 rgba(101, 255, 125, 0.25),
-        -3px 0 rgba(101, 255, 125, 0.25),
-        0 0 18px rgba(101, 255, 125, 0.7);
+        3px 0 var(--tone-6),
+        -3px 0 var(--tone-6),
+        0 0 18px var(--tone-16);
 
     animation: titleGlitch 2s infinite;
 }
@@ -438,13 +436,13 @@ input {
 
     background:
         linear-gradient(
-            rgba(0, 255, 80, 0.025),
-            rgba(0, 0, 0, 0.2)
+            var(--tone-17),
+            var(--tone-18)
         ),
         radial-gradient(
             circle at top,
-            #102416,
-            #020403 70%
+            var(--tone-19),
+            var(--tone-1) 70%
         );
 }
 
@@ -456,7 +454,7 @@ input {
     padding-bottom: 22px;
 
     border-bottom: 1px solid
-        rgba(101, 255, 125, 0.45);
+        var(--tone-20);
 }
 
 .desktop-header h1 {
@@ -467,7 +465,7 @@ input {
 
     text-shadow:
         0 0 15px
-        rgba(101, 255, 125, 0.5);
+        var(--tone-10);
 }
 
 .system-label {
@@ -511,17 +509,17 @@ input {
     border: 1px solid var(--green);
 
     background:
-        rgba(0, 15, 5, 0.78);
+        var(--tone-21);
 
     box-shadow:
         0 0 12px
-        rgba(101, 255, 125, 0.16);
+        var(--tone-22);
 }
 
 .window-header {
     padding: 12px 16px;
 
-    color: #001705;
+    color: var(--tone-13);
     background: var(--green);
 
     font-weight: bold;
@@ -553,7 +551,7 @@ input {
     color: var(--green);
 
     border: 1px solid
-        rgba(101, 255, 125, 0.65);
+        var(--tone-23);
 
     text-align: center;
     text-decoration: none;
@@ -567,7 +565,7 @@ input {
 }
 
 .social-links a:hover {
-    color: #001705;
+    color: var(--tone-13);
     background: var(--green);
 
     transform: translateX(5px);
@@ -596,10 +594,10 @@ input {
 
     color: var(--green);
     background:
-        rgba(50, 255, 100, 0.04);
+        var(--tone-9);
 
     border: 1px solid
-        rgba(101, 255, 125, 0.65);
+        var(--tone-23);
 
     outline: none;
 }
@@ -607,7 +605,7 @@ input {
 #emailInput:focus {
     box-shadow:
         0 0 10px
-        rgba(101, 255, 125, 0.35);
+        var(--tone-24);
 }
 
 #emailForm button {
@@ -628,7 +626,7 @@ input {
 }
 
 #emailForm button:hover {
-    color: #001705;
+    color: var(--tone-13);
     background: var(--green);
 }
 
@@ -646,7 +644,7 @@ input {
 }
 
 .email-message.error {
-    color: #ff6868;
+    color: var(--tone-25);
 }
 
 .desktop-footer {
@@ -656,7 +654,7 @@ input {
     padding-top: 20px;
 
     border-top: 1px solid
-        rgba(101, 255, 125, 0.45);
+        var(--tone-20);
 
     font-size: 12px;
     letter-spacing: 2px;

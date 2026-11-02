@@ -1,7 +1,7 @@
 const time = value => Number.isFinite(value) ? `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}` : '0:00';
 export function radioApp(service) {
     return {
-        id: 'radio', title: 'RADIO.exe', width: 440, height: 620, minWidth: 300, minHeight: 420,
+        id: 'radio', title: 'Radio', width: 440, height: 620, minWidth: 300, minHeight: 420,
         mount(container) {
             container.classList.add('radio');
             container.innerHTML = `<div class="radio-heading">ZOMB LABS · RADIO / 01</div>
@@ -98,11 +98,12 @@ export function radioApp(service) {
             let frame;
             function draw() {
                 if (context && container.isConnected && !container.closest('[hidden]')) {
-                    context.fillStyle = '#030704'; context.fillRect(0, 0, 320, 40);
+                    const palette = getComputedStyle(container);
+                    context.fillStyle = palette.getPropertyValue('--spectrum-bg').trim(); context.fillRect(0, 0, 320, 40);
                     const analyzer = service.visualizationUnavailable ? null : service.analyzer;
                     bins.fill(0);
                     if (analyzer && !service.audio.paused) analyzer.getByteFrequencyData(bins);
-                    context.fillStyle = '#65ff7d';
+                    context.fillStyle = palette.getPropertyValue('--spectrum-fg').trim();
                     for (let i = 0; i < 32; i++) {
                         const height = Math.max(1, Math.max(...bins.subarray(i * 4, i * 4 + 4)) / 255 * 38);
                         context.fillRect(i * 10, 40 - height, 7, height);
