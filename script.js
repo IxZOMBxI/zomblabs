@@ -116,6 +116,7 @@ function showFinalScreen() {
 
     setTimeout(() => {
         showScreen(desktopScreen);
+        document.getElementById("windowWorkspace").hidden = false;
         flashScreen();
     }, 2500);
 }

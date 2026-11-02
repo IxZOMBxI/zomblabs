@@ -10,7 +10,10 @@
 
     <title>ZombOS Login</title>
 
+    <script src="js/settings-state.js"></script>
+    <link rel="stylesheet" href="themes.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="windows.css">
 </head>
 
 <body>
@@ -181,36 +184,20 @@
             id="desktopScreen"
             class="screen"
         >
-            <div class="desktop">
-
-                <header class="desktop-header">
-
-                    <div>
-                        <p class="system-label">
-                            ZombOS / PUBLIC ACCESS TERMINAL
-                        </p>
-
-                        <h1>ZOMB LABS</h1>
-                    </div>
-
-                    <p class="system-status">
-                        SYSTEM ONLINE
-                    </p>
-
-                </header>
+            <div class="desktop retro-desktop">
+                <div class="desktop-brand" aria-hidden="true">ZOMB LABS<span>ZombOS / LABORATORY TERMINAL</span></div>
+                <div id="desktopIcons" aria-label="Desktop applications"></div>
+                <p class="desktop-hint">Double-click to open • Touch or keyboard: activate once</p>
+            </div>
+        </section>
 
 
-                <div class="desktop-grid">
+    </main>
 
-                    <!-- SOCIALS -->
+    <div id="windowWorkspace" aria-label="Application windows" hidden></div>
 
-                    <section class="system-window">
-
-                        <div class="window-header">
-                            SOCIAL_NETWORK.exe
-                        </div>
-
-                        <div class="window-content">
+    <div id="appStorage" hidden>
+        <div id="socialContent">
 
                             <p class="window-description">
                                 Connect to the Zomb Labs network.
@@ -244,20 +231,8 @@
 
                             </div>
 
-                        </div>
-
-                    </section>
-
-
-                    <!-- EMAIL SIGNUP -->
-
-                    <section class="system-window">
-
-                        <div class="window-header">
-                            SYSTEM_UPDATE.exe
-                        </div>
-
-                        <div class="window-content">
+        </div>
+        <div id="updateContent">
 
                             <p class="window-description">
                                 Join the update system for new broadcasts,
@@ -297,31 +272,10 @@
                                 class="email-message"
                             ></p>
 
-                        </div>
-
-                    </section>
-
-                </div>
-
-
-                <footer class="desktop-footer">
-
-                    <span>ZombOS v1.0.0</span>
-
-                    <span>
-                        CONNECTION:
-                        <strong>SECURE</strong>
-                    </span>
-
-                </footer>
-
-            </div>
-        </section>
-
-
-    </main>
-
+        </div>
+    </div>
     <script src="script.js"></script>
+    <script type="module" src="js/desktop.js"></script>
 
 </body>
 </html>

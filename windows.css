@@ -1,0 +1,221 @@
+/* Isolated window layer; existing desktop panels retain their layout. */
+#windowWorkspace {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 5;
+}
+.zomb-window {
+    position: absolute;
+    width: 380px;
+    max-width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+    border: 1px solid var(--green);
+    background: var(--black);
+    box-shadow: 0 0 12px var(--tone-22);
+}
+.zomb-window.is-focused { box-shadow: 0 0 18px var(--tone-26); }
+.zomb-window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    color: var(--black);
+    background: var(--green);
+    font-weight: bold;
+    cursor: move;
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+}
+.zomb-window-header button { color: inherit; background: transparent; border: 1px solid currentColor; min-width: 36px; min-height: 36px; cursor: pointer; }
+.zomb-window-content { padding: 20px; overflow: auto; min-height: 0; line-height: 1.6; }
+.zomb-window-content input { width: 100%; color: var(--green); background: transparent; border: 1px solid var(--green); padding: 8px; }
+#openSample { margin-top: 16px; padding: 10px 14px; color: var(--green); background: var(--black); border: 1px solid var(--green); cursor: pointer; }
+.zomb-window :focus-visible, .zomb-window:focus-visible, #openSample:focus-visible { outline: 2px dashed currentColor; outline-offset: -4px; }
+
+/* Keep task switching outside the windows' stacking context. */
+#windowWorkspace { position: fixed; bottom: 52px; }
+#zombTaskbar {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 52px;
+    z-index: 10; display: flex; gap: 8px; align-items: center;
+    overflow-x: auto; padding: 6px 10px; background: var(--black);
+    border-top: 1px solid var(--green);
+}
+#zombTaskbar[hidden], .zomb-window[hidden] { display: none; }
+#zombTaskbar button {
+    flex: 0 0 auto; padding: 8px; color: var(--green); background: var(--black);
+    border: 1px solid var(--green); font: inherit; cursor: pointer;
+}
+#zombTaskbar button[aria-pressed="true"] { background: var(--green); color: var(--black); }
+#zombTaskbar button:focus-visible { outline: 2px dashed var(--green); outline-offset: 2px; }
+.zomb-window-header { gap: 6px; padding: 6px; }
+.zomb-window-header > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.zomb-window-controls { display: flex; gap: 4px; flex-shrink: 0; }
+.resize-handle { position: absolute; touch-action: none; }
+.resize-n, .resize-s { left: 10px; right: 10px; height: 8px; cursor: ns-resize; }
+.resize-n { top: 0; } .resize-s { bottom: 0; }
+.resize-e, .resize-w { top: 10px; bottom: 10px; width: 8px; cursor: ew-resize; }
+.resize-e { right: 0; } .resize-w { left: 0; }
+.resize-ne, .resize-nw, .resize-se, .resize-sw { width: 12px; height: 12px; }
+.resize-ne { top: 0; right: 0; cursor: nesw-resize; }
+.resize-nw { top: 0; left: 0; cursor: nwse-resize; }
+.resize-se { bottom: 0; right: 0; cursor: nwse-resize; }
+.resize-sw { bottom: 0; left: 0; cursor: nesw-resize; }
+.is-maximized .resize-handle { display: none; }
+#desktopScreen .desktop { padding-bottom: 72px; }
+.radio button { font: inherit; color: var(--green); background: var(--black); border: 1px solid var(--green); padding: 8px; cursor: pointer; }
+.radio button[aria-pressed="true"] { color: var(--black); background: var(--green); }
+.radio-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.radio label { display: block; margin-top: 10px; }
+.radio input[type="range"] { padding: 0; accent-color: var(--green); }
+.radio [data-library] button { display: block; width: 100%; margin-bottom: 8px; text-align: left; }
+.radio [data-art] { max-width: 100%; max-height: 120px; object-fit: contain; filter: none; }
+.radio-heading { letter-spacing: 1px; }
+#radioIndicator { position: sticky; left: 0; z-index: 1; }
+/* Retro desktop shell; boot screens retain their original styles. */
+#desktopScreen { overflow: hidden; }
+#desktopScreen .retro-desktop { position: absolute; inset: 0 0 52px; min-height: 0; padding: 20px; overflow: auto; }
+.desktop-brand { position: absolute; right: 5%; bottom: 12%; opacity: .18; font-size: clamp(24px, 6vw, 76px); font-weight: bold; letter-spacing: 6px; pointer-events: none; }
+.desktop-brand span { display: block; font-size: 12px; letter-spacing: 2px; }
+#desktopIcons { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; position: relative; }
+.desktop-icon { width: 160px; min-height: 88px; padding: 6px; border: 1px solid transparent; color: var(--green); background: transparent; cursor: pointer; font: inherit; font-size: 12px; overflow-wrap: anywhere; }
+.desktop-icon-symbol { display: block; font-size: 30px; margin-bottom: 8px; text-shadow: 2px 2px var(--dark-green); }
+.desktop-icon:hover, .desktop-icon:focus { background: var(--dark-green); border: 1px dotted var(--green); outline: none; }
+.desktop-hint { position: absolute; bottom: 8px; left: 20px; right: 20px; opacity: .55; font-size: 11px; pointer-events: none; }
+#zombTaskbar { overflow: visible; gap: 6px; padding: 4px; box-shadow: inset 0 2px var(--tone-27); }
+#runningApps { display: flex; flex: 1; min-width: 0; overflow-x: auto; gap: 4px; }
+#zombTaskbar button { font-size: 11px; box-shadow: inset 1px 1px var(--tone-28); }
+#startButton { font-weight: bold; }
+#radioIndicator { position: static; max-width: 125px; white-space: normal; }
+#desktopStatus { display: flex; flex-direction: column; flex-shrink: 0; font-size: 10px; padding: 3px 6px; border: 1px solid var(--dark-green); }
+#startMenu { position: fixed; bottom: 52px; left: 4px; z-index: 12; width: min(290px, calc(100vw - 8px)); max-height: calc(100dvh - 60px); overflow-y: auto; padding: 10px; color: var(--green); background: var(--black); border: 2px outset var(--green); box-shadow: 4px 4px var(--dark-green); }
+#startMenu button { display: block; width: 100%; padding: 12px 8px; text-align: left; color: inherit; background: transparent; border: 1px solid transparent; font: inherit; font-size: 13px; cursor: pointer; }
+#startMenu button:hover, #startMenu button:focus-visible { background: var(--dark-green); border-color: var(--green); }
+#startMenu p { font-size: 10px; border-top: 1px solid var(--green); padding-top: 12px; }
+@media (max-width: 480px) {
+    #desktopIcons { gap: 8px; }
+    .desktop-icon { min-height: 76px; }
+    #radioIndicator { max-width: 72px; font-size: 9px; }
+    #desktopStatus { font-size: 9px; padding: 2px; }
+    .desktop-brand { bottom: 18%; letter-spacing: 2px; }
+}
+/* Compact RADIO.exe receiver faceplate. */
+.zomb-window-content.radio { flex: 1 1 0; min-height: 0; min-width: 0; overflow: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 11px; line-height: 1.3; }
+.radio-heading { font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid var(--dark-green); padding-bottom: 5px; }
+.radio-display { display: flex; gap: 10px; padding: 6px; border: 2px inset var(--dark-green); background: var(--tone-29); min-height: 86px; flex-shrink: 0; }
+.radio-cover { position: relative; width: 72px; height: 72px; flex-shrink: 0; border: 1px solid var(--dark-green); display: grid; place-items: center; font-size: 22px; }
+.radio .radio-cover [data-art] { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: none; background: #000; }
+.radio-now { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.radio-now strong, .radio-now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.radio-now strong { font-size: 14px; }
+.radio-now small { opacity: .6; font-size: 9px; letter-spacing: 2px; }
+.radio-now output { font-size: 18px; font-variant-numeric: tabular-nums; }
+.radio canvas { width: 100%; height: 40px; flex-shrink: 0; image-rendering: pixelated; border: 1px inset var(--dark-green); }
+.radio [data-status] { margin: 0; font-size: 10px; min-height: 13px; }
+.radio button { padding: 5px 7px; min-height: 28px; box-shadow: inset 1px 1px var(--tone-30); }
+.radio label { margin: 0; font-size: 10px; }
+.radio .radio-seek { display: flex; gap: 6px; align-items: center; }
+.radio input[type="range"] { min-width: 0; height: 18px; }
+.radio-transport { gap: 4px; flex-shrink: 0; }
+.radio-transport button { flex: 1; }
+.radio-options { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.radio-options label { display: flex; flex: 1 1 90px; align-items: center; gap: 4px; }
+.radio-options input { width: 65px; }
+.radio-tabs { display: flex; gap: 4px; }
+.radio-tabs button[aria-selected="true"] { background: var(--green); color: var(--black); }
+.radio [data-library] { flex: 1 0 70px; min-width: 0; overflow-y: auto; min-height: 70px; border: 1px inset var(--dark-green); }
+.radio [data-library] button { margin: 0; border: 0; border-bottom: 1px solid var(--dark-green); font-size: 11px; overflow-wrap: anywhere; }
+@media (pointer: coarse) { .radio button { min-height: 34px; } }
+
+.radio > :not([data-library]) { flex-shrink: 0; }
+.radio-cover > [hidden] { display: none; }
+/* Artwork-first Now Playing; independent scrolling keeps transport reachable. */
+.radio .radio-display { flex-direction: column; align-items: center; text-align: center; min-height: 100px; max-height: 48%; overflow: auto; flex: 0 1 auto; }
+.radio .radio-cover { width: 100%; height: auto; min-height: 100px; flex-shrink: 0; border: 0; }
+.radio .radio-cover [data-art] { position: static; width: 100%; height: auto; max-height: none; object-fit: contain; }
+.radio .radio-cover [data-placeholder] { padding: 18px; }
+.radio .radio-now { flex-shrink: 0; width: 100%; align-items: center; }
+.radio .radio-now strong, .radio .radio-now span { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+
+/* Bound cover height to the player, leaving room for information and playlist. */
+.zomb-window-content.radio { container-type: size; }
+.radio .radio-cover { min-height: 0; }
+.radio .radio-cover [data-art] { max-height: clamp(90px, 30cqh, 360px); }
+.settings-app { font-size: 13px; }
+.settings-app button, .settings-app select { font: inherit; background: var(--black); color: var(--green); border: 1px solid var(--green); padding: 7px; }
+.settings-app nav { margin-bottom: 12px; }
+.settings-app label { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.theme-preview { margin: 12px 0; padding: 12px; color: var(--green); background: var(--black); border: 2px outset var(--green); }
+.theme-preview strong { display: block; background: var(--dark-green); padding: 5px; }
+.settings-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.settings-app button:focus-visible, .settings-app select:focus-visible { outline: 2px dashed var(--green); outline-offset: 2px; }
+/* Read-only virtual Explorer; native controls share the active system palette. */
+.zomb-window-content.explorer { padding: 4px; flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; gap: 4px; overflow: auto; font-size: 12px; line-height: 1.3; }
+.explorer button, .explorer input, .explorer summary { font: inherit; color: var(--green); background: var(--black); }
+.explorer button { padding: 4px 7px; border: 1px outset var(--green); cursor: pointer; }
+.explorer button:disabled { opacity: .45; cursor: default; }
+.explorer :focus-visible { outline: 2px dashed var(--green); outline-offset: -2px; }
+.explorer-menus, .explorer-toolbar { display: flex; gap: 4px; flex-wrap: wrap; flex-shrink: 0; }
+.explorer-menus details { position: relative; }
+.explorer-menus summary { padding: 4px 10px; cursor: pointer; list-style: none; }
+.explorer-menus details > div { position: absolute; top: 100%; left: 0; z-index: 3; min-width: 150px; padding: 3px; border: 1px solid var(--green); background: var(--black); }
+.explorer-menus details button { display: block; width: 100%; text-align: left; }
+.explorer-address { display: flex; gap: 4px; flex-shrink: 0; }
+.explorer-address label { display: flex; flex: 1; min-width: 0; align-items: center; gap: 6px; }
+.explorer-address input { min-width: 0; width: 100%; padding: 4px; }
+.explorer-panes { display: flex; flex: 1 0 100px; min-height: 100px; overflow: hidden; border: 1px inset var(--green); --tree-width: 155px; }
+.explorer-tree { flex: 0 0 var(--tree-width); overflow: auto; min-width: 0; }
+.explorer-tree > div { white-space: nowrap; display: flex; }
+.explorer-tree button { border: 0; padding: 5px 3px; }
+.explorer-tree button[aria-current="true"] { color: var(--black); background: var(--green); }
+.explorer-divider { flex: 0 0 6px; cursor: col-resize; touch-action: none; background: var(--dark-green); }
+.explorer-content { flex: 1; min-width: 0; overflow: auto; }
+.explorer table { border-collapse: collapse; width: 100%; }
+.explorer th { text-align: left; position: sticky; top: 0; background: var(--dark-green); padding: 5px; white-space: nowrap; }
+.explorer td { padding: 5px; white-space: nowrap; }
+.explorer tr[aria-selected="true"] { color: var(--black); background: var(--green); }
+.explorer-content[data-view="list"] td { white-space: normal; overflow-wrap: anywhere; }
+.explorer-content p { padding: 8px; }
+.explorer-status { flex-shrink: 0; padding: 4px; border: 1px inset var(--green); overflow-wrap: anywhere; }
+.file-preview { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0; }
+@media (max-height: 650px) { #desktopIcons { flex-direction: row; flex-wrap: wrap; align-content: flex-start; } .desktop-hint { position: static; } }
+.explorer .virtual-hidden { opacity: .62; }
+.explorer-menus label { display: flex; align-items: center; padding: 6px; min-width: 190px; }
+.explorer-menus input[type="checkbox"] { width: auto; accent-color: var(--green); }
+.file-image { display: block; max-width: 100%; height: auto; object-fit: contain; filter: none; }
+/* Browser chrome follows the desktop; internal sites own their page palette. */
+.zomb-window-content.zombnet { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; gap: 5px; padding: 6px; font-size: 12px; overflow: auto; }
+.zombnet-brand { letter-spacing: 2px; font-weight: bold; }
+.zombnet-toolbar { display: flex; flex-wrap: wrap; gap: 4px; flex-shrink: 0; }
+.zombnet button { font: inherit; padding: 5px 8px; border: 1px outset var(--green); color: var(--green); background: var(--black); cursor: pointer; }
+.zombnet button:disabled { opacity: .45; cursor: default; }
+.zombnet-address { display: flex; gap: 4px; flex-shrink: 0; }
+.zombnet-address label { display: flex; flex: 1; min-width: 0; align-items: center; gap: 5px; }
+.zombnet-address input { min-width: 0; padding: 5px; }
+.zombnet [data-panel] { max-height: 150px; overflow: auto; flex-shrink: 0; padding: 6px; border: 1px inset var(--green); }
+.zombnet [data-panel] > div { display: flex; gap: 8px; align-items: center; margin: 5px 0; }
+.zombnet a { color: inherit; overflow-wrap: anywhere; }
+.zombnet [data-status], .zombnet [data-title] { overflow-wrap: anywhere; flex-shrink: 0; }
+.zombnet-page { flex: 1 0 100px; min-height: 100px; overflow: auto; padding: 18px; background: #08140c; color: #b5edc0; border: 2px inset var(--dark-green); }
+.zombnet-page[data-site="radio"] { background: #101a20; color: #c5e9ee; }
+.zombnet-page[data-site="error"] { background: #211515; color: #ffd3c9; }
+.zombnet-page h1 { font-size: clamp(22px, 4vw, 32px); margin-top: 0; }
+.zombnet-page > a { display: block; margin-top: 12px; }
+.zombnet-page button { color: inherit; border-color: currentColor; background: transparent; }
+.zombnet :focus-visible { outline: 2px dashed currentColor; outline-offset: -2px; }
+.arcade { color: #a6ff85; background: #0b1010; padding: 12px; }
+.arcade h2 { margin: 0 0 10px; letter-spacing: 2px; }
+.arcade-card { padding: 16px; border: 1px solid #9270be; background: #14151b; }
+.arcade-card h3 { color: #caa1ff; font-size: 24px; margin: 0; }
+.arcade button { font: inherit; color: #a6ff85; background: #142219; border: 1px outset #a6ff85; padding: 8px 12px; cursor: pointer; }
+.arcade button:disabled { opacity: .5; }
+.sprint-canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; touch-action: none; border: 1px solid #9270be; }
+.sprint-canvas:focus-visible { outline: 2px dashed #a6ff85; outline-offset: -3px; }
+.sprint-hud { font-size: 12px; padding: 10px 0; font-variant-numeric: tabular-nums; }
+.sprint-controls { display: flex; gap: 8px; margin-top: 8px; }
+.sprint-status { font-size: 12px; margin-bottom: 0; }
