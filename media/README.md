@@ -56,9 +56,7 @@ unsafe artwork is omitted. Unsupported extensions and empty files are skipped.
 A corrupt nonempty audio file can still be listed: the browser reports playback errors
 and lets visitors select another recording. Codec support varies by browser.
 
-The two `development-tone.wav` recordings and their sidecars are generated test tones,
-not real music or broadcast releases. They may be deleted when real content is ready.
-The old `media/music` tone was moved, not duplicated.
+Development test tones have been removed. Upload your recordings to populate the library.
 
 ## Local maintenance
 
