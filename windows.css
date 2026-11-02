@@ -188,3 +188,23 @@
 .explorer-menus label { display: flex; align-items: center; padding: 6px; min-width: 190px; }
 .explorer-menus input[type="checkbox"] { width: auto; accent-color: var(--green); }
 .file-image { display: block; max-width: 100%; height: auto; object-fit: contain; filter: none; }
+/* Browser chrome follows the desktop; internal sites own their page palette. */
+.zomb-window-content.zombnet { display: flex; flex-direction: column; flex: 1 1 0; min-height: 0; gap: 5px; padding: 6px; font-size: 12px; overflow: auto; }
+.zombnet-brand { letter-spacing: 2px; font-weight: bold; }
+.zombnet-toolbar { display: flex; flex-wrap: wrap; gap: 4px; flex-shrink: 0; }
+.zombnet button { font: inherit; padding: 5px 8px; border: 1px outset var(--green); color: var(--green); background: var(--black); cursor: pointer; }
+.zombnet button:disabled { opacity: .45; cursor: default; }
+.zombnet-address { display: flex; gap: 4px; flex-shrink: 0; }
+.zombnet-address label { display: flex; flex: 1; min-width: 0; align-items: center; gap: 5px; }
+.zombnet-address input { min-width: 0; padding: 5px; }
+.zombnet [data-panel] { max-height: 150px; overflow: auto; flex-shrink: 0; padding: 6px; border: 1px inset var(--green); }
+.zombnet [data-panel] > div { display: flex; gap: 8px; align-items: center; margin: 5px 0; }
+.zombnet a { color: inherit; overflow-wrap: anywhere; }
+.zombnet [data-status], .zombnet [data-title] { overflow-wrap: anywhere; flex-shrink: 0; }
+.zombnet-page { flex: 1 0 100px; min-height: 100px; overflow: auto; padding: 18px; background: #08140c; color: #b5edc0; border: 2px inset var(--dark-green); }
+.zombnet-page[data-site="radio"] { background: #101a20; color: #c5e9ee; }
+.zombnet-page[data-site="error"] { background: #211515; color: #ffd3c9; }
+.zombnet-page h1 { font-size: clamp(22px, 4vw, 32px); margin-top: 0; }
+.zombnet-page > a { display: block; margin-top: 12px; }
+.zombnet-page button { color: inherit; border-color: currentColor; background: transparent; }
+.zombnet :focus-visible { outline: 2px dashed currentColor; outline-offset: -2px; }

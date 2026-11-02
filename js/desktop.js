@@ -1,3 +1,6 @@
+import { ZombNetwork } from './zombnet-network.js';
+import { ZombnetState } from './zombnet-state.js';
+import { zombnetApp } from './zombnet-app.js';
 import { filesystemContent } from './filesystem-content.js';
 import { VirtualFilesystem } from './virtual-filesystem.js';
 import { explorerApp } from './explorer-app.js';
@@ -52,12 +55,16 @@ function launch(id) {
     if (manager.windows.has(existing)) manager.focus(existing, true);
     else instances.set(id, apps.open(id));
 }
+let networkStorage;
+try { networkStorage = window.localStorage; } catch { /* In-memory browsing remains available. */ }
+apps.register(zombnetApp(new ZombNetwork(), new ZombnetState(networkStorage), launch));
 const installed = [
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
     { id: 'updates', title: 'System Update', symbol: '[✉]' },
     { id: 'radio', title: 'Radio', symbol: '[♫]' },
     { id: 'settings', title: 'Settings', symbol: '[⚙]' },
-    { id: 'explorer', title: 'File Explorer', symbol: '[▣]' }
+    { id: 'explorer', title: 'File Explorer', symbol: '[▣]' },
+    { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' }
 ];
 const virtualFilesystem = new VirtualFilesystem(filesystemContent(installed, []));
 function previewFile(entry, properties) {
