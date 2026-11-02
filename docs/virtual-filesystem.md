@@ -13,7 +13,7 @@ Folders use type `folder`; nested folders work without UI changes. Optional fiel
 Text uses a plain `content` string, rendered safely as text, not HTML. Missing size
 and dates show a dash, never invented values.
 
-Hidden entries are excluded unless View → Toggle hidden items is enabled. An optional
+Hidden entries are excluded unless View → Show Hidden Files & Folders is enabled. An optional
 `unlock` string additionally requires `filesystem.discover(key)` in the current page
 session. Discoveries emit a change event so Explorer refreshes. Ancestor visibility
 also applies, including direct address navigation. No quests, passwords, persistence,
@@ -32,3 +32,27 @@ View offers List/Details and hidden entries. Edit operations are visibly disable
 The pane divider supports pointer dragging and left/right keys. Views and folder
 history last only for the lifetime of an Explorer window. Theme settings apply via
 existing palette variables. No real media files are duplicated by this filesystem.
+
+## Milestone 9.1 synchronization
+
+The visible root contains only Desktop, Documents, Music, Pictures, Videos. Documents
+and Videos begin empty; no speculative lore or directories are included.
+`filesystem-content.js` projects the existing desktop shortcut definitions and the
+already-loaded Radio catalog into virtual entries. Desktop app IDs stay stable.
+Music includes music-section recordings; broadcasts remain accessible in Radio.
+Pictures includes unique PNG artwork URLs associated with catalog entries. Nested
+media paths are preserved. File names are decoded for display, while source URLs
+remain encoded for requests. A missing image displays an error instead of a broken
+preview. Empty or unavailable catalogs leave empty media folders.
+
+A catalog load replaces projected filesystem data and notifies Explorer; it does not
+reset audio. Refresh rereads this in-memory projection; after changing repository
+media, regenerate the catalog and reload the page. Music items select/play via the
+same audio service; opening the already-playing recording does not seek or restart.
+
+View → Show Hidden Files & Folders is a checkbox backed by
+`ZombSettings.get().showHiddenFiles` / `apply({showHiddenFiles: boolean})`, default
+false. Settings and Explorer share one persistence key and validation layer. Hidden
+entries are faded when shown. Unlock conditions still apply to listings, trees and
+address navigation. Appearance Restore Default changes only the theme. Discoveries
+remain session-only; hidden visibility persists locally. Hidden data is never secure.

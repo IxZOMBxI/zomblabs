@@ -184,3 +184,7 @@
 .explorer-status { flex-shrink: 0; padding: 4px; border: 1px inset var(--green); overflow-wrap: anywhere; }
 .file-preview { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0; }
 @media (max-height: 650px) { #desktopIcons { flex-direction: row; flex-wrap: wrap; align-content: flex-start; } .desktop-hint { position: static; } }
+.explorer .virtual-hidden { opacity: .62; }
+.explorer-menus label { display: flex; align-items: center; padding: 6px; min-width: 190px; }
+.explorer-menus input[type="checkbox"] { width: auto; accent-color: var(--green); }
+.file-image { display: block; max-width: 100%; height: auto; object-fit: contain; filter: none; }

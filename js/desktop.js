@@ -1,3 +1,4 @@
+import { filesystemContent } from './filesystem-content.js';
 import { VirtualFilesystem } from './virtual-filesystem.js';
 import { explorerApp } from './explorer-app.js';
 import { settingsApp } from './settings-app.js';
@@ -51,13 +52,27 @@ function launch(id) {
     if (manager.windows.has(existing)) manager.focus(existing, true);
     else instances.set(id, apps.open(id));
 }
-const virtualFilesystem = new VirtualFilesystem();
+const installed = [
+    { id: 'social', title: 'Social Network', symbol: '[↗]' },
+    { id: 'updates', title: 'System Update', symbol: '[✉]' },
+    { id: 'radio', title: 'Radio', symbol: '[♫]' },
+    { id: 'settings', title: 'Settings', symbol: '[⚙]' },
+    { id: 'explorer', title: 'File Explorer', symbol: '[▣]' }
+];
+const virtualFilesystem = new VirtualFilesystem(filesystemContent(installed, []));
 function previewFile(entry, properties) {
     const id = `file-view:${properties ? 'properties' : 'text'}:${entry.path}`;
     if (!apps.apps.has(id)) apps.register({
         id, title: properties ? `${entry.name} — Properties` : entry.name,
         width: 440, height: 340, minWidth: 280, minHeight: 220,
         mount(container) {
+            if (!properties && entry.type === 'image') {
+                const image = document.createElement('img'); image.className = 'file-image'; image.alt = entry.name;
+                const message = document.createElement('p'); message.textContent = 'Loading image…';
+                image.onload = () => { message.textContent = ''; };
+                image.onerror = () => { image.hidden = true; message.textContent = 'Image unavailable or unsupported.'; };
+                image.src = entry.src; container.append(image, message); return;
+            }
             const text = document.createElement('pre'); text.className = 'file-preview';
             text.textContent = properties
                 ? [`Name: ${entry.name}`, `Virtual path: ${entry.path}`, `Type: ${entry.type || 'Unknown'}`,
@@ -70,7 +85,14 @@ function previewFile(entry, properties) {
     });
     launch(id);
 }
-apps.register(explorerApp(virtualFilesystem, launch, previewFile));
+apps.register(explorerApp(virtualFilesystem, launch, previewFile, window.ZombSettings, entry => {
+    launch('radio');
+    const index = audioService.catalog.findIndex(track => track.id === entry.trackId);
+    if (index >= 0) {
+        if (audioService.index !== index || !audioService.audio.src) audioService.select(index, true);
+        else if (audioService.audio.paused) audioService.play();
+    }
+}));
 function openRadio() { launch('radio'); }
 const radioIndicator = document.createElement('button');
 radioIndicator.id = 'radioIndicator';
@@ -84,6 +106,7 @@ audioService.subscribe(() => {
 // Catalog loading does not block boot or the desktop. Register the app immediately.
 loadMediaCatalog().then(catalog => {
     audioService.catalog = catalog;
+    virtualFilesystem.replace(filesystemContent(installed, catalog));
     audioService.emit();
 }).catch(() => {
     audioService.error = 'Media library unavailable. Reload the page to retry.';
@@ -101,13 +124,7 @@ for (const [id, title, contentId] of [
         return () => document.getElementById('appStorage').append(content);
     }});
 }
-const installed = [
-    { id: 'social', title: 'Social Network', symbol: '[↗]' },
-    { id: 'updates', title: 'System Update', symbol: '[✉]' },
-    { id: 'radio', title: 'Radio', symbol: '[♫]' },
-    { id: 'settings', title: 'Settings', symbol: '[⚙]' },
-    { id: 'explorer', title: 'File Explorer', symbol: '[▣]' }
-];
+
 for (const app of installed) {
     const icon = document.createElement('button');
     icon.className = 'desktop-icon';

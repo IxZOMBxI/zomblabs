@@ -3,10 +3,11 @@
     const themes = Object.freeze({ toxic: 'Toxic Green', amber: 'Amber Terminal', ice: 'Ice Blue', blood: 'Blood Red', violet: 'Violet Signal' });
     const key = 'zombos.settings.v1';
     const listeners = new Set();
-    let state = { theme: 'toxic' };
+    let state = { theme: 'toxic', showHiddenFiles: false };
     try {
         const saved = JSON.parse(localStorage.getItem(key));
         if (saved && Object.hasOwn(themes, saved.theme)) state.theme = saved.theme;
+        if (typeof saved?.showHiddenFiles === 'boolean') state.showHiddenFiles = saved.showHiddenFiles;
     } catch { /* Private storage or malformed preferences: use defaults. */ }
     function paint() { document.documentElement.dataset.theme = state.theme; }
     paint();
@@ -14,8 +15,9 @@
         themes,
         get: () => ({ ...state }),
         apply(patch) {
-            if (!Object.hasOwn(themes, patch.theme)) return false;
-            state = { ...state, theme: patch.theme }; paint();
+            if ('theme' in patch && !Object.hasOwn(themes, patch.theme)) return false;
+            if ('showHiddenFiles' in patch && typeof patch.showHiddenFiles !== 'boolean') return false;
+            state = { theme: patch.theme ?? state.theme, showHiddenFiles: patch.showHiddenFiles ?? state.showHiddenFiles }; paint();
             let persisted = true;
             try { localStorage.setItem(key, JSON.stringify(state)); } catch { persisted = false; }
             for (const listener of listeners) listener({ ...state });

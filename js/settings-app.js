@@ -19,7 +19,10 @@ const categories = [{
         container.querySelector('[data-reset]').onclick = () => { sync(); result.textContent = 'Unapplied changes reset.'; };
         container.querySelector('[data-default]').onclick = () => { const saved = settings.reset(); sync(); result.textContent = saved ? 'Default appearance restored.' : 'Default restored for this visit; storage unavailable.'; };
         preview.querySelector('button').onclick = event => { event.target.textContent = event.target.textContent === 'Test button' ? 'Signal received' : 'Test button'; };
-        return settings.subscribe(sync);
+        let appliedTheme = settings.get().theme;
+        return settings.subscribe(state => {
+            if (state.theme !== appliedTheme) { appliedTheme = state.theme; sync(); }
+        });
     }
 }];
 export function settingsApp(settings) {

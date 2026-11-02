@@ -20,3 +20,6 @@ immediately applies and saves Toxic Green.
 translucent effects, spectrum colors. Album artwork keeps its original colors. Legacy CSS aliases `--green`,
 `--dark-green`, and `--black` remain for compatibility but vary with the selected theme.
 Radio visualization reads the active palette without recreating its audio graph.
+
+Explorer shares `showHiddenFiles` (boolean, default false) in this store. Partial
+updates preserve the other preference; resetting Appearance does not change it.
