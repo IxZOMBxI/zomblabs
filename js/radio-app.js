@@ -5,7 +5,7 @@ export function radioApp(service) {
         mount(container) {
             container.classList.add('radio');
             container.innerHTML = `<div class="radio-heading">ZOMB LABS · RADIO / 01</div>
-                <div class="radio-display"><div class="radio-cover"><span aria-hidden="true">ZL<br>FM</span><img data-art hidden alt="Recording artwork"></div>
+                <div class="radio-display"><div class="radio-cover"><span data-placeholder aria-hidden="true">ZL<br>FM</span><img data-art hidden alt="Recording artwork"></div>
                 <div class="radio-now"><small>NOW PLAYING</small><strong data-track></strong><span data-artist></span><output data-time></output></div></div>
                 <canvas data-spectrum width="320" height="40" aria-label="Live audio frequency spectrum"></canvas>
                 <p data-status role="status"></p>
@@ -49,8 +49,28 @@ export function radioApp(service) {
                 });
             }
             }
-            get('art').addEventListener('error', () => { get('art').hidden = true; });
             let artwork;
+            let artworkTrack;
+            function showArtwork(url, title) {
+                // Each request owns its image; late events cannot hide a newer cover.
+                const image = document.createElement('img');
+                image.dataset.art = '';
+                image.alt = title ? `${title} cover artwork` : 'Recording artwork';
+                image.hidden = true;
+                get('art').replaceWith(image);
+                get('placeholder').hidden = false;
+                const ready = () => {
+                    if (get('art') !== image) return;
+                    image.hidden = !(image.naturalWidth > 0);
+                    get('placeholder').hidden = !image.hidden;
+                };
+                image.addEventListener('load', ready);
+                image.addEventListener('error', () => {
+                    if (get('art') !== image) return;
+                    image.hidden = true; get('placeholder').hidden = false;
+                });
+                if (url) { image.src = url; if (image.complete) ready(); }
+            }
             const unsubscribe = service.subscribe(() => {
                 if (catalog !== service.catalog) { catalog = service.catalog; renderLibrary(); }
                 const audio = service.audio, track = service.track;
@@ -67,9 +87,9 @@ export function radioApp(service) {
                 get('shuffle').setAttribute('aria-pressed', String(service.shuffle));
                 get('repeat').textContent = `Repeat: ${service.repeat}`;
                 tracks.forEach(([button,index]) => button.setAttribute('aria-pressed', String(index === service.index)));
-                if (artwork !== track?.artwork) {
-                    artwork = track?.artwork; get('art').hidden = !artwork;
-                    if (artwork) get('art').src = artwork;
+                if (artwork !== track?.artwork || artworkTrack !== track?.id) {
+                    artwork = track?.artwork; artworkTrack = track?.id;
+                    showArtwork(artwork, track?.title);
                 }
             });
             const canvas = get('spectrum');

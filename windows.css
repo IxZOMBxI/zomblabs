@@ -105,7 +105,7 @@
     .desktop-brand { bottom: 18%; letter-spacing: 2px; }
 }
 /* Compact RADIO.exe receiver faceplate. */
-.zomb-window-content.radio { padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 11px; line-height: 1.3; }
+.zomb-window-content.radio { flex: 1 1 0; min-height: 0; min-width: 0; overflow: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; font-size: 11px; line-height: 1.3; }
 .radio-heading { font-size: 10px; letter-spacing: 2px; border-bottom: 1px solid var(--dark-green); padding-bottom: 5px; }
 .radio-display { display: flex; gap: 10px; padding: 6px; border: 2px inset var(--dark-green); background: #001204; min-height: 86px; flex-shrink: 0; }
 .radio-cover { position: relative; width: 72px; height: 72px; flex-shrink: 0; border: 1px solid var(--dark-green); display: grid; place-items: center; font-size: 22px; }
@@ -128,6 +128,9 @@
 .radio-options input { width: 65px; }
 .radio-tabs { display: flex; gap: 4px; }
 .radio-tabs button[aria-selected="true"] { background: var(--green); color: var(--black); }
-.radio [data-library] { flex: 1 0 70px; overflow-y: auto; min-height: 70px; border: 1px inset var(--dark-green); }
+.radio [data-library] { flex: 1 0 70px; min-width: 0; overflow-y: auto; min-height: 70px; border: 1px inset var(--dark-green); }
 .radio [data-library] button { margin: 0; border: 0; border-bottom: 1px solid var(--dark-green); font-size: 11px; overflow-wrap: anywhere; }
 @media (pointer: coarse) { .radio button { min-height: 34px; } }
+
+.radio > :not([data-library]) { flex-shrink: 0; }
+.radio-cover > [hidden] { display: none; }

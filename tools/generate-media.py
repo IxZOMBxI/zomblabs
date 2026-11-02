@@ -2,7 +2,12 @@
 import json
 import pathlib
 import sys
+import unicodedata
 from urllib.parse import quote
+
+def matching_stem(value):
+    return unicodedata.normalize('NFC', value).casefold()
+
 
 SUPPORTED = {'.mp3', '.ogg', '.wav', '.m4a'}
 
@@ -13,7 +18,7 @@ def generate(root):
     covers = {}
     for image in sorted((media / 'artwork').rglob('*')):
         if image.is_file() and not image.is_symlink() and image.suffix.lower() == '.png':
-            covers.setdefault(image.stem.casefold(), []).append(image)
+            covers.setdefault(matching_stem(image.stem), []).append(image)
 
     for folder, section in [('tracks', 'music'), ('broadcasts', 'broadcasts')]:
         for path in sorted((media / folder).rglob('*')):
@@ -42,7 +47,7 @@ def generate(root):
                 if image.is_relative_to((media / 'artwork').resolve()) and image.is_file() and image.suffix.lower() in {'.png', '.jpg', '.jpeg', '.webp', '.gif'}:
                     artwork = quote(image.relative_to(media).as_posix(), safe='/')
             elif 'artwork' not in metadata:
-                matches = covers.get(path.stem.casefold(), [])
+                matches = covers.get(matching_stem(path.stem), [])
                 exact = [image for image in matches if image.stem == path.stem]
                 chosen = exact if len(exact) == 1 else matches
                 if len(chosen) == 1:
