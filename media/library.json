@@ -1,4 +1,27 @@
 {
   "version": 1,
-  "entries": []
+  "entries": [
+    {
+      "id": "tracks/development-tone.wav",
+      "section": "music",
+      "src": "tracks/development-tone.wav",
+      "title": "Development music test tone",
+      "artist": "Development fixture",
+      "album": "",
+      "description": "",
+      "artwork": null,
+      "order": 0
+    },
+    {
+      "id": "broadcasts/development-tone.wav",
+      "section": "broadcasts",
+      "src": "broadcasts/development-tone.wav",
+      "title": "Development broadcast test tone (no speech)",
+      "artist": "Development fixture",
+      "album": "",
+      "description": "Generated tone for testing; not a real broadcast.",
+      "artwork": null,
+      "order": 0
+    }
+  ]
 }
