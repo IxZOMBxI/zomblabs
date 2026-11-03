@@ -11,6 +11,8 @@ import { loadMediaCatalog } from './media-catalog.js';
 import { radioApp } from './radio-app.js';
 import { WindowManager } from './window-manager.js';
 import { AppRegistry } from './app-registry.js';
+import { PhoneService } from './phone-service.js';
+import { phoneApp, mountPhoneNotice } from './phone-app.js';
 
 const workspace = document.getElementById('windowWorkspace');
 const taskbar = document.createElement('nav');
@@ -51,19 +53,52 @@ apps.register({
 const audioService = new AudioService([]);
 apps.register(radioApp(audioService));
 const instances = new Map();
+let phoneService;
 function launch(id) {
     const existing = instances.get(id);
     if (manager.windows.has(existing)) manager.focus(existing, true);
     else instances.set(id, apps.open(id));
+    phoneService?.event(`app.open:${id}`);
 }
 let networkStorage;
 try { networkStorage = window.localStorage; } catch { /* In-memory browsing remains available. */ }
+phoneService = new PhoneService({radio:audioService, storage:networkStorage});
+apps.register(phoneApp(phoneService));
+const removePhoneNotice = mountPhoneNotice(phoneService,launch);
+let phoneBooted = false;
+function syncPhoneActivity() {
+    const active = !workspace.hidden && document.visibilityState === 'visible' && document.hasFocus();
+    phoneService.setActive(active);
+    if (active && !phoneBooted) { phoneBooted = true; phoneService.event('desktop.ready'); }
+}
+const phoneBootObserver = new MutationObserver(syncPhoneActivity);
+phoneBootObserver.observe(workspace,{attributes:true,attributeFilter:['hidden']});
+document.addEventListener('visibilitychange',syncPhoneActivity);
+window.addEventListener('focus',syncPhoneActivity);
+window.addEventListener('blur',syncPhoneActivity);
+const phoneTimer = setInterval(() => { syncPhoneActivity(); phoneService.tick(); },500);
+let radioPlaying = false;
+const unsubscribePhoneRadio = audioService.subscribe(() => {
+    const playing = !audioService.audio.paused;
+    if (playing && !radioPlaying) phoneService.event('radio.play');
+    radioPlaying = playing;
+});
+window.addEventListener('pagehide',event => {
+    phoneService.setActive(false);
+    if (event.persisted) return;
+    clearInterval(phoneTimer); phoneBootObserver.disconnect(); removePhoneNotice(); unsubscribePhoneRadio();
+    document.removeEventListener('visibilitychange',syncPhoneActivity);
+    window.removeEventListener('focus',syncPhoneActivity); window.removeEventListener('blur',syncPhoneActivity);
+    phoneService.dispose();
+});
+window.addEventListener('pageshow',syncPhoneActivity);
 apps.register(zombnetApp(new ZombNetwork(), new ZombnetState(networkStorage), launch));
 apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
 const installed = [
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
     { id: 'updates', title: 'System Update', symbol: '[✉]' },
     { id: 'radio', title: 'Radio', symbol: '[♫]' },
+    { id: 'phone', title: 'Phone', symbol: '[☎]' },
     { id: 'settings', title: 'Settings', symbol: '[⚙]' },
     { id: 'explorer', title: 'File Explorer', symbol: '[▣]' },
     { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' },
@@ -115,11 +150,14 @@ audioService.subscribe(() => {
 
 // Catalog loading does not block boot or the desktop. Register the app immediately.
 loadMediaCatalog().then(catalog => {
-    audioService.catalog = catalog;
-    virtualFilesystem.replace(filesystemContent(installed, catalog));
+    const radioCatalog = catalog.filter(entry => entry.section !== 'calls');
+    audioService.catalog = radioCatalog;
+    virtualFilesystem.replace(filesystemContent(installed, radioCatalog));
+    phoneService.setCatalog(catalog);
     audioService.emit();
 }).catch(() => {
     audioService.error = 'Media library unavailable. Reload the page to retry.';
+    phoneService.error = 'Call catalog unavailable. Reload the page to retry.'; phoneService.emit();
     audioService.emit();
 });
 
@@ -188,7 +226,9 @@ menu.addEventListener('keydown', event => {
 });
 const status = document.createElement('div');
 status.id = 'desktopStatus';
-const online = document.createElement('span'); online.textContent = '● ONLINE';
+const online = document.createElement('span');
+const connectionIndicator = document.createElement('span'); connectionIndicator.className = 'connection-indicator'; connectionIndicator.textContent = '●';
+online.append(connectionIndicator, ' ONLINE');
 const clock = document.createElement('time');
 status.append(online, clock); taskbar.append(status);
 function updateClock() {

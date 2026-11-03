@@ -21,7 +21,7 @@ def generate(root):
         if image.is_file() and not image.is_symlink() and image.suffix.lower() == '.png':
             covers.setdefault(matching_stem(image.stem), []).append(image)
 
-    for folder, section in [('tracks', 'music'), ('broadcasts', 'broadcasts')]:
+    for folder, section in [('tracks', 'music'), ('broadcasts', 'broadcasts'), ('calls', 'calls')]:
         for path in sorted((media / folder).rglob('*')):
             if not path.is_file() or path.is_symlink() or path.suffix.lower() not in SUPPORTED:
                 continue
@@ -32,7 +32,7 @@ def generate(root):
             sidecar = path.with_suffix(path.suffix + '.json')
             if sidecar.exists():
                 try:
-                    metadata = json.loads(sidecar.read_text())
+                    metadata = json.loads(sidecar.read_text(encoding='utf-8'))
                     if not isinstance(metadata, dict):
                         raise ValueError('expected an object')
                 except (ValueError, OSError) as error:
@@ -57,11 +57,15 @@ def generate(root):
             if type(order) not in (int, float) or not (-1e9 < order < 1e9):
                 order = 0
             relative = path.relative_to(media).as_posix()
-            entries.append(dict(id=relative, section=section, src=quote(relative, safe='/'),
+            entry = dict(id=relative, section=section, src=quote(relative, safe='/'),
                                 title=text('title', path.stem.replace('_', ' ').replace('-', ' ')),
                                 artist=text('artist', read_artist(path) or 'Unknown artist'), album=text('album'),
-                                description=text('description'), artwork=artwork, order=order))
-    entries.sort(key=lambda entry: (0 if entry['section'] == 'music' else 1, entry['order'], entry['title'].casefold(), entry['id']))
+                                description=text('description'), artwork=artwork, order=order)
+            if section == 'calls':
+                entry.update(callId=text('callId', relative), caller=text('caller', entry['title']),
+                             extension=text('extension'), delivery=metadata.get('delivery'))
+            entries.append(entry)
+    entries.sort(key=lambda entry: ({'music': 0, 'broadcasts': 1, 'calls': 2}[entry['section']], entry['order'], entry['title'].casefold(), entry['id']))
     return {'version': 1, 'entries': entries}
 
 

@@ -230,3 +230,24 @@
   --ui-arcadeBorder: #9270be;
   --ui-arcadeButton: #142219;
 }
+
+/* Shell color controls inherit the existing palette until a custom theme sets them. */
+:root {
+  --ui-desktopSelectionBackground: var(--ui-hoverBackground);
+  --ui-desktopSelectionText: var(--ui-hoverText);
+  --ui-desktopSelectionBorder: var(--ui-border);
+  --ui-taskbarButtonBackground: var(--ui-buttonBackground);
+  --ui-taskbarButtonText: var(--ui-buttonText);
+  --ui-taskbarButtonBorder: var(--ui-border);
+  --ui-taskbarButtonActiveBackground: var(--ui-selectionBackground);
+  --ui-taskbarButtonActiveText: var(--ui-selectionText);
+  --ui-taskbarButtonHoverBackground: var(--ui-hoverBackground);
+  --ui-taskbarButtonHoverText: var(--ui-hoverText);
+  --ui-taskbarButtonFocus: var(--ui-focus);
+  --ui-trayBackground: var(--ui-taskbar);
+  --ui-trayText: var(--ui-textPrimary);
+  --ui-trayBorder: var(--ui-panel);
+  --ui-clockText: var(--ui-trayText);
+  --ui-connectionText: var(--ui-trayText);
+  --ui-radioStatusText: var(--ui-buttonText);
+}

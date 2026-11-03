@@ -1,3 +1,4 @@
+import { protectArtwork } from './artwork-overlay.js';
 const time = value => Number.isFinite(value) ? `${Math.floor(value / 60)}:${String(Math.floor(value % 60)).padStart(2, '0')}` : '0:00';
 export function radioApp(service) {
     return {
@@ -96,28 +97,8 @@ export function radioApp(service) {
             const context = canvas.getContext('2d');
             const bins = new Uint8Array(128);
             let frame;
-            const scanlines = document.querySelector('.scanlines');
-            function protectArtwork() {
-                if (!scanlines) return;
-                const image = get('art');
-                if (!container.isConnected || container.closest('[hidden]') || image.hidden) {
-                    scanlines.style.clipPath = ''; return;
-                }
-                // Cut only the visible image rectangle out of the global CRT overlay.
-                // Recomputed with rendering so dragging, resizing and scrolling stay aligned.
-                const bounds = image.getBoundingClientRect();
-                const viewport = container.querySelector('.radio-display').getBoundingClientRect();
-                const content = container.getBoundingClientRect();
-                const left = Math.max(0, bounds.left, viewport.left, content.left);
-                const top = Math.max(0, bounds.top, viewport.top, content.top);
-                const right = Math.min(innerWidth, bounds.right, viewport.right, content.right);
-                const bottom = Math.min(innerHeight, bounds.bottom, viewport.bottom, content.bottom);
-                scanlines.style.clipPath = right > left && bottom > top
-                    ? `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${left}px ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, ${left}px ${bottom}px, ${left}px ${top}px, 0 0)`
-                    : '';
-            }
+            const unprotectArtwork = protectArtwork(container, () => get('art'));
             function draw() {
-                protectArtwork();
                 if (context && container.isConnected && !container.closest('[hidden]')) {
                     const palette = getComputedStyle(container);
                     context.fillStyle = palette.getPropertyValue('--spectrum-bg').trim(); context.fillRect(0, 0, 320, 40);
@@ -134,7 +115,7 @@ export function radioApp(service) {
                 frame = requestAnimationFrame(draw);
             }
             draw();
-            return () => { unsubscribe(); cancelAnimationFrame(frame); if (scanlines) scanlines.style.clipPath = ''; };
+            return () => { unsubscribe(); cancelAnimationFrame(frame); unprotectArtwork(); };
         }
     };
 }

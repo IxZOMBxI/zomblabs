@@ -266,3 +266,64 @@ html[data-theme="custom"] :is(#zombTaskbar,#startMenu,.radio,.settings-app,.expl
 html[data-theme="custom"] :is(#zombTaskbar,.radio,.explorer) button:is([aria-pressed="true"],[aria-current="true"],[aria-selected="true"]) { background: var(--ui-selectionBackground); color: var(--ui-selectionText); }
 html[data-theme="custom"] #emailInput { color: var(--ui-inputText); background: var(--ui-inputBackground); border-color: var(--ui-border); }
 html[data-theme="custom"] :is(#zombTaskbar button,#startMenu button,.settings-app button,.settings-app input,.settings-app select,.radio button,.radio input,.explorer button,.explorer input,.zombnet button,.zombnet input):focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -2px; }
+
+/* Dedicated custom shell colors override generic control states without changing geometry. */
+html[data-theme="custom"] #zombTaskbar button {
+    background: var(--ui-taskbarButtonBackground);
+    color: var(--ui-taskbarButtonText);
+    border-color: var(--ui-taskbarButtonBorder);
+}
+html[data-theme="custom"] #zombTaskbar button:hover {
+    background: var(--ui-taskbarButtonHoverBackground);
+    color: var(--ui-taskbarButtonHoverText);
+}
+html[data-theme="custom"] #zombTaskbar button[aria-pressed="true"] {
+    background: var(--ui-taskbarButtonActiveBackground);
+    color: var(--ui-taskbarButtonActiveText);
+}
+html[data-theme="custom"] #zombTaskbar button:focus-visible { outline-color: var(--ui-taskbarButtonFocus); }
+html[data-theme="custom"] #radioIndicator { --ui-taskbarButtonText: var(--ui-radioStatusText); }
+html[data-theme="custom"] #desktopStatus {
+    background: var(--ui-trayBackground);
+    color: var(--ui-trayText);
+    border-color: var(--ui-trayBorder);
+}
+html[data-theme="custom"] #desktopStatus time { color: var(--ui-clockText); }
+html[data-theme="custom"] #desktopStatus .connection-indicator { color: var(--ui-connectionText); }
+html[data-theme="custom"] #desktopIcons .desktop-icon {
+    color: var(--ui-desktopLabels);
+    background: transparent;
+    border-color: transparent;
+}
+html[data-theme="custom"] #desktopIcons .desktop-icon:is(:hover,:focus) {
+    background: var(--ui-desktopSelectionBackground);
+    color: var(--ui-desktopSelectionText);
+    border-color: var(--ui-desktopSelectionBorder);
+}
+
+/* Phone shares the existing window, theme and scrolling model. */
+.zomb-window-content.phone { display: flex; flex-direction: column; gap: 8px; padding: 12px; min-height: 0; font-size: 12px; color: var(--ui-textPrimary); background: var(--ui-windowBackground); }
+.phone-heading { letter-spacing: 2px; border-bottom: 1px solid var(--ui-divider); }
+.phone p, .phone h2 { margin: 0; }
+.phone h2 { font-size: 14px; }
+.phone > * { flex-shrink: 0; }
+.phone-art { text-align: center; min-height: 60px; font-size: 42px; }
+.phone-art img { display: block; max-width: 100%; max-height: 160px; height: auto; margin: auto; object-fit: contain; filter: none; }
+.phone-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.phone button, .phone-notice button { font: inherit; cursor: pointer; padding: 8px; min-height: 40px; color: var(--ui-buttonText); background: var(--ui-buttonBackground); border: 1px solid var(--ui-border); }
+.phone button:disabled { cursor: default; opacity: .6; }
+.phone [data-seek-label] { display: flex; align-items: center; gap: 8px; }
+.phone input[type="range"] { min-width: 0; padding: 0; accent-color: var(--ui-accent); }
+.phone [data-history] { padding-left: 20px; margin: 0; }
+.phone li { margin: 8px 0; overflow-wrap: anywhere; }
+.phone li span { display: block; }
+.phone [hidden], .phone-notice[hidden] { display: none; }
+.phone-notice { position: fixed; right: 12px; bottom: 64px; z-index: 15; width: min(320px, calc(100vw - 24px)); padding: 12px; border: 2px solid var(--ui-border); color: var(--ui-textPrimary); background: var(--ui-windowBackground); box-shadow: 3px 3px var(--ui-shadow); overflow-wrap: anywhere; }
+.phone-notice p { margin: 0 0 10px; }
+.phone-notice button { margin-right: 8px; }
+/* Semantic call actions remain recognizable in every palette. */
+html .phone button.phone-answer, html .phone-notice button.phone-answer { background: #145c2c; color: #ffffff; border-color: #7dffa1; }
+html .phone button.phone-end, html .phone-notice button.phone-end { background: #8a2020; color: #ffffff; border-color: #ffaaaa; }
+html[data-theme="custom"] .phone button.phone-answer, html[data-theme="custom"] .phone-notice button.phone-answer { background: #145c2c; color: #ffffff; border-color: #7dffa1; }
+html[data-theme="custom"] .phone button.phone-end, html[data-theme="custom"] .phone-notice button.phone-end { background: #8a2020; color: #ffffff; border-color: #ffaaaa; }
+.phone button:focus-visible, .phone-notice button:focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: 2px; }
