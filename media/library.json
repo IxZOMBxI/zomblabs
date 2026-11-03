@@ -119,7 +119,7 @@
       "artist": "zomb",
       "album": "",
       "description": "",
-      "artwork": null,
+      "artwork": "artwork/Crypt%20Crunch.png",
       "order": 0
     },
     {
@@ -130,7 +130,7 @@
       "artist": "zomb",
       "album": "",
       "description": "",
-      "artwork": null,
+      "artwork": "artwork/Dead%20Air.png",
       "order": 0
     },
     {
@@ -141,8 +141,29 @@
       "artist": "zomb",
       "album": "",
       "description": "",
-      "artwork": null,
+      "artwork": "artwork/Grim%20Glow.png",
       "order": 0
+    },
+    {
+      "id": "calls/Welcome to ZOMB LABS.mp3",
+      "section": "calls",
+      "src": "calls/Welcome%20to%20ZOMB%20LABS.mp3",
+      "title": "Welcome to ZOMB LABS",
+      "artist": "zomb",
+      "album": "",
+      "description": "",
+      "artwork": "artwork/Welcome%20to%20ZOMB%20LABS.png",
+      "order": 0,
+      "callId": "calls/Welcome to ZOMB LABS.mp3",
+      "caller": "Welcome to ZOMB LABS",
+      "extension": "",
+      "delivery": {
+        "enabled": true,
+        "once": true,
+        "delaySeconds": 10,
+        "retrySeconds": 30,
+        "ringSeconds": 30
+      }
     }
   ]
 }

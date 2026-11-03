@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phone development checks</title>
+<script src="../js/theme-schema.js"></script><script src="../js/settings-state.js"></script>
+<link rel="stylesheet" href="../themes.css"><link rel="stylesheet" href="../windows.css">
+<style>body{margin:0;background:var(--black);color:var(--green);font:13px monospace}header{padding:8px}header button{padding:8px;margin:3px}#windowWorkspace{top:120px}.scanlines{position:fixed;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(transparent 0 3px,#ffffff08 3px 4px)}</style>
+</head><body>
+<header><strong>TEST ONLY — synthetic tone, no production calls or saved user data</strong><br>
+<button id="boot">Finish test boot</button><button id="trigger">Trigger test event</button><button id="open-phone">Open Phone</button><button id="open-radio">Open Radio</button><button id="theme">Switch test theme</button><button id="missing">Queue missing media</button><button id="reset">Reset test history</button></header>
+<div class="scanlines"></div><div id="windowWorkspace" hidden></div><nav id="zombTaskbar"><div id="runningApps"></div></nav>
+<script type="module">
+import { PhoneService } from '../js/phone-service.js';
+import { phoneApp, mountPhoneNotice } from '../js/phone-app.js';
+import { AudioService } from '../js/audio-service.js';
+import { radioApp } from '../js/radio-app.js';
+import { AppRegistry } from '../js/app-registry.js';
+import { WindowManager } from '../js/window-manager.js';
+// Generate a quiet eight-second test tone in memory; never enters media/library.json.
+const samples=8000*8, buffer=new ArrayBuffer(44+samples*2), data=new DataView(buffer);
+const word=(offset,value)=>[...value].forEach((c,i)=>data.setUint8(offset+i,c.charCodeAt(0)));
+word(0,'RIFF');data.setUint32(4,36+samples*2,true);word(8,'WAVE');word(12,'fmt ');data.setUint32(16,16,true);data.setUint16(20,1,true);data.setUint16(22,1,true);data.setUint32(24,8000,true);data.setUint32(28,16000,true);data.setUint16(32,2,true);data.setUint16(34,16,true);word(36,'data');data.setUint32(40,samples*2,true);
+for(let i=0;i<samples;i++) data.setInt16(44+i*2,Math.sin(i*2*Math.PI*220/8000)*500,true);
+const tone=URL.createObjectURL(new Blob([buffer],{type:'audio/wav'}));
+const art=URL.createObjectURL(new Blob(['<svg xmlns="http://www.w3.org/2000/svg" width="240" height="100"><rect width="240" height="100" fill="#204080"/><text x="25" y="58" fill="white" font-size="22">TEST ARTWORK</text></svg>'],{type:'image/svg+xml'}));
+const storage={getItem:()=>localStorage.getItem('zombos.phone.browser-test.v1'),setItem:(_,value)=>localStorage.setItem('zombos.phone.browser-test.v1',value)};
+const radio=new AudioService([{id:'test-radio',section:'music',title:'Test tone',artist:'Test fixture',src:tone,artwork:art}]);
+const phone=new PhoneService({radio,storage});
+const catalog=[{id:'calls/test',callId:'browser-test',section:'calls',caller:'Test caller',extension:'000',title:'Test tone',src:tone,artwork:art,delivery:{event:'app.open:test',delaySeconds:2,once:true,retrySeconds:5,ringSeconds:15}},
+{id:'calls/missing',callId:'missing-test',section:'calls',caller:'Missing media test',src:'./intentionally-missing.wav',delivery:{event:'test.missing',onInterrupted:'consume'}}];
+phone.setCatalog(catalog);
+const workspace=document.querySelector('#windowWorkspace'),manager=new WindowManager(workspace,document.querySelector('#runningApps')),apps=new AppRegistry(manager),instances=new Map();
+apps.register(phoneApp(phone));apps.register(radioApp(radio));
+const launch=id=>{const existing=instances.get(id);if(manager.windows.has(existing))manager.focus(existing,true);else instances.set(id,apps.open(id));};
+mountPhoneNotice(phone,launch);
+const sync=()=>phone.setActive(!workspace.hidden&&document.visibilityState==='visible'&&document.hasFocus());
+document.querySelector('#boot').onclick=()=>{workspace.hidden=false;sync();};
+document.querySelector('#trigger').onclick=()=>phone.event('app.open:test');
+document.querySelector('#missing').onclick=()=>phone.event('test.missing');
+document.querySelector('#open-phone').onclick=()=>launch('phone');document.querySelector('#open-radio').onclick=()=>launch('radio');
+let amber=false;document.querySelector('#theme').onclick=()=>{amber=!amber;window.ZombSettings.preview({theme:amber?'amber':'toxic'});};
+document.querySelector('#reset').onclick=()=>{localStorage.removeItem('zombos.phone.browser-test.v1');location.reload();};
+window.addEventListener('focus',sync);window.addEventListener('blur',sync);document.addEventListener('visibilitychange',sync);
+const timer=setInterval(()=>{sync();phone.tick();},250);
+window.addEventListener('pagehide',()=>{clearInterval(timer);phone.dispose();URL.revokeObjectURL(tone);URL.revokeObjectURL(art);});
+</script></body></html>

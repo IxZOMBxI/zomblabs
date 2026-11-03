@@ -7,9 +7,10 @@ export async function loadMediaCatalog() {
     const seen = new Set();
     return data.entries.flatMap(entry => {
         try {
-        if (!entry || typeof entry.id !== 'string' || seen.has(entry.id) || !['music', 'broadcasts'].includes(entry.section) || typeof entry.src !== 'string') return [];
+        if (!entry || typeof entry.id !== 'string' || seen.has(entry.id) || !['music', 'broadcasts', 'calls'].includes(entry.section) || typeof entry.src !== 'string') return [];
         const src = new URL(entry.src, url);
         if (src.origin !== url.origin || !src.pathname.startsWith(new URL('./', url).pathname)) return [];
+        if (entry.section === 'calls' && !src.pathname.startsWith(new URL('calls/', url).pathname)) return [];
         seen.add(entry.id);
         let artwork = null;
         if (typeof entry.artwork === 'string') {

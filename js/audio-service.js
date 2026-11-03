@@ -30,6 +30,7 @@ export class AudioService extends EventTarget {
     emit() { this.dispatchEvent(new Event('change')); }
     subscribe(listener) { this.addEventListener('change', listener); listener(); return () => this.removeEventListener('change', listener); }
     async play() {
+        if (this.hold) { this.error = 'Phone is using audio. End the call or stop replay first.'; this.emit(); return; }
         if (!this.track) return;
         this.enableAnalyzer();
         const request = ++this.request;
@@ -64,9 +65,22 @@ export class AudioService extends EventTarget {
             }
         }
     }
-    stop() { this.pause(); this.seek(0); this.emit(); }
-    pause() { ++this.request; this.audio.pause(); this.loading = false; this.emit(); }
+    // Phone owns a temporary exclusive audio lease; keep Radio's source and position.
+    holdForPhone() {
+        if (this.hold) return () => {};
+        const resume = !this.audio.paused || this.loading;
+        this.pause();
+        const hold = { resume }; this.hold = hold;
+        return (restore = true) => {
+            if (this.hold !== hold) return;
+            this.hold = null; this.error = ''; this.emit();
+            if (restore && hold.resume) this.play();
+        };
+    }
+    stop() { this.pause(); if (!this.hold) this.seek(0); this.emit(); }
+    pause() { if (this.hold) this.hold.resume = false; ++this.request; this.audio.pause(); this.loading = false; this.emit(); }
     select(index, play = false) {
+        if (this.hold) { this.error = 'Phone is using audio. End the call or stop replay first.'; this.emit(); return; }
         if (!this.catalog[index]) return;
         this.pause(); this.index = index; this.error = '';
         this.audio.src = this.track.src; this.audio.load(); this.emit();
@@ -83,7 +97,7 @@ export class AudioService extends EventTarget {
         this.select(index, automatic || !this.audio.paused);
     }
     previous() { this.select((this.index + this.catalog.length - 1) % this.catalog.length, !this.audio.paused); }
-    seek(value) { if (Number.isFinite(this.audio.duration)) this.audio.currentTime = Math.max(0, Math.min(value, this.audio.duration)); }
+    seek(value) { if (!this.hold && Number.isFinite(this.audio.duration)) this.audio.currentTime = Math.max(0, Math.min(value, this.audio.duration)); }
     setVolume(value) { this.audio.volume = Math.max(0, Math.min(1, value)); }
     toggleMute() { this.audio.muted = !this.audio.muted; }
     toggleShuffle() { this.shuffle = !this.shuffle; this.emit(); }

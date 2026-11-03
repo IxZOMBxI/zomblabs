@@ -64,6 +64,14 @@ input {
         );
 }
 
+html[data-crt-effects="false"] .scanlines {
+    display: none;
+}
+
+html[data-crt-effects="false"] body.screen-flash {
+    animation: none;
+}
+
 .screen {
     position: absolute;
     inset: 0;
