@@ -157,13 +157,7 @@
       "callId": "calls/Welcome to ZOMB LABS.mp3",
       "caller": "Welcome to ZOMB LABS",
       "extension": "",
-      "delivery": {
-        "enabled": true,
-        "once": true,
-        "delaySeconds": 10,
-        "retrySeconds": 30,
-        "ringSeconds": 30
-      }
+      "delivery": null
     }
   ]
 }
