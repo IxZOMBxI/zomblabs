@@ -1,0 +1,10 @@
+{
+  "callId": "calls/Welcome to ZOMB LABS.mp3",
+  "delivery": {
+    "enabled": true,
+    "once": true,
+    "delaySeconds": 10,
+    "retrySeconds": 30,
+    "ringSeconds": 30
+  }
+}

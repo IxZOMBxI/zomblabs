@@ -1,5 +1,10 @@
 # Uploading RADIO.exe recordings
 
+For the event-driven Phone catalog, recording sidecars, artwork and delivery
+timing, use [the Phone guide](../docs/phone.md). Calls belong in `media/calls/`
+and are excluded from Radio playlists. Configure delivery in sidecars so catalog
+regeneration preserves it.
+
 ## One-time owner setup (before deployment)
 
 The checkout has no existing deployment workflow and includes a root CNAME.

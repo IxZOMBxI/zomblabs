@@ -1,5 +1,14 @@
 # ZombOS technical context
 
+## M13 update
+
+Phone is implemented in `js/phone-*.js`, registered through the shared desktop
+and window manager. `media/calls/` and recording sidecars feed the existing catalog
+generator; calls are excluded from Radio and Explorer media projections. Phone
+uses `zombos.phone.v1` for delivery state and history. See [docs/phone.md](docs/phone.md)
+for the current schema, timing/outcome policies, Radio handoff and test commands.
+The older audit below predates Phone and the now-populated real media catalog.
+
 ## Audit scope
 
 Source audited at `bf75d068bd8472f82c15be1f516f18f49a946af0` on `zombos-preview`, 2026-11-02. Remote preview matched this base when fetched. This document describes implementation inspected in source, not a claim that every browser/device or live service was retested. See the verification section for checks actually run during handoff.
