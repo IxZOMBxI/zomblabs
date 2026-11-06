@@ -1,5 +1,6 @@
 export class WindowManager {
-    constructor(workspace, taskbar) {
+    constructor(workspace, taskbar, sound = () => {}) {
+        this.sound = sound;
         this.taskbar = taskbar;
         this.workspace = workspace;
         this.windows = new Map();
@@ -30,6 +31,7 @@ export class WindowManager {
     focus(id, keyboard = false) {
         const state = this.windows.get(id);
         if (!state) return;
+        if (state.minimized) this.sound('restore');
         state.element.hidden = false;
         state.minimized = false;
         this.place(state);
@@ -87,6 +89,7 @@ export class WindowManager {
         this.windows.set(id, state);
         this.workspace.append(element);
         minimize.addEventListener('click', () => {
+            this.sound('minimize');
             state.minimized = true;
             element.hidden = true;
             element.classList.remove('is-focused');
@@ -97,6 +100,7 @@ export class WindowManager {
         });
         maximize.addEventListener('click', () => {
             state.maximized = !state.maximized;
+            this.sound(state.maximized ? 'maximize' : 'restore');
             element.classList.toggle('is-maximized', state.maximized);
             maximize.textContent = state.maximized ? '❐' : '□';
             maximize.setAttribute('aria-label', `${state.maximized ? 'Restore' : 'Maximize'} ${app.title}`);
@@ -138,6 +142,7 @@ export class WindowManager {
             state.dispose = app.mount(content);
         } catch (error) {
             this.close(id);
+            this.sound('error');
             throw error;
         }
         element.addEventListener('pointerdown', () => this.focus(id));
@@ -178,12 +183,14 @@ export class WindowManager {
         });
         this.place(state);
         this.focus(id, true);
+        this.sound('open');
         return id;
     }
 
     close(id) {
         const state = this.windows.get(id);
         if (!state) return;
+        this.sound('close');
         const hadFocus = state.element.contains(document.activeElement);
         this.windows.delete(id);
         state.element.remove();

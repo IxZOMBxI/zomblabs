@@ -1,11 +1,16 @@
 export class AudioService extends EventTarget {
-    constructor(catalog) {
+    constructor(catalog, storage) {
         super();
         this.catalog = catalog;
         this.audio = new Audio();
         this.audio.preload = 'metadata';
         this.index = 0;
-        this.shuffle = false;
+        this.shuffle = true;
+        try {
+            this.storage = storage === undefined ? globalThis.localStorage : storage;
+            const saved = JSON.parse(this.storage?.getItem('zombos.radio.v1') || 'null');
+            if (typeof saved?.shuffle === 'boolean') this.shuffle = saved.shuffle;
+        } catch { /* Default remains usable with denied or corrupt storage. */ }
         this.repeat = 'off';
         this.error = '';
         this.loading = false;
@@ -100,6 +105,10 @@ export class AudioService extends EventTarget {
     seek(value) { if (!this.hold && Number.isFinite(this.audio.duration)) this.audio.currentTime = Math.max(0, Math.min(value, this.audio.duration)); }
     setVolume(value) { this.audio.volume = Math.max(0, Math.min(1, value)); }
     toggleMute() { this.audio.muted = !this.audio.muted; }
-    toggleShuffle() { this.shuffle = !this.shuffle; this.emit(); }
+    toggleShuffle() {
+        this.shuffle = !this.shuffle;
+        try { this.storage?.setItem('zombos.radio.v1', JSON.stringify({shuffle:this.shuffle})); } catch { /* Keep the session preference. */ }
+        this.emit();
+    }
     cycleRepeat() { this.repeat = { off: 'all', all: 'one', one: 'off' }[this.repeat]; this.emit(); }
 }

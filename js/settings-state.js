@@ -3,18 +3,21 @@
     const schema = window.ZombThemeSchema;
     const themes = Object.freeze({ toxic: 'Toxic Green', amber: 'Amber Terminal', ice: 'Ice Blue', blood: 'Blood Red', violet: 'Violet Signal', custom: 'Custom' });
     const key = 'zombos.settings.v1', listeners = new Set();
-    let state = { theme: 'toxic', showHiddenFiles: false, crtEffects: true, custom: null };
+    let state = { theme: 'toxic', showHiddenFiles: false, crtEffects: true, systemSounds: true, systemSoundVolume: 0.25, custom: null };
     const copy = value => JSON.parse(JSON.stringify(value));
     try {
         const saved = JSON.parse(localStorage.getItem(key));
         if (typeof saved?.showHiddenFiles === 'boolean') state.showHiddenFiles = saved.showHiddenFiles;
         if (typeof saved?.crtEffects === 'boolean') state.crtEffects = saved.crtEffects;
+        if (typeof saved?.systemSounds === 'boolean') state.systemSounds = saved.systemSounds;
+        if (Number.isFinite(saved?.systemSoundVolume) && saved.systemSoundVolume >= 0 && saved.systemSoundVolume <= 1) state.systemSoundVolume = saved.systemSoundVolume;
         if (saved?.custom) { try { state.custom = schema.validate(saved.custom); } catch { /* Invalid custom theme ignored. */ } }
         if (saved && Object.hasOwn(themes, saved.theme) && (saved.theme !== 'custom' || state.custom)) state.theme = saved.theme;
     } catch { /* Corrupt or unavailable storage uses defaults. */ }
     function checked(patch) {
         const next = {...state, ...patch};
         if (!Object.hasOwn(themes,next.theme) || typeof next.showHiddenFiles !== 'boolean' || typeof next.crtEffects !== 'boolean') throw Error('Invalid preference');
+        if (typeof next.systemSounds !== 'boolean' || !Number.isFinite(next.systemSoundVolume) || next.systemSoundVolume < 0 || next.systemSoundVolume > 1) throw Error('Invalid sound preference');
         if (next.custom) next.custom = schema.validate(next.custom);
         if (next.theme === 'custom' && !next.custom) throw Error('No custom theme saved');
         return next;

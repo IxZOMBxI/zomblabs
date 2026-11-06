@@ -31,5 +31,5 @@ export class ZombNetwork extends EventTarget {
     }
     get(url) { const page = this.pages.get(url); return page && (!page.unlock || this.discoveries.has(page.unlock)) ? page : null; }
     directory() { return [...this.pages.values()].filter(page => page.listed && !page.hidden && this.get(page.url)); }
-    discover(key) { this.discoveries.add(key); this.dispatchEvent(new Event('change')); }
+    discover(key) { if (this.discoveries.has(key)) return; this.discoveries.add(key); this.dispatchEvent(new Event('discovery')); this.dispatchEvent(new Event('change')); }
 }
