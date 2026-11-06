@@ -52,5 +52,5 @@ export class VirtualFilesystem extends EventTarget {
         return [...this.entries.values()].filter(entry => parentPath(entry.path)?.toLowerCase() === directory.path.toLowerCase() && this.resolve(entry.path, showHidden))
             .sort((a,b) => Number(b.type === 'folder') - Number(a.type === 'folder') || a.name.localeCompare(b.name));
     }
-    discover(key) { this.discoveries.add(key); this.dispatchEvent(new Event('change')); }
+    discover(key) { if (this.discoveries.has(key)) return; this.discoveries.add(key); this.dispatchEvent(new Event('discovery')); this.dispatchEvent(new Event('change')); }
 }

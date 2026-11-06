@@ -4,8 +4,8 @@ import { PhoneScheduler } from './phone-scheduler.js';
 
 // One service per desktop. Windows only subscribe; they never own the scheduler/audio.
 export class PhoneService extends EventTarget {
-    constructor({radio, storage, audio = new Audio(), now = () => Date.now(), monotonic = () => performance.now()}) {
-        super(); this.radio = radio; this.audio = audio; this.now = now; this.monotonic = monotonic;
+    constructor({radio, storage, sounds, audio = new Audio(), now = () => Date.now(), monotonic = () => performance.now()}) {
+        super(); this.sounds = sounds; this.radio = radio; this.audio = audio; this.now = now; this.monotonic = monotonic;
         this.state = new PhoneState(storage); this.scheduler = new PhoneScheduler(this.state);
         this.catalog = []; this.mode = 'idle'; this.current = null; this.attempt = null;
         this.error = ''; this.ready = false; this.request = 0; this.handlers = [];
@@ -18,7 +18,10 @@ export class PhoneService extends EventTarget {
             this.disconnect('interrupted'); this.error = 'Recording unavailable: missing file, network failure, or unsupported audio. Retry from Call History.'; this.emit();
         });
     }
-    emit() { this.dispatchEvent(new Event('change')); }
+    syncSounds() {
+        try { this.sounds?.setPhoneMode(this.mode); } catch { /* Optional audio must never block delivery or recording playback. */ }
+    }
+    emit() { this.syncSounds(); this.dispatchEvent(new Event('change')); }
     subscribe(listener) { this.addEventListener('change',listener); listener(); return () => this.removeEventListener('change',listener); }
     setCatalog(entries) {
         const calls = [], ids = new Set(), duplicates = new Set();
@@ -64,6 +67,7 @@ export class PhoneService extends EventTarget {
     decline() { if (this.mode === 'ringing') this.finish('declined'); }
     end() { if (this.mode === 'connected') this.finish('interrupted'); }
     startAudio() {
+        this.syncSounds();
         this.releaseRadio ||= this.radio.holdForPhone();
         this.audio.src = this.current.src; this.audio.load(); this.play();
     }
@@ -96,6 +100,7 @@ export class PhoneService extends EventTarget {
             if (outcome !== 'completed' && policy === 'retry') this.scheduler.usedEvents.delete(this.current.callId);
         }
         this.attempt = null; this.current = null; this.mode = 'idle';
+        this.syncSounds();
         this.audio.pause(); this.audio.removeAttribute('src'); this.audio.load();
         const release = this.releaseRadio; this.releaseRadio = null; release?.(restore);
     }

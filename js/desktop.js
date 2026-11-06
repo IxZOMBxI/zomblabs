@@ -1,3 +1,4 @@
+import { SystemSounds } from './system-sounds.js';
 import { mountArcade } from './arcade.js';
 import { ZombNetwork } from './zombnet-network.js';
 import { ZombnetState } from './zombnet-state.js';
@@ -30,7 +31,11 @@ const runningApps = document.createElement('div');
 runningApps.id = 'runningApps';
 runningApps.setAttribute('aria-label', 'Running windows');
 taskbar.append(startButton, runningApps);
-const manager = new WindowManager(workspace, runningApps);
+const sounds = new SystemSounds();
+sounds.configure(window.ZombSettings.get());
+const unsubscribeSounds = window.ZombSettings.subscribe(state => sounds.configure(state));
+const unbindSounds = sounds.bind(document);
+const manager = new WindowManager(workspace, runningApps, name => sounds.play(name));
 const apps = new AppRegistry(manager);
 apps.register(settingsApp(window.ZombSettings));
 apps.register({
@@ -62,14 +67,15 @@ function launch(id) {
 }
 let networkStorage;
 try { networkStorage = window.localStorage; } catch { /* In-memory browsing remains available. */ }
-phoneService = new PhoneService({radio:audioService, storage:networkStorage});
+phoneService = new PhoneService({radio:audioService, storage:networkStorage, sounds});
 apps.register(phoneApp(phoneService));
 const removePhoneNotice = mountPhoneNotice(phoneService,launch);
 let phoneBooted = false;
 function syncPhoneActivity() {
     const active = !workspace.hidden && document.visibilityState === 'visible' && document.hasFocus();
+    sounds.setActive(active);
     phoneService.setActive(active);
-    if (active && !phoneBooted) { phoneBooted = true; phoneService.event('desktop.ready'); }
+    if (active && !phoneBooted) { phoneBooted = true; phoneService.event('desktop.ready'); sounds.play('boot'); }
 }
 const phoneBootObserver = new MutationObserver(syncPhoneActivity);
 phoneBootObserver.observe(workspace,{attributes:true,attributeFilter:['hidden']});
@@ -77,22 +83,31 @@ document.addEventListener('visibilitychange',syncPhoneActivity);
 window.addEventListener('focus',syncPhoneActivity);
 window.addEventListener('blur',syncPhoneActivity);
 const phoneTimer = setInterval(() => { syncPhoneActivity(); phoneService.tick(); },500);
-let radioPlaying = false;
+let radioPlaying = false, radioError = '', phoneError = '';
+const unsubscribePhoneSounds = phoneService.subscribe(() => {
+    if (phoneService.error && phoneService.error !== phoneError) sounds.play('error');
+    phoneError = phoneService.error;
+});
 const unsubscribePhoneRadio = audioService.subscribe(() => {
+    if (audioService.error && audioService.error !== radioError) sounds.play('error');
+    radioError = audioService.error;
     const playing = !audioService.audio.paused;
     if (playing && !radioPlaying) phoneService.event('radio.play');
     radioPlaying = playing;
 });
 window.addEventListener('pagehide',event => {
+    sounds.setActive(false);
     phoneService.setActive(false);
     if (event.persisted) return;
     clearInterval(phoneTimer); phoneBootObserver.disconnect(); removePhoneNotice(); unsubscribePhoneRadio();
     document.removeEventListener('visibilitychange',syncPhoneActivity);
     window.removeEventListener('focus',syncPhoneActivity); window.removeEventListener('blur',syncPhoneActivity);
-    phoneService.dispose();
+    phoneService.dispose(); unsubscribePhoneSounds(); unsubscribeSounds(); unbindSounds(); sounds.dispose();
 });
 window.addEventListener('pageshow',syncPhoneActivity);
-apps.register(zombnetApp(new ZombNetwork(), new ZombnetState(networkStorage), launch));
+const network = new ZombNetwork();
+network.addEventListener('discovery', () => sounds.play('discovery'));
+apps.register(zombnetApp(network, new ZombnetState(networkStorage), launch));
 apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
 const installed = [
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
@@ -105,6 +120,7 @@ const installed = [
     { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' }
 ];
 const virtualFilesystem = new VirtualFilesystem(filesystemContent(installed, []));
+virtualFilesystem.addEventListener('discovery', () => sounds.play('discovery'));
 function previewFile(entry, properties) {
     const id = `file-view:${properties ? 'properties' : 'text'}:${entry.path}`;
     if (!apps.apps.has(id)) apps.register({

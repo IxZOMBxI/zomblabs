@@ -5,6 +5,7 @@ import { PhoneState } from '../js/phone-state.js';
 import { PhoneScheduler } from '../js/phone-scheduler.js';
 import { PhoneService } from '../js/phone-service.js';
 import { AudioService } from '../js/audio-service.js';
+import { readFileSync } from 'node:fs';
 
 class FakeAudio extends EventTarget {
     constructor() { super(); this.paused=true; this.currentTime=0; this.duration=20; this.src=''; this.plays=0; }
@@ -16,6 +17,31 @@ class FakeAudio extends EventTarget {
 }
 const entry = (id='test-call',delivery={}) => ({id:`calls/${id}.mp3`,callId:id,caller:'Test caller',title:'Test recording',section:'calls',src:`https://local.test/media/calls/${id}.mp3`,artwork:null,delivery});
 const memory = () => { const values=new Map(); return {getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)}; };
+test('Radio shuffle defaults on, restores false/true and tolerates unavailable storage', () => {
+    globalThis.Audio=FakeAudio;
+    try {
+        const storage=memory(), radio=new AudioService([],storage);
+        assert.equal(radio.shuffle,true); radio.toggleShuffle(); assert.equal(radio.shuffle,false);
+        const restored=new AudioService([],storage); assert.equal(restored.shuffle,false);
+        restored.toggleShuffle(); assert.equal(new AudioService([],storage).shuffle,true);
+        assert.equal(new AudioService([],{getItem:()=>'{broken'}).shuffle,true);
+        assert.equal(new AudioService([],{getItem:()=>'{"shuffle":"false"}'}).shuffle,true);
+        const denied=new AudioService([],{getItem(){throw Error();},setItem(){throw Error();}});
+        denied.toggleShuffle(); assert.equal(denied.shuffle,false);
+    } finally { delete globalThis.Audio; }
+});
+test('Welcome delivery emits without a Phone window despite optional sound failure; completed state stays consumed', () => {
+    const call=JSON.parse(readFileSync(new URL('../media/library.json',import.meta.url),'utf8')).entries.find(call=>call.section==='calls');
+    const {service,advance,audio,storage}=setup([call]);
+    service.sounds={setPhoneMode(){throw new TypeError('Illegal invocation');}};
+    let visible=false;
+    service.subscribe(()=>{visible=service.mode==='ringing';});
+    service.setActive(true); advance(9); assert.equal(visible,false);
+    advance(1); assert.equal(visible,true); assert.equal(service.state.history.length,1);
+    service.answer(); assert.equal(visible,false); assert.equal(audio.plays,1); audio.end();
+    const restored=setup([call],storage); restored.service.setActive(true); restored.advance(100);
+    assert.equal(restored.service.mode,'idle'); assert.equal(restored.service.state.get(call.callId).consumed,true);
+});
 function setup(entries=[entry()],storage=memory()) {
     let clock=100000, mono=0;
     const radio={holds:0,releases:[],holdForPhone(){this.holds++; return restore=>this.releases.push(restore);}};
