@@ -1,0 +1,17 @@
+{
+  "id": "/",
+  "name": "ZombOS",
+  "short_name": "ZombOS",
+  "description": "The Zomb Labs retro desktop: Radio, Phone, ZombNET, Arcade and demo Store.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#030704",
+  "background_color": "#030704",
+  "icons": [
+    { "src": "/assets/pwa/zombos-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/pwa/zombos-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

@@ -1,34 +1,34 @@
 /* Isolated window layer; existing desktop panels retain their layout. */
 /* Backpack commerce foundation: shared semantic colors, no global layout overrides. */
 .zomb-window-content.zomb-store { container-type: inline-size; padding: 12px; min-width: 0; min-height: 0; overflow: auto; }
-.zomb-store, .store-product { color: var(--ui-textPrimary); background: var(--ui-windowBackground); font-size: 12px; overflow-wrap: anywhere; }
-.store-heading { border-bottom: 2px solid var(--ui-border); padding-bottom: 8px; letter-spacing: 1px; }
+.zomb-store, .store-product { color: var(--ui-storeText); background: var(--ui-storeBackground); font-size: 12px; overflow-wrap: anywhere; }
+.store-heading { border-bottom: 2px solid var(--ui-storeBorder); padding-bottom: 8px; letter-spacing: 1px; }
 .store-heading h1 { font-size: 20px; margin: 0; }
 .store-heading p { margin: 8px 0; font-weight: bold; }
 .store-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 12px; margin-top: 12px; }
-.store-stock, .store-cart { min-width: 0; padding: 10px; border: 1px solid var(--ui-border); }
+.store-stock, .store-cart { min-width: 0; padding: 10px; border: 1px solid var(--ui-storeBorder); }
 .store-layout h2 { font-size: 15px; margin: 0 0 12px; }
 .store-filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
 .store-filters > * { flex: 1 1 110px; width: 100%; min-width: 0; }
 .store-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(145px, 100%), 1fr)); gap: 10px; }
-.store-card { min-width: 0; border: 1px solid var(--ui-divider); padding: 8px; }
+.store-card { min-width: 0; border: 1px solid var(--ui-storeDivider); padding: 8px; }
 .store-card h3 { font-size: 13px; }
 .store-card p { font-size: 11px; }
-.store-slot { aspect-ratio: 1; display: grid; place-items: center; border: 2px inset var(--ui-border); background: var(--ui-panel); overflow: hidden; }
+.store-slot { aspect-ratio: 1; display: grid; place-items: center; border: 2px inset var(--ui-storeBorder); background: var(--ui-storePanel); overflow: hidden; }
 .store-slot img { display: block; width: 100%; height: 100%; object-fit: contain; }
 .store-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .store-actions span { min-width: 20px; text-align: center; }
-.store-cart-row { border-bottom: 1px solid var(--ui-divider); padding: 10px 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; align-items: center; }
+.store-cart-row { border-bottom: 1px solid var(--ui-storeDivider); padding: 10px 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 8px; align-items: center; }
 .store-cart-row .store-actions { grid-column: 1 / -1; }
-.store-summary { margin-top: 16px; padding: 10px; border: 2px inset var(--ui-border); }
-.store-confirm { padding: 8px; border: 1px dashed var(--ui-focus); margin-top: 8px; }
+.store-summary { margin-top: 16px; padding: 10px; border: 2px inset var(--ui-storeBorder); }
+.store-confirm { padding: 8px; border: 1px dashed var(--ui-storeFocus); margin-top: 8px; }
 .store-confirm[hidden] { display: none; }
-.store-feedback { min-height: 2em; border-left: 3px solid var(--ui-accent); padding-left: 8px; }
-.zomb-store button, .store-product button { font: inherit; min-height: 44px; padding: 8px; color: var(--ui-buttonText); background: var(--ui-buttonBackground); border: 1px solid var(--ui-border); cursor: pointer; }
-.zomb-store button:hover, .store-product button:hover { color: var(--ui-hoverText); background: var(--ui-hoverBackground); }
-.zomb-store button:disabled, .store-product button:disabled { color: var(--ui-textDisabled); cursor: not-allowed; }
-.zomb-store input, .zomb-store select { box-sizing: border-box; font: inherit; min-height: 44px; color: var(--ui-inputText); background: var(--ui-inputBackground); border: 1px solid var(--ui-border); padding: 6px; }
-.zomb-store :is(button,input,select):focus-visible, .store-product button:focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: 2px; }
+.store-feedback { min-height: 2em; border-left: 3px solid var(--ui-storeAccent); padding-left: 8px; }
+.zomb-store button, .store-product button { font: inherit; min-height: 44px; padding: 8px; color: var(--ui-storeButtonText); background: var(--ui-storeButtonBackground); border: 1px solid var(--ui-storeBorder); cursor: pointer; }
+.zomb-store button:hover, .store-product button:hover { color: var(--ui-storeHoverText); background: var(--ui-storeHoverBackground); }
+.zomb-store button:disabled, .store-product button:disabled { color: var(--ui-storeDisabledText); cursor: not-allowed; }
+.zomb-store input, .zomb-store select { box-sizing: border-box; font: inherit; min-height: 44px; color: var(--ui-storeInputText); background: var(--ui-storeInputBackground); border: 1px solid var(--ui-storeBorder); padding: 6px; }
+.zomb-store :is(button,input,select):focus-visible, .store-product button:focus-visible { outline: 2px dashed var(--ui-storeFocus); outline-offset: 2px; }
 .store-product .store-slot { max-width: 220px; margin-bottom: 12px; }
 .store-product > button { margin: 12px 6px 0 0; }
 .store-product small { display: block; }
@@ -363,3 +363,9 @@ html .phone button.phone-end, html .phone-notice button.phone-end { background: 
 html[data-theme="custom"] .phone button.phone-answer, html[data-theme="custom"] .phone-notice button.phone-answer { background: #145c2c; color: #ffffff; border-color: #7dffa1; }
 html[data-theme="custom"] .phone button.phone-end, html[data-theme="custom"] .phone-notice button.phone-end { background: #8a2020; color: #ffffff; border-color: #ffaaaa; }
 .phone button:focus-visible, .phone-notice button:focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: 2px; }
+
+/* Store controls also override the browser's generic custom-theme controls. */
+html[data-theme="custom"] .store-product button { background: var(--ui-storeButtonBackground); color: var(--ui-storeButtonText); border-color: var(--ui-storeBorder); }
+html[data-theme="custom"] .store-product button:hover { background: var(--ui-storeHoverBackground); color: var(--ui-storeHoverText); }
+html[data-theme="custom"] .store-product button:disabled { color: var(--ui-storeDisabledText); }
+html[data-theme="custom"] .store-product button:focus-visible { outline-color: var(--ui-storeFocus); }

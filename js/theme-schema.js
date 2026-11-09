@@ -16,6 +16,9 @@
   trayBackground:'taskbar', trayText:'textPrimary', trayBorder:'panel', clockText:'textPrimary', connectionText:'textPrimary', radioStatusText:'buttonText'
  };
  for (const [group, colors] of Object.entries(additions)) groups[group] = {...groups[group], ...colors};
+ const v2Keys = Object.values(groups).flatMap(group => Object.keys(group));
+ const storeFallbacks = {storeBackground:'windowBackground',storeText:'textPrimary',storePanel:'panel',storeBorder:'border',storeDivider:'divider',storeButtonBackground:'buttonBackground',storeButtonText:'buttonText',storeHoverBackground:'hoverBackground',storeHoverText:'hoverText',storeInputBackground:'inputBackground',storeInputText:'inputText',storeDisabledText:'textDisabled',storeFocus:'focus',storeAccent:'accent'};
+ groups['Zomb Store'] = Object.fromEntries(Object.entries(storeFallbacks).map(([key,source])=>[key,Object.values(groups).find(group=>source in group)[source]]));
  const bases = {"toxic": ["#65ff7d", "#14391d", "#030704"], "amber": ["#ffd16a", "#493415", "#090601"], "ice": ["#8cdfff", "#173b49", "#030709"], "blood": ["#ff9696", "#481b22", "#090304"], "violet": ["#d3a0ff", "#352044", "#070309"]};
  const keys = Object.values(groups).flatMap(group => Object.keys(group));
  function palette(id = 'toxic') {
@@ -23,13 +26,14 @@
   return Object.fromEntries(Object.values(groups).flatMap(group => Object.entries(group).map(([key,value]) => [key, ({accent,dim,bg})[value] || value])));
  }
  function validate(value) {
-  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !['version','name','colors'].includes(key)) || ![1,2].includes(value.version) || typeof value.name !== 'string' || value.name.length > 60) throw Error('Expected a version 1 or 2 theme with a name of at most 60 characters.');
+  if (!value || typeof value !== 'object' || Array.isArray(value) || Object.keys(value).some(key => !['version','name','colors'].includes(key)) || ![1,2,3].includes(value.version) || typeof value.name !== 'string' || value.name.length > 60) throw Error('Expected a version 1, 2 or 3 theme with a name of at most 60 characters.');
   const colors = value.colors;
-  const required = value.version === 1 ? legacyKeys : keys;
+  const required = value.version === 1 ? legacyKeys : value.version === 2 ? v2Keys : keys;
   if (!colors || typeof colors !== 'object' || Array.isArray(colors) || Object.keys(colors).length !== required.length || required.some(key => !Object.hasOwn(colors,key) || typeof colors[key] !== 'string' || !/^#[0-9a-f]{6}$/i.test(colors[key]))) throw Error('Theme must contain exactly the supported colors as #RRGGBB values.');
   const migrated = {...colors};
   if (value.version === 1) for (const [key, source] of Object.entries(fallbacks)) migrated[key] = colors[source];
-  return {version:2,name:value.name.trim(),colors:Object.fromEntries(keys.map(key=>[key,migrated[key].toLowerCase()]))};
+  if (value.version < 3) for (const [key, source] of Object.entries(storeFallbacks)) migrated[key] = migrated[source];
+  return {version:3,name:value.name.trim(),colors:Object.fromEntries(keys.map(key=>[key,migrated[key].toLowerCase()]))};
  }
- window.ZombThemeSchema = Object.freeze({version:2, groups, keys, palette, validate});
+ window.ZombThemeSchema = Object.freeze({version:3, groups, keys, palette, validate});
 })();
