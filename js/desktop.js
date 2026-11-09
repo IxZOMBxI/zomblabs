@@ -1,8 +1,11 @@
+import { products } from './product-catalog.js';
+import { BackpackState } from './backpack-state.js';
+import { storeApp, productPages } from './store-app.js';
 import { SystemSounds } from './system-sounds.js';
 import { mountArcade } from './arcade.js';
 import { ZombNetwork } from './zombnet-network.js';
 import { ZombnetState } from './zombnet-state.js';
-import { zombnetApp } from './zombnet-app.js';
+import { zombnetApp, createZombnetNavigation } from './zombnet-app.js';
 import { filesystemContent } from './filesystem-content.js';
 import { VirtualFilesystem } from './virtual-filesystem.js';
 import { explorerApp } from './explorer-app.js';
@@ -107,9 +110,14 @@ window.addEventListener('pagehide',event => {
 window.addEventListener('pageshow',syncPhoneActivity);
 const network = new ZombNetwork();
 network.addEventListener('discovery', () => sounds.play('discovery'));
-apps.register(zombnetApp(network, new ZombnetState(networkStorage), launch));
+const backpack = new BackpackState(products, networkStorage);
+const networkNavigation = createZombnetNavigation();
+for (const page of productPages(products, backpack, launch)) network.register(page);
+apps.register(zombnetApp(network, new ZombnetState(networkStorage), launch, networkNavigation));
+apps.register(storeApp(products, backpack, url => { launch('zombnet'); networkNavigation.open(url); }));
 apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
 const installed = [
+    { id: 'store', title: 'Zomb Store', symbol: '[▤]' },
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
     { id: 'updates', title: 'System Update', symbol: '[✉]' },
     { id: 'radio', title: 'Radio', symbol: '[♫]' },

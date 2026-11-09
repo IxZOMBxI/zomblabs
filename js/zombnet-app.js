@@ -1,5 +1,11 @@
 import { parseAddress } from './zombnet-network.js';
-export function zombnetApp(network, state, launch) {
+// Small bridge for desktop apps; all navigation still uses the existing history path.
+export function createZombnetNavigation() {
+    let navigate;
+    return { bind(handler) { navigate=handler; return ()=>{ if(navigate===handler) navigate=null; }; },
+        open(url) { if (!navigate || parseAddress(url)?.kind !== 'internal') return false; navigate(url); return true; } };
+}
+export function zombnetApp(network, state, launch, navigation) {
     return { id: 'zombnet', title: 'ZombNET', width: 650, height: 480, minWidth: 320, minHeight: 300,
         mount(container) {
             container.classList.add('zombnet');
@@ -95,8 +101,9 @@ export function zombnetApp(network, state, launch) {
             get('[data-home]').onclick = () => navigate('zomb://home');
             for (const name of ['bookmarks','history']) get(`[data-${name}]`).onclick = () => { panel = panel === name ? null : name; renderPanel(); };
             const changed = () => render(); network.addEventListener('change', changed);
+            const unbind = navigation?.bind(navigate);
             render();
-            return () => { pageCleanup?.(); network.removeEventListener('change', changed); };
+            return () => { unbind?.(); pageCleanup?.(); network.removeEventListener('change', changed); };
         }
     };
 }
