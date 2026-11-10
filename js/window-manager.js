@@ -1,5 +1,7 @@
-export class WindowManager {
+export class WindowManager extends EventTarget {
     constructor(workspace, taskbar, sound = () => {}) {
+        super();
+        this.mobile = false;
         this.sound = sound;
         this.taskbar = taskbar;
         this.workspace = workspace;
@@ -14,7 +16,7 @@ export class WindowManager {
     place(state) {
         const width = this.workspace.clientWidth;
         const height = this.workspace.clientHeight;
-        if (state.maximized) {
+        if (this.mobile || state.maximized) {
             Object.assign(state.element.style, { left: '0px', top: '0px', width: `${width}px`, height: `${height}px` });
             return;
         }
@@ -44,6 +46,7 @@ export class WindowManager {
             entry.task.setAttribute('aria-pressed', String(entry === state));
         }
         if (keyboard) state.element.focus({ preventScroll: true });
+        this.dispatchEvent(new Event('focus'));
     }
 
     open(app) {
@@ -79,7 +82,7 @@ export class WindowManager {
         const content = document.createElement('div');
         content.className = 'zomb-window-content';
         element.append(header, content);
-        const state = { element, width: app.width || 380, height: app.height || 280, minWidth: app.minWidth || 260, minHeight: app.minHeight || 140, maximized: false, minimized: false, x: 24 + this.windows.size * 28, y: 24 + this.windows.size * 28, returnFocus: document.activeElement };
+        const state = { element, title: app.title, width: app.width || 380, height: app.height || 280, minWidth: app.minWidth || 260, minHeight: app.minHeight || 140, maximized: false, minimized: false, x: 24 + this.windows.size * 28, y: 24 + this.windows.size * 28, returnFocus: document.activeElement };
         const task = document.createElement('button');
         task.type = 'button';
         task.textContent = `${app.title} [${this.sequence}]`;
@@ -97,6 +100,7 @@ export class WindowManager {
             const next = [...this.windows.keys()].reverse().find(key => !this.windows.get(key).minimized);
             if (next) this.focus(next, true);
             else task.focus();
+            this.dispatchEvent(new Event('change'));
         });
         maximize.addEventListener('click', () => {
             state.maximized = !state.maximized;
@@ -113,7 +117,7 @@ export class WindowManager {
             element.append(handle);
             let resize = null;
             handle.addEventListener('pointerdown', event => {
-                if (event.button !== 0 || state.maximized) return;
+                if (this.mobile || event.button !== 0 || state.maximized) return;
                 event.preventDefault();
                 resize = { pointer: event.pointerId, x: event.clientX, y: event.clientY,
                     left: state.x, top: state.y, width: element.offsetWidth, height: element.offsetHeight };
@@ -150,7 +154,7 @@ export class WindowManager {
         close.addEventListener('click', () => this.close(id));
         let drag = null;
         header.addEventListener('pointerdown', event => {
-            if (state.maximized || event.target.closest('button') || event.button !== 0) return;
+            if (this.mobile || state.maximized || event.target.closest('button') || event.button !== 0) return;
             event.preventDefault();
             header.focus({ preventScroll: true });
             drag = { pointer: event.pointerId, x: event.clientX - state.x, y: event.clientY - state.y };
@@ -167,7 +171,7 @@ export class WindowManager {
         header.addEventListener('pointercancel', endDrag);
         header.addEventListener('lostpointercapture', endDrag);
         header.addEventListener('keydown', event => {
-            if (event.target !== header || state.maximized) return;
+            if (this.mobile || event.target !== header || state.maximized) return;
             const directions = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
             const direction = directions[event.key];
             if (!direction) return;
@@ -183,6 +187,7 @@ export class WindowManager {
         });
         this.place(state);
         this.focus(id, true);
+        this.dispatchEvent(new Event('change'));
         this.sound('open');
         return id;
     }
@@ -199,6 +204,7 @@ export class WindowManager {
             const next = [...this.windows.keys()].reverse().find(key => !this.windows.get(key).minimized);
             if (next) this.focus(next, hadFocus);
             else if (hadFocus && state.returnFocus?.isConnected && !state.returnFocus.closest('[hidden]')) state.returnFocus.focus({ preventScroll: true });
+            this.dispatchEvent(new Event('change'));
         }
     }
 }

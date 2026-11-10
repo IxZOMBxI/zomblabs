@@ -1,0 +1,31 @@
+/* Every layout rule is gated: desktop rendering remains with the existing styles. */
+#mobileHome[hidden], #mobileNavigation[hidden], html[data-mobile="true"] #mobileHome[hidden], html[data-mobile="true"] #mobileNavigation[hidden] { display: none; }
+html[data-mobile="true"] { --mobile-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+html[data-mobile="true"] body, html[data-mobile="true"] .terminal { width: 100%; min-height: var(--mobile-height, 100dvh); height: var(--mobile-height, 100dvh); overflow: hidden; }
+html[data-mobile="true"] .screen { padding: max(16px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); overflow: auto; max-height: var(--mobile-height, 100dvh); }
+html[data-mobile="true"] #desktopScreen, html[data-mobile="true"] #zombTaskbar, html[data-mobile="true"] #startMenu { display: none; }
+html[data-mobile="true"] #windowWorkspace { top: calc(var(--mobile-top, 0px) + env(safe-area-inset-top, 0px)); bottom: auto; height: calc(var(--mobile-height, 100dvh) - env(safe-area-inset-top, 0px) - var(--mobile-bottom)); left: env(safe-area-inset-left, 0px); right: env(safe-area-inset-right, 0px); }
+html[data-mobile="true"] .zomb-window:not(.is-focused), html[data-mobile="true"][data-mobile-home="true"] .zomb-window { display: none; }
+html[data-mobile="true"] .resize-handle, html[data-mobile="true"] .zomb-window-controls button:nth-child(2) { display: none; }
+html[data-mobile="true"] .zomb-window-header { cursor: default; min-height: 48px; }
+html[data-mobile="true"] .zomb-window-controls button { min-width: 44px; min-height: 40px; }
+html[data-mobile="true"] .zomb-window-content { min-width: 0; min-height: 0; overflow: auto; overflow-wrap: anywhere; }
+html[data-mobile="true"] .zomb-window-content :is(input,select,textarea) { max-width: 100%; min-width: 0; font-size: 16px; }
+html[data-mobile="true"] .zomb-window-content button { min-height: 44px; max-width: 100%; }
+html[data-mobile="true"] .settings-app { grid-template-columns: minmax(0,1fr); }
+html[data-mobile="true"] .settings-app nav { display: flex; flex-wrap: wrap; gap: 6px; }
+html[data-mobile="true"] .theme-color-row { grid-template-columns: minmax(0,1fr) 44px minmax(70px,90px); }
+html[data-mobile="true"] .explorer-panes { --tree-width: 90px; }
+html[data-mobile="true"] .phone-notice { bottom: calc(100dvh - var(--mobile-height, 100dvh) - var(--mobile-top, 0px) + var(--mobile-bottom) + 8px); right: max(8px, env(safe-area-inset-right)); max-width: calc(100vw - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)); z-index: 30; max-height: calc(var(--mobile-height, 100dvh) - var(--mobile-bottom) - env(safe-area-inset-top) - 16px); overflow: auto; }
+html[data-mobile="true"] #mobileHome { position: fixed; top: calc(var(--mobile-top, 0px) + env(safe-area-inset-top, 0px)); right: env(safe-area-inset-right, 0px); left: env(safe-area-inset-left, 0px); height: calc(var(--mobile-height, 100dvh) - env(safe-area-inset-top, 0px) - var(--mobile-bottom)); overflow: auto; padding: 16px; z-index: 6; background: var(--ui-desktopBackground); color: var(--ui-textPrimary); }
+html[data-mobile="true"] #mobileHome h1 { font-size: 26px; letter-spacing: 3px; }
+html[data-mobile="true"] .mobile-app-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(125px,1fr)); gap: 10px; margin: 20px 0; }
+html[data-mobile="true"] .mobile-app-grid button { min-height: 96px; display: grid; place-items: center; gap: 8px; }
+html[data-mobile="true"] .mobile-app-grid button span:first-child { font-size: 28px; }
+html[data-mobile="true"] #mobileNavigation { position: fixed; top: calc(var(--mobile-top, 0px) + var(--mobile-height, 100dvh) - var(--mobile-bottom)); bottom: auto; left: 0; right: 0; height: var(--mobile-bottom); padding: 6px max(8px,env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left)); display: flex; align-items: center; gap: 12px; z-index: 10; background: var(--ui-taskbar); color: var(--ui-textPrimary); border-top: 1px solid var(--ui-border); }
+html[data-mobile="true"] #mobileNavigation label { display: flex; align-items: center; flex: 1; min-width: 0; gap: 6px; }
+html[data-mobile="true"] #mobileNavigation select { min-width: 0; flex: 1; width: 0; }
+html[data-mobile="true"] :is(#mobileHome,#mobileNavigation) :is(button,select,summary) { font: inherit; min-height: 44px; padding: 8px; border: 1px solid var(--ui-border); background: var(--ui-buttonBackground); color: var(--ui-buttonText); cursor: pointer; }
+html[data-mobile="true"] :is(#mobileHome,#mobileNavigation) :is(button,select,summary):focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -3px; }
+html[data-mobile="true"] #mobileHome details p { line-height: 1.5; }
+html[data-mobile="true"] #mobileHome button:hover { background: var(--ui-hoverBackground); color: var(--ui-hoverText); }

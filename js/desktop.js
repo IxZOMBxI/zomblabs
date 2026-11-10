@@ -1,3 +1,5 @@
+import { mountPwaChrome } from './pwa.js';
+import { mountMobileShell } from './mobile-shell.js';
 import { products } from './product-catalog.js';
 import { BackpackState } from './backpack-state.js';
 import { storeApp, productPages } from './store-app.js';
@@ -127,6 +129,9 @@ const installed = [
     { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' },
     { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' }
 ];
+const disposePwaChrome = mountPwaChrome();
+const disposeMobileShell = mountMobileShell({manager, installed, launch, workspace});
+window.addEventListener('pagehide', event => { if (!event.persisted) { disposeMobileShell(); disposePwaChrome(); } });
 const virtualFilesystem = new VirtualFilesystem(filesystemContent(installed, []));
 virtualFilesystem.addEventListener('discovery', () => sounds.play('discovery'));
 function previewFile(entry, properties) {

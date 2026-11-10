@@ -6,8 +6,8 @@ const context=vm.createContext({window:{},document,localStorage:{getItem:()=>sav
 const schemaCode=readFileSync(new URL('../js/theme-schema.js',import.meta.url),'utf8');const stateCode=readFileSync(new URL('../js/settings-state.js',import.meta.url),'utf8');
 vm.runInContext(schemaCode,context);vm.runInContext(stateCode,context);
 const schema=context.window.ZombThemeSchema,store=context.window.ZombSettings;
-const theme={version:2,name:'Test',colors:schema.palette('amber')};assert.equal(schema.validate(theme).name,'Test');
-for(const invalid of [{...theme,version:3},{...theme,extra:1},{...theme,colors:{...theme.colors,accent:'red'}},{...theme,colors:{accent:'#123456'}},{...theme,name:'x'.repeat(61)}])assert.throws(()=>schema.validate(invalid));
+const theme={version:3,name:'Test',colors:schema.palette('amber')};assert.equal(schema.validate(theme).name,'Test');
+for(const invalid of [{...theme,version:4},{...theme,extra:1},{...theme,colors:{...theme.colors,accent:'red'}},{...theme,colors:{accent:'#123456'}},{...theme,name:'x'.repeat(61)}])assert.throws(()=>schema.validate(invalid));
 store.preview({theme:'custom',custom:theme});assert.equal(document.documentElement.dataset.theme,'custom');assert.equal(saved,null);store.cancelPreview();assert.equal(document.documentElement.dataset.theme,'toxic');store.apply({theme:'custom',custom:theme});assert.equal(JSON.parse(saved).custom.name,'Test');store.apply({showHiddenFiles:true});assert.equal(store.get().theme,'custom');
 vm.runInContext(stateCode,context);assert.equal(context.window.ZombSettings.get().theme,'custom');
 saved='{"theme":"custom","custom":{"version":999}}';vm.runInContext(stateCode,context);assert.equal(context.window.ZombSettings.get().theme,'toxic');
@@ -16,7 +16,7 @@ console.log('PASS strict theme schema, preview/cancel, persistence, independent 
 // A frozen pre-M12.3 export exercises the actual legacy format, not today's key list.
 const legacy = JSON.parse(readFileSync(new URL('./fixtures/theme-v1.json', import.meta.url), 'utf8'));
 const migrated = schema.validate(legacy);
-assert.equal(migrated.version, 2);
+assert.equal(migrated.version, 3);
 assert.equal(migrated.name, legacy.name);
 for (const [key, color] of Object.entries(legacy.colors)) assert.equal(migrated.colors[key], color);
 assert.equal(migrated.colors.trayBackground, legacy.colors.taskbar);
@@ -33,7 +33,7 @@ for (const invalid of [
 saved=JSON.stringify({theme:'custom', custom:legacy, showHiddenFiles:true, crtEffects:false});
 vm.runInContext(stateCode,context);
 const restored=context.window.ZombSettings;
-assert.equal(restored.get().custom.version,2);
+assert.equal(restored.get().custom.version,3);
 assert.equal(restored.get().custom.name,legacy.name);
 assert.equal(restored.get().crtEffects,false);
 assert.equal(restored.get().showHiddenFiles,true);
@@ -51,4 +51,14 @@ assert.equal(context.window.ZombSettings.get().custom.colors.trayBackground,dist
 context.localStorage.setItem=()=>{throw Error('Storage denied');};
 assert.equal(context.window.ZombSettings.apply({crtEffects:true}),false);
 assert.equal(context.window.ZombSettings.get().custom.colors.clockText,distinctive.colors.clockText);
-console.log('PASS legacy migration, strict v2 validation, all-color JSON round trip, selection/reload, independent CRT and storage denial');
+console.log('PASS legacy migration, strict v3 validation, all-color JSON round trip, selection/reload, independent CRT and storage denial');
+
+const v2 = JSON.parse(readFileSync(new URL('./fixtures/theme-v2.json', import.meta.url), 'utf8'));
+const v3 = schema.validate(v2);
+assert.equal(v3.version,3);
+for(const [key,color] of Object.entries(v2.colors)) assert.equal(v3.colors[key],color);
+assert.equal(v3.colors.storeBackground,v2.colors.windowBackground);
+assert.equal(v3.colors.storeButtonText,v2.colors.buttonText);
+assert.throws(()=>schema.validate({...v2,colors:{...v2.colors,storeText:'#123456'}}));
+assert.throws(()=>schema.validate({...v3,colors:{...v3.colors,storeText:undefined}}));
+console.log('PASS v2 Store migration preserves all custom colors and strict schema');

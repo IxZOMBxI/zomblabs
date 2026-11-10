@@ -251,3 +251,21 @@
   --ui-connectionText: var(--ui-trayText);
   --ui-radioStatusText: var(--ui-buttonText);
 }
+
+/* Store starts with its existing colors; custom controls are independent. */
+:root {
+  --ui-storeBackground: var(--ui-windowBackground);
+  --ui-storeText: var(--ui-textPrimary);
+  --ui-storePanel: var(--ui-panel);
+  --ui-storeBorder: var(--ui-border);
+  --ui-storeDivider: var(--ui-divider);
+  --ui-storeButtonBackground: var(--ui-buttonBackground);
+  --ui-storeButtonText: var(--ui-buttonText);
+  --ui-storeHoverBackground: var(--ui-hoverBackground);
+  --ui-storeHoverText: var(--ui-hoverText);
+  --ui-storeInputBackground: var(--ui-inputBackground);
+  --ui-storeInputText: var(--ui-inputText);
+  --ui-storeDisabledText: var(--ui-textDisabled);
+  --ui-storeFocus: var(--ui-focus);
+  --ui-storeAccent: var(--ui-accent);
+}
