@@ -45,8 +45,10 @@ export class WindowManager extends EventTarget {
             entry.element.classList.toggle('is-focused', entry === state);
             entry.task.setAttribute('aria-pressed', String(entry === state));
         }
+        // Mobile Home hides windows with CSS; reveal the target before focusing it.
+        if (this.mobile) this.dispatchEvent(new Event('focus'));
         if (keyboard) state.element.focus({ preventScroll: true });
-        this.dispatchEvent(new Event('focus'));
+        if (!this.mobile) this.dispatchEvent(new Event('focus'));
     }
 
     open(app) {

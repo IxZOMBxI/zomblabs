@@ -32,14 +32,16 @@ try {
     await send('Runtime.enable');await send('Page.enable');
     console.log('Browser: '+(await send('Browser.getVersion')).product);
     await send('Page.addScriptToEvaluateOnNewDocument',{source:`window.__testAudio=[];const NativeAudio=window.Audio;window.Audio=function(...args){const audio=new NativeAudio(...args);window.__testAudio.push(audio);return audio;};`});
+    await send('Page.addScriptToEvaluateOnNewDocument',{source:`window.__m16={radio:0,arcade:0,styles:0};const fill=CanvasRenderingContext2D.prototype.fillRect;CanvasRenderingContext2D.prototype.fillRect=function(...args){if(this.canvas.matches('[data-spectrum]'))window.__m16.radio++;if(this.canvas.matches('.sprint-canvas'))window.__m16.arcade++;return fill.apply(this,args);};const styles=window.getComputedStyle;window.getComputedStyle=function(element,...args){if(element.closest?.('.radio,.phone'))window.__m16.styles++;return styles.call(window,element,...args);};`});
     await send('Emulation.setDeviceMetricsOverride',{width:1280,height:900,deviceScaleFactor:1,mobile:false});
     const base=`http://127.0.0.1:${server.address().port}`;
     const snapshot=()=>evaluate(`['body','.terminal','.retro-desktop','#zombTaskbar','.desktop-icon'].map(selector=>{const e=document.querySelector(selector),r=e.getBoundingClientRect(),s=getComputedStyle(e);return {selector,rect:[r.x,r.y,r.width,r.height],color:s.color,background:s.backgroundColor,font:s.font,display:s.display};})`);
-    let desktop;
+    let desktop, desktopSettings;
     for (const path of ['/baseline/','/']) {
         await send('Page.navigate',{url:base+path});await until(()=>evaluate(`document.querySelector('#loginButton')&&!document.querySelector('#loginButton').disabled&&document.querySelector('#windowWorkspace').hidden`),'desktop login');await click('#loginButton');await until(()=>evaluate(`!document.querySelector('#windowWorkspace').hidden`),'desktop boot',25000);
         await until(()=>evaluate(`getComputedStyle(document.querySelector('#desktopScreen')).transform==='matrix(1, 0, 0, 1, 0, 0)' && getComputedStyle(document.querySelector('#desktopScreen')).opacity==='1'`),'Boot transition settled');
         if(path==='/baseline/')desktop=await snapshot();else assert.deepEqual(await snapshot(),desktop,'Desktop baseline styles and geometry');
+        assert.equal(await evaluate(`performance.getEntriesByType('resource').filter(r=>r.name.includes('/media/artwork/')).length`),0,'No artwork downloaded during boot');
         await click('#startMenu [data-app="radio"]');
         const geometry=()=>evaluate(`(()=>{const r=document.querySelector('.zomb-window').getBoundingClientRect();return [r.x,r.y,r.width,r.height]})()`);
         const original=await geometry();await click('.zomb-window-controls button:nth-child(2)');
@@ -48,9 +50,19 @@ try {
         await click('.zomb-window-controls button:first-child');assert.equal(await evaluate(`document.querySelector('.zomb-window').hidden`),true);
         await click('#runningApps button');assert.equal(await evaluate(`document.querySelector('.zomb-window').hidden`),false);
         await click('.zomb-window-controls button:last-child');assert.equal(await evaluate(`document.querySelectorAll('.zomb-window').length`),0);
+        await click('#startMenu [data-app="settings"]');
+        const settingsView=await evaluate(`['.settings-app nav','[data-theme-choice]','[data-theme-name]','.settings-actions','[data-apply]','[data-export]'].map(selector=>{const e=document.querySelector(selector),r=e.getBoundingClientRect(),s=getComputedStyle(e);return {selector,rect:[r.x,r.y,r.width,r.height],color:s.color,background:s.backgroundColor,font:s.font,display:s.display};})`);
+        if(path==='/baseline/')desktopSettings=settingsView;else assert.deepEqual(settingsView,desktopSettings,'Desktop Settings appearance unchanged');
+        await click('.zomb-window-controls button:last-child');
     }
     console.log('PASS desktop baseline geometry/colors/font/display');
     await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await send('Emulation.setTouchEmulationEnabled',{enabled:true});
+    await send('Page.navigate',{url:base+'/baseline/'});
+    await until(()=>evaluate(`!!document.querySelector('#mobileHome') && !document.querySelector('#loginButton').disabled && document.querySelector('#windowWorkspace').hidden`),'baseline mobile');
+    await click('#loginButton');await until(()=>evaluate(`!document.querySelector('#mobileHome').hidden`),'baseline mobile boot',25000);
+    await click('#mobileHome [data-app="radio"]');await click('#mobileNavigation button');
+    await delay(100);await evaluate(`window.__m16={radio:0,arcade:0,styles:0}`);await delay(500);
+    const beforeHidden=await evaluate(`window.__m16`);assert.ok(beforeHidden.radio>0,'Baseline reproduces hidden Radio drawing');
     await send('Page.navigate',{url:`http://127.0.0.1:${server.address().port}/`});
     await until(()=>evaluate(`!!document.querySelector('#mobileHome') && !document.querySelector('#loginButton').disabled && document.querySelector('#windowWorkspace').hidden`),'mobile initialization');
     assert.equal(await evaluate(`getComputedStyle(document.querySelector('#mobileNavigation')).display`),'none','No navigation before boot');
@@ -64,6 +76,11 @@ try {
     const launch=async id=>{await click('#mobileNavigation button');await click(`#mobileHome [data-app="${id}"]`);};
     await launch('radio');await until(()=>evaluate(`!!document.querySelector('.radio [data-library] button')`),'Radio catalog');await activate('.radio [data-play]');
     await until(()=>evaluate(`!window.__testAudio[0].paused`),'Radio playing');
+    await click('#mobileNavigation button');await delay(100);await evaluate(`window.__m16={radio:0,arcade:0,styles:0}`);await delay(500);
+    const afterHidden=await evaluate(`window.__m16`);assert.equal(afterHidden.radio,0);assert.equal(afterHidden.styles,0);
+    console.log('M16 hidden Radio 500ms before='+JSON.stringify(beforeHidden)+' after='+JSON.stringify(afterHidden));
+    await evaluate(`(()=>{const s=document.querySelector('#mobileNavigation select');s.value=Array.from(s.options).find(o=>o.textContent==='Radio').value;s.dispatchEvent(new Event('change'));})()`);
+    assert.equal(await evaluate(`document.activeElement.matches('.zomb-window.is-focused')`),true,'Mobile switcher focus reaches revealed window');
     await launch('store');assert.equal(await evaluate(`window.__testAudio[0].paused`),false,'Radio survives mobile switch');
     await until(()=>evaluate(`!document.querySelector('.phone-notice').hidden`),'Incoming call without Phone window',20000);
     await activate('.phone-notice .phone-answer');await until(()=>evaluate(`!window.__testAudio[1].paused`),'Connected call');assert.equal(await evaluate(`window.__testAudio[0].paused`),true);
@@ -74,10 +91,25 @@ try {
         await launch(id);await delay(100);
         assert.ok(await evaluate(`(()=>{const w=document.querySelector('.zomb-window.is-focused'),r=w.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.bottom<=innerHeight&&w.querySelector('.zomb-window-content').scrollWidth<=w.querySelector('.zomb-window-content').clientWidth+1})()`),id+' viewport');
     }
+    assert.equal(await evaluate(`document.querySelectorAll('[data-colors] input[type="color"]').length===window.ZombThemeSchema.keys.length`),true,'Every theme control retained');
+    assert.equal(await evaluate(`getComputedStyle(document.querySelector('.theme-mini-preview')).display`),'grid');
+    await screenshot('m16-mobile-settings');
+    await send('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:1,mobile:true});await delay(200);
+    assert.equal(await evaluate(`getComputedStyle(document.querySelector('.theme-mini-preview')).display`),'none','Short landscape hides only the decorative preview');
+    assert.equal(await evaluate(`document.querySelectorAll('[data-colors] input[type="color"]').length===window.ZombThemeSchema.keys.length`),true);
+    await screenshot('m16-landscape-settings');
+    await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await delay(200);
     await evaluate(`(()=>{const select=document.querySelector('[data-theme-choice]');select.value='amber';select.dispatchEvent(new Event('change'));})()`);
     assert.equal(await evaluate(`document.documentElement.dataset.theme`),'amber');assert.equal(await evaluate(`window.ZombSettings.get().theme`),'toxic','Preview must not persist');
     assert.equal(await evaluate(`getComputedStyle(document.querySelector('#mobileNavigation button')).color`),'rgb(255, 209, 106)');
     await click('[data-reset]');assert.equal(await evaluate(`document.documentElement.dataset.theme`),'toxic');
+    await launch('arcade');await click('.arcade-card button');
+    await evaluate(`document.querySelector('.sprint-canvas').dispatchEvent(new KeyboardEvent('keydown',{code:'Space',key:' ',bubbles:true}))`);
+    await click('#mobileNavigation button');await delay(100);await evaluate(`window.__m16={radio:0,arcade:0,styles:0}`);await delay(500);
+    assert.equal(await evaluate(`window.__m16.arcade`),0);assert.equal(await evaluate(`document.querySelector('.sprint-canvas').dataset.mode`),'paused');
+    await launch('arcade');await click('.zomb-window.is-focused .zomb-window-controls button:last-child');
+    assert.equal(await evaluate(`document.querySelector('.sprint-canvas')===null`),true);
+    console.log('PASS M16 hidden Arcade pause/no painting and close cleanup, all theme controls and mobile switcher focus');
     await launch('store');await click('.store-card .store-actions button:last-child');assert.match(await evaluate(`document.querySelector('.store-cart h2').textContent`),/1 item/);
     assert.equal(await evaluate(`Array.from(document.querySelectorAll('.store-summary button')).every(b=>b.disabled)`),true);
     await evaluate(`window.ZombSettings.apply({theme:'custom',crtEffects:false,systemSounds:false,custom:{version:window.ZombThemeSchema.version,name:'Browser test',colors:{...window.ZombThemeSchema.palette('violet'),storeBackground:'#102030',storeText:'#abcdef'}}})`);
@@ -91,6 +123,13 @@ try {
     assert.equal(await evaluate(`window.__exported.text().then(text=>JSON.parse(text).colors.storeBackground)`),'#182838');
     await launch('store');
     await screenshot('m15-custom-store');
+    await launch('settings');await click('.zomb-window.is-focused .zomb-window-controls button:last-child');
+    await send('HeapProfiler.collectGarbage');const memoryBefore=await send('Memory.getDOMCounters');
+    for(let cycle=0;cycle<3;cycle++){await launch('settings');await click('.zomb-window.is-focused .zomb-window-controls button:last-child');}
+    await send('HeapProfiler.collectGarbage');const memoryAfter=await send('Memory.getDOMCounters');
+    assert.ok(memoryAfter.jsEventListeners<=memoryBefore.jsEventListeners,'Settings event handlers do not accumulate');
+    console.log('M16 Settings lifecycle DOM counters before='+JSON.stringify(memoryBefore)+' after='+JSON.stringify(memoryAfter));
+    await launch('store');
     await evaluate(`window.ZombSettings.apply({theme:'toxic',crtEffects:true})`);
     await screenshot('m15-mobile-store');
     await send('Emulation.setDeviceMetricsOverride',{width:844,height:390,deviceScaleFactor:1,mobile:true});await delay(200);assert.equal(await evaluate(`document.documentElement.dataset.mobile`),'true');await screenshot('m15-landscape');
