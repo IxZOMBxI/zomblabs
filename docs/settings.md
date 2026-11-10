@@ -60,3 +60,21 @@ Contrast warnings include normal/active/hovered taskbar text, tray/clock/status
 text and selected desktop labels (4.5:1), plus shell focus and boundary colors
 (3:1). Warnings never adjust colors or prevent saving. CRT effects remain a
 separate preference outside exported palettes.
+
+## M16 mobile usability
+
+Phone Settings keeps the same theme engine and controls. The built-in selector is
+first and full-width. Mobile-only guidance explains Apply/Cancel, previewing defaults
+and imports, and exporting the current preview. A compact Window/Store color sample
+updates through the real semantic variables; short landscape layouts omit only this
+decorative sample. Apply/Cancel/save/default/file actions precede advanced colors.
+Existing collapsible categories now have mobile descriptions of their affected UI,
+and a Back to theme actions button returns focus to Apply. Every color picker and
+hex field remains available, including Store colors. The CRT checkbox uses a compact
+touch-friendly row. Changing Settings categories removes editor-specific styling.
+
+All new presentation is hidden on desktop. Browser checks compare desktop Settings
+geometry, fonts, colors and display against the prior version. Theme v3, v1/v2
+migrations, import/export, previews and persistence are unchanged by M16; current
+schema details are in `docs/mobile-pwa.md`. Physical phone color-picker/file-picker
+and screen-reader behavior still needs device acceptance.

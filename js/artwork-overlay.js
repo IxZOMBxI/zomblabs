@@ -1,12 +1,13 @@
 // One overlay mask for all mounted media windows; no competing clipPath writers.
 const viewers = new Set();
-let frame;
+let frame, lastOverlay, lastClip;
 function draw() {
     const scanlines = document.querySelector('.scanlines');
     const holes = [];
-    for (const {container, image} of viewers) {
+    const enabled = !document.hidden && document.documentElement.dataset.crtEffects !== 'false';
+    for (const {container, image} of enabled ? viewers : []) {
         const element = image();
-        if (!element || element.hidden || !container.isConnected || container.closest('[hidden]')) continue;
+        if (!element || element.hidden || !container.isConnected || !element.getClientRects().length) continue;
         const bounds = element.getBoundingClientRect();
         let left = Math.max(0,bounds.left), top = Math.max(0,bounds.top), right = Math.min(innerWidth,bounds.right), bottom = Math.min(innerHeight,bounds.bottom);
         for (let parent = element.parentElement; parent; parent = parent.parentElement) {
@@ -16,7 +17,9 @@ function draw() {
         }
         if (right > left && bottom > top) holes.push(`${left}px ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, ${left}px ${bottom}px, ${left}px ${top}px, 0 0`);
     }
-    if (scanlines) scanlines.style.clipPath = holes.length ? `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${holes.join(', ')})` : '';
+    const clip = holes.length ? `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${holes.join(', ')})` : '';
+    if (scanlines && (lastOverlay !== scanlines || lastClip !== clip)) scanlines.style.clipPath = clip;
+    lastOverlay = scanlines; lastClip = clip;
     if (viewers.size) frame = requestAnimationFrame(draw);
 }
 export function protectArtwork(container, image) {
@@ -24,6 +27,6 @@ export function protectArtwork(container, image) {
     if (viewers.size === 1) draw();
     return () => {
         viewers.delete(viewer);
-        if (!viewers.size) { cancelAnimationFrame(frame); const overlay = document.querySelector('.scanlines'); if (overlay) overlay.style.clipPath = ''; }
+        if (!viewers.size) { cancelAnimationFrame(frame); const overlay = document.querySelector('.scanlines'); if (overlay) overlay.style.clipPath = ''; lastOverlay = null; lastClip = null; }
     };
 }

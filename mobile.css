@@ -1,4 +1,29 @@
 /* Every layout rule is gated: desktop rendering remains with the existing styles. */
+.theme-mobile-only { display: none; }
+html[data-mobile="true"] .theme-mobile-only { display: block; }
+html[data-mobile="true"] .theme-editor { display: flex; flex-direction: column; gap: 8px; }
+html[data-mobile="true"] .theme-editor > label:has([data-theme-choice]) { display: grid; gap: 4px; font-weight: bold; order: -3; }
+html[data-mobile="true"] .theme-editor [data-theme-help] { display: none; }
+html[data-mobile="true"] .theme-editor > label:has(input[type="checkbox"]) { flex-wrap: nowrap; }
+html[data-mobile="true"] .theme-editor input[type="checkbox"] { width: 22px; min-width: 22px; height: 22px; }
+html[data-mobile="true"] .theme-editor [data-theme-choice] { width: 100%; min-height: 48px; }
+html[data-mobile="true"] .theme-mobile-help { line-height: 1.5; margin: 0; order: -2; }
+html[data-mobile="true"] .theme-mini-preview { border: 1px solid var(--ui-border); padding: 8px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; order: -1; }
+html[data-mobile="true"] .theme-mini-preview > strong { grid-column: 1 / -1; }
+html[data-mobile="true"] .theme-preview-window { background: var(--ui-windowBackground); color: var(--ui-textPrimary); padding: 6px; }
+html[data-mobile="true"] .theme-preview-button { background: var(--ui-buttonBackground); color: var(--ui-buttonText); border: 1px solid var(--ui-border); padding: 4px; }
+html[data-mobile="true"] .theme-preview-store { background: var(--ui-storeBackground); color: var(--ui-storeText); padding: 6px; }
+html[data-mobile="true"] .theme-preview-store-button { background: var(--ui-storeButtonBackground); color: var(--ui-storeButtonText); border: 1px solid var(--ui-storeBorder); padding: 4px; }
+html[data-mobile="true"] .theme-editor .settings-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 6px; order: 1; }
+html[data-mobile="true"] .theme-editor .theme-import { grid-column: 1 / -1; padding: 8px; border: 1px solid var(--ui-border); }
+html[data-mobile="true"] .theme-editor [data-result] { order: 2; margin: 0; }
+html[data-mobile="true"] .theme-editor [data-colors] { order: 3; }
+html[data-mobile="true"] .theme-editor [data-contrast] { order: 4; }
+html[data-mobile="true"] .theme-editor details { border-bottom: 1px solid var(--ui-divider); }
+html[data-mobile="true"] .theme-editor summary { min-height: 44px; padding: 10px 0; cursor: pointer; }
+html[data-mobile="true"] .theme-editor details > p { font-size: 12px; line-height: 1.5; }
+html[data-mobile="true"] .theme-back-actions { width: 100%; margin-top: 12px; }
+@media (max-height: 500px) { html[data-mobile="true"] .theme-mini-preview { display: none; } }
 #mobileHome[hidden], #mobileNavigation[hidden], html[data-mobile="true"] #mobileHome[hidden], html[data-mobile="true"] #mobileNavigation[hidden] { display: none; }
 html[data-mobile="true"] { --mobile-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
 html[data-mobile="true"] body, html[data-mobile="true"] .terminal { width: 100%; min-height: var(--mobile-height, 100dvh); height: var(--mobile-height, 100dvh); overflow: hidden; }

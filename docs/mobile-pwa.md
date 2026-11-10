@@ -97,6 +97,23 @@ This implementation never deletes unrelated registrations or caches automaticall
 
 ## Verification and platform limits
 
+M16 maintenance: mobile windows now reveal before keyboard focus, so switching from
+Home can focus the requested application instead of a CSS-hidden window. Desktop
+focus ordering is unchanged. Radio spectrum and Arcade rendering now recognize
+CSS-hidden mobile windows; Radio audio continues, while hidden Arcade pauses. The
+artwork scanline mask skips hidden images, hidden documents and CRT-disabled pages,
+and does not rewrite an unchanged mask. Geometry tracking remains frame-based while
+mounted, preserving dragging/scroll clipping; this is not a claim of zero RAF callbacks.
+
+In a 500 ms isolated Chromium measurement, hidden Radio canvas fill calls fell from
+1,023 to zero and associated computed-style reads from 124 to zero. Three Settings
+open/close cycles had identical DOM-node/event-listener counts after garbage
+collection. These scoped measurements do not prove the absence of every memory leak.
+No artwork was requested during boot in the browser check. Original artwork totals
+about 107 MB and can still be expensive when viewed; M16 does not change originals,
+generate thumbnails, alter audio, or introduce caching. Mobile Settings details are
+documented in `docs/settings.md`.
+
 Run the existing Node/Python suites plus `tests/mobile-pwa.test.mjs`. The optional
 dependency-free `tests/mobile-browser.mjs` runs local headless Chromium with an
 isolated profile, local HTTP server and screenshot directory; it never uses personal

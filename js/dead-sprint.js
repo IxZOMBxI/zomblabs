@@ -52,8 +52,9 @@ export function mountDeadSprint(container, scores) {
         }
     }
     function tick(now) {
-        const inactive = document.hidden || container.closest('[hidden]') || !container.isConnected || !container.closest('.zomb-window')?.classList.contains('is-focused');
+        const inactive = document.hidden || !container.isConnected || !container.getClientRects().length || !container.closest('.zomb-window')?.classList.contains('is-focused');
         if (inactive) model.pause();
+        if (inactive && previousMode === model.mode) { last = now; frame = requestAnimationFrame(tick); return; }
         const delta = (now-last)/1000; last = now;
         if (!inactive) model.step(delta);
         if (model.score > previousScore) { previousScore = model.score; saved = scores.record('dead-sprint', model.score); high = scores.get('dead-sprint'); }

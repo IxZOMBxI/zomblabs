@@ -99,7 +99,7 @@ export function radioApp(service) {
             let frame;
             const unprotectArtwork = protectArtwork(container, () => get('art'));
             function draw() {
-                if (context && container.isConnected && !container.closest('[hidden]')) {
+                if (context && !document.hidden && container.isConnected && container.getClientRects().length) {
                     const palette = getComputedStyle(container);
                     context.fillStyle = palette.getPropertyValue('--spectrum-bg').trim(); context.fillRect(0, 0, 320, 40);
                     const analyzer = service.visualizationUnavailable ? null : service.analyzer;

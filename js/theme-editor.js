@@ -1,8 +1,21 @@
 const label = key => key.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase());
 export function mountThemeEditor(container, settings) {
     container.classList.add('theme-editor');
-    container.innerHTML = `<label>Theme <select data-theme-choice></select></label><label>Custom theme name <input data-theme-name maxlength="60"></label><p>Changes preview immediately. Apply to keep them; Cancel or closing Settings reverts unsaved changes.</p><div data-colors></div><p data-contrast role="status"></p><div class="settings-actions"><button data-apply>Apply</button><button data-save>Save custom theme</button><button data-reset>Cancel</button><button data-default>Reset to default</button><button data-export>Export JSON</button><label class="theme-import">Import JSON<input data-import type="file" accept="application/json,.json"></label></div><p data-result role="status"></p>`;
+    container.innerHTML = `<label>Theme <select data-theme-choice></select></label><label>Custom theme name <input data-theme-name maxlength="60"></label><p data-theme-help>Changes preview immediately. Apply to keep them; Cancel or closing Settings reverts unsaved changes.</p><div data-colors></div><p data-contrast role="status"></p><div class="settings-actions"><button data-apply>Apply</button><button data-save>Save custom theme</button><button data-reset>Cancel</button><button data-default>Reset to default</button><button data-export>Export JSON</button><label class="theme-import">Import JSON<input data-import type="file" accept="application/json,.json"></label></div><p data-result role="status"></p>`;
     const get = name => container.querySelector(`[data-${name}]`);
+    const mobileHelp = document.createElement('p'); mobileHelp.className = 'theme-mobile-only theme-mobile-help';
+    mobileHelp.textContent = 'Choose a built-in palette or open a color category. Apply saves; Cancel discards. Reset and Import only preview. Export downloads this preview.';
+    const mobilePreview = document.createElement('section'); mobilePreview.className = 'theme-mobile-only theme-mini-preview'; mobilePreview.setAttribute('aria-label','Live palette preview');
+    mobilePreview.innerHTML = '<strong>Live preview</strong><span class="theme-preview-window">Window text <span class="theme-preview-button">Button</span></span><span class="theme-preview-store">Store text <span class="theme-preview-store-button">Transfer</span></span>';
+    get('colors').before(mobileHelp,mobilePreview);
+    const descriptions = {
+        Desktop:'Desktop background, icon labels and selected icons.', Windows:'App backgrounds, title bars, borders and shadows.',
+        'Taskbar and menus':'Desktop taskbar, Start menu and menu surfaces. Mobile navigation shares the taskbar color.',
+        'Text and links':'Text and link colors throughout ZombOS.', Controls:'Buttons, inputs, selections and keyboard focus, including mobile Home controls.',
+        Surfaces:'Panels, dividers, scrollbars and tooltips.', Applications:'Radio, Explorer, ZombNET pages and Arcade surfaces.',
+        'Taskbar buttons':'Desktop app buttons in normal, active, hover and focus states.', 'System tray':'Desktop clock, connection and Radio indicators.',
+        'Zomb Store':'Both backpacks and ZombNET product pages. Original product artwork is unaffected.'
+    };
     const crtLabel = document.createElement('label');
     const crtEffects = document.createElement('input'); crtEffects.type = 'checkbox';
     crtEffects.checked = settings.get().crtEffects;
@@ -28,6 +41,7 @@ export function mountThemeEditor(container, settings) {
     function fill() { const c=colors();controls.forEach(([picker,hex],key)=>{picker.value=c[key];hex.value=c[key];hex.setCustomValidity('');});warn(); }
     for(const [group,keys] of Object.entries(schema.groups)) {
         const details=document.createElement('details'),summary=document.createElement('summary');summary.textContent=group;details.append(summary);
+        const explanation=document.createElement('p');explanation.className='theme-mobile-only';explanation.textContent=descriptions[group] || `${group} colors.`;details.append(explanation);
         for(const key of Object.keys(keys)) {
             const row=document.createElement('label');row.className='theme-color-row';const title=document.createElement('span');title.textContent=label(key);
             const picker=document.createElement('input');picker.type='color';picker.setAttribute('aria-label',label(key)+' color');
@@ -38,6 +52,8 @@ export function mountThemeEditor(container, settings) {
         }
         get('colors').append(details);
     }
+    const backToActions=document.createElement('button');backToActions.type='button';backToActions.className='theme-mobile-only theme-back-actions';backToActions.textContent='Back to theme actions';
+    backToActions.onclick=()=>{get('apply').scrollIntoView({block:'center'});get('apply').focus({preventScroll:true});};get('colors').append(backToActions);
     get('theme-choice').onchange=()=>{draft.theme=get('theme-choice').value;if(draft.theme==='custom'&&!draft.custom)draft.custom={version:schema.version,name:'',colors:schema.palette()};fill();preview();};
     get('theme-name').oninput=()=>{asCustom();draft.custom.name=get('theme-name').value;preview();};
     function save(custom=false) {
@@ -51,5 +67,5 @@ export function mountThemeEditor(container, settings) {
     get('export').onclick=()=>{const theme=schema.validate(draft.theme==='custom'?draft.custom:{version:schema.version,name:settings.themes[draft.theme],colors:colors()});const url=URL.createObjectURL(new Blob([JSON.stringify(theme,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='zombos-theme.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
     get('import').onchange=async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>32768)throw Error('Theme file exceeds 32 KB.');const theme=schema.validate(JSON.parse(await file.text()));if(!active)return;draft.custom=theme;draft.theme='custom';get('theme-choice').value='custom';get('theme-name').value=theme.name;fill();preview();get('result').textContent='Imported preview. Apply to save.';}catch(error){if(active)get('result').textContent='Import rejected: '+error.message;}finally{event.target.value='';}};
     sync();
-    return ()=>{active=false;settings.cancelPreview();};
+    return ()=>{active=false;container.classList.remove('theme-editor');settings.cancelPreview();};
 }
