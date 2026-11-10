@@ -106,6 +106,21 @@ launch/switching, real Radio/Phone audio handoff, Store restrictions, themes/rel
 and portrait/landscape bounds. Temporary profiles/screenshots stay in the supplied
 artifact directory for inspection.
 
+The browser runner accepts an optional third argument for the baseline Git ref
+(default HEAD). The M15 completion check used `b55876a`, the pre-mobile desktop,
+and Chrome 157.0.8103.40. Desktop geometry, colors, fonts and display matched;
+maximize/restore/minimize/reopen/close controls passed. Mobile checks passed at
+390×844 and 844×390, followed by return to 1280×900 desktop. All nine apps mounted
+within the usable viewport. Actual local Radio playback continued through app
+switching; an eligible Phone notice appeared with Phone closed, answering paused
+Radio, and ending resumed it. Store restrictions, v3 theme preview/cancel/import/
+export, and settings/backpack restoration passed with isolated storage.
+
+Completion verification: 32 Node results, four Python tests, JavaScript syntax and
+diff checks passed. Chrome's media emulation did not simulate standalone display
+mode, so only the detection unit tests passed for that mode; no actual installation
+is claimed. Production update propagation was not tested because nothing was deployed.
+
 Physical iPhone/Android acceptance is still required: actual Add to Home Screen,
 installed launch, safe areas, software keyboard, orientation, system status/navigation
 bars, file import/export/share behavior, autoplay and audio interruption. A simulated

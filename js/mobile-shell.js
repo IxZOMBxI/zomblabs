@@ -49,7 +49,11 @@ export function mountMobileShell({manager, installed, launch, workspace, environ
     homeButton.onclick=()=>{showHome=true;render();};
     switcher.onchange=()=>{if(switcher.value)manager.focus(switcher.value,true);};
     const onFocus=()=>{showHome=false;render();};
-    const onChange=()=>{if(!focused())showHome=true;render();};
+    const onChange=()=>{
+        if(!focused())showHome=true;
+        render();
+        if(media.matches && showHome && !workspace.hidden) homeButton.focus();
+    };
     const viewport=environment.visualViewport;
     const onViewport=()=>{
         if (!media.matches) { root.style.removeProperty('--mobile-height');root.style.removeProperty('--mobile-top');return; }
