@@ -5,15 +5,29 @@
     const key = 'zombos.settings.v1', listeners = new Set();
     let state = { theme: 'toxic', showHiddenFiles: false, crtEffects: true, systemSounds: true, systemSoundVolume: 0.25, custom: null };
     const copy = value => JSON.parse(JSON.stringify(value));
+    const recovery = globalThis.ZombStorage?.open(key, globalThis.ZombStorage.browserStorage());
+    function restore(saved) {
+        if (saved?.version !== undefined && saved.version !== 1) throw Error('Unsupported Settings version. Original retained.');
+        const next = { theme: 'toxic', showHiddenFiles: false, crtEffects: true, systemSounds: true, systemSoundVolume: 0.25, custom: null };
+        for (const key of ['showHiddenFiles','crtEffects','systemSounds']) if (typeof saved?.[key] === 'boolean') next[key] = saved[key];
+        if (Number.isFinite(saved?.systemSoundVolume) && saved.systemSoundVolume >= 0 && saved.systemSoundVolume <= 1) next.systemSoundVolume = saved.systemSoundVolume;
+        if (saved?.custom) {
+            if (![1,2,3].includes(saved.custom.version)) throw Error('Unsupported custom theme version. Original retained; use a compatible ZombOS version.');
+            try { next.custom = schema.validate(saved.custom); }
+            catch {
+                // Salvage individually valid colors; imports still use the strict theme validator.
+                const colors = schema.palette('toxic');
+                for (const key of schema.keys) if (typeof saved.custom.colors?.[key] === 'string' && /^#[0-9a-f]{6}$/i.test(saved.custom.colors[key])) colors[key] = saved.custom.colors[key];
+                next.custom = schema.validate({version:3,name:typeof saved.custom.name === 'string' ? saved.custom.name.slice(0,60) : 'Recovered custom theme',colors});
+            }
+        }
+        if (saved && Object.hasOwn(themes,saved.theme) && (saved.theme !== 'custom' || next.custom)) next.theme = saved.theme;
+        return next;
+    }
     try {
-        const saved = JSON.parse(localStorage.getItem(key));
-        if (typeof saved?.showHiddenFiles === 'boolean') state.showHiddenFiles = saved.showHiddenFiles;
-        if (typeof saved?.crtEffects === 'boolean') state.crtEffects = saved.crtEffects;
-        if (typeof saved?.systemSounds === 'boolean') state.systemSounds = saved.systemSounds;
-        if (Number.isFinite(saved?.systemSoundVolume) && saved.systemSoundVolume >= 0 && saved.systemSoundVolume <= 1) state.systemSoundVolume = saved.systemSoundVolume;
-        if (saved?.custom) { try { state.custom = schema.validate(saved.custom); } catch { /* Invalid custom theme ignored. */ } }
-        if (saved && Object.hasOwn(themes, saved.theme) && (saved.theme !== 'custom' || state.custom)) state.theme = saved.theme;
-    } catch { /* Corrupt or unavailable storage uses defaults. */ }
+        const saved = recovery ? recovery.read(restore) : restore(JSON.parse(localStorage.getItem(key)));
+        if (saved) state = saved;
+    } catch { /* Defaults remain usable when browser storage is unavailable. */ }
     function checked(patch) {
         const next = {...state, ...patch};
         if (!Object.hasOwn(themes,next.theme) || typeof next.showHiddenFiles !== 'boolean' || typeof next.crtEffects !== 'boolean') throw Error('Invalid preference');
@@ -43,7 +57,7 @@
         apply(patch) {
             try { state = checked(patch); } catch { return false; }
             paint(state); let persisted = true;
-            try { localStorage.setItem(key,JSON.stringify(state)); } catch { persisted = false; }
+            try { if (recovery) recovery.write(state); else localStorage.setItem(key,JSON.stringify(state)); } catch { persisted = false; }
             listeners.forEach(listener=>listener(copy(state))); return persisted;
         },
         reset() { return this.apply({theme:'toxic'}); },

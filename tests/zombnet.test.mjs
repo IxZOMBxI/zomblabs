@@ -6,7 +6,7 @@ assert.equal(parseAddress('zomb://HOME/').url,'zomb://home');
 assert.equal(parseAddress('https://example.com/a?q=hello world').kind,'external');
 const network=new ZombNetwork([{url:'zomb://home',listed:true},{url:'zomb://hidden',hidden:true,listed:true},{url:'zomb://locked',listed:true,unlock:'found'}]);
 assert.equal(network.directory().length,1);assert.ok(network.get('zomb://hidden'));assert.equal(network.get('zomb://locked'),null);network.discover('found');assert.ok(network.get('zomb://locked'));
-let saved='invalid';const storage={getItem:()=>saved,setItem:(key,value)=>{saved=value}};const state=new ZombnetState(storage);assert.equal(state.history.length,0);
+const data=new Map();const storage={getItem:key=>data.get(key),setItem:(key,value)=>data.set(key,value)};const state=new ZombnetState(storage);assert.equal(state.history.length,0);
 for(let i=0;i<130;i++){state.visit('zomb://page'+i,'Page');state.bookmark('zomb://page'+i,'Page')}
 assert.equal(state.history.length,100);assert.equal(state.bookmarks.length,50);
 const restored=new ZombnetState(storage);assert.equal(restored.history.length,100);restored.remove(restored.bookmarks[0].url);assert.equal(restored.bookmarks.length,49);restored.clear();assert.equal(new ZombnetState(storage).history.length,0);

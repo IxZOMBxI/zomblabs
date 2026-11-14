@@ -1,3 +1,4 @@
+import './storage-recovery.js';
 export class AudioService extends EventTarget {
     constructor(catalog, storage) {
         super();
@@ -8,7 +9,8 @@ export class AudioService extends EventTarget {
         this.shuffle = true;
         try {
             this.storage = storage === undefined ? globalThis.localStorage : storage;
-            const saved = JSON.parse(this.storage?.getItem('zombos.radio.v1') || 'null');
+            this.recovery = globalThis.ZombStorage.open('zombos.radio.v1',this.storage);
+            const saved = this.recovery.read(data=>({shuffle:typeof data.shuffle === 'boolean' ? data.shuffle : true}));
             if (typeof saved?.shuffle === 'boolean') this.shuffle = saved.shuffle;
         } catch { /* Default remains usable with denied or corrupt storage. */ }
         this.repeat = 'off';
@@ -107,7 +109,7 @@ export class AudioService extends EventTarget {
     toggleMute() { this.audio.muted = !this.audio.muted; }
     toggleShuffle() {
         this.shuffle = !this.shuffle;
-        try { this.storage?.setItem('zombos.radio.v1', JSON.stringify({shuffle:this.shuffle})); } catch { /* Keep the session preference. */ }
+        try { this.recovery?.write({shuffle:this.shuffle}); } catch { /* Keep the session preference. */ }
         this.emit();
     }
     cycleRepeat() { this.repeat = { off: 'all', all: 'one', one: 'off' }[this.repeat]; this.emit(); }

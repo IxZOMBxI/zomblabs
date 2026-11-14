@@ -1,9 +1,11 @@
+import './storage-recovery.js';
 import { parseAddress } from './zombnet-network.js';
 export class ZombnetState {
     constructor(storage) {
         this.storage = storage; this.key = 'zombos.zombnet.v1'; this.bookmarks = []; this.history = [];
         try {
-            const data = JSON.parse(storage?.getItem(this.key));
+            this.recovery = globalThis.ZombStorage.open(this.key,storage);
+            const data = this.recovery.read(data => ({bookmarks:this.clean(data.bookmarks,50),history:this.clean(data.history,100)}));
             this.bookmarks = this.clean(data?.bookmarks, 50);
             this.history = this.clean(data?.history, 100);
         } catch { /* Corrupted or unavailable storage uses empty local state. */ }
@@ -19,7 +21,7 @@ export class ZombnetState {
         }).slice(0, limit);
     }
     save() {
-        try { this.storage?.setItem(this.key, JSON.stringify({ bookmarks: this.bookmarks, history: this.history })); return Boolean(this.storage); }
+        try { this.recovery.write({ bookmarks: this.bookmarks, history: this.history }); return Boolean(this.storage); }
         catch { return false; }
     }
     visit(url, title) { this.history = this.clean([{url,title}, ...this.history], 100); return this.save(); }

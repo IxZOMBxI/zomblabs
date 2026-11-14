@@ -78,3 +78,56 @@ geometry, fonts, colors and display against the prior version. Theme v3, v1/v2
 migrations, import/export, previews and persistence are unchanged by M16; current
 schema details are in `docs/mobile-pwa.md`. Physical phone color-picker/file-picker
 and screen-reader behavior still needs device acceptance.
+
+## Local storage recovery
+
+Settings → System Recovery inspects Settings/themes, PHONE, ZombNET, Arcade,
+the demo backpack and RADIO preferences through their existing loaders. It offers
+a JSON backup download, a typed confirmation for individual resets, and the exact
+phrase `RESET ALL ZOMBOS` for a full reset. Resets reload the page. Only the six
+explicit ZombOS state keys are reset; unrelated keys and recovery backups remain.
+Close other ZombOS tabs before resetting so another tab cannot restore old state.
+
+`js/storage-recovery.js` loads before Settings restoration. Safe field/record
+repairs keep valid values and save the original raw string under
+`zombos.recovery.<original-key>` before writing. Each key retains up to five distinct
+originals. If backup space is exhausted, writes are protected rather than discarding
+older copies. Corrupt JSON, unsupported versions, blocked reads, and invalid backpack
+modes remain untouched. Quota/backup failures permit usable in-memory state without
+overwriting the original. After fixing browser permissions/space, reload to retry.
+Existing valid v1/v2 theme migration still uses the theme schema; partially damaged
+supported themes preserve valid colors/name and fill unusable colors from Toxic
+Green. The health report identifies repairs; originals remain exportable.
+
+Use `recovery.html` on the same website/origin if normal Settings is inaccessible.
+It uses fixed readable colors, the same validators, and no desktop boot or media
+requests. Settings recovery controls also retain readable colors independently of
+custom themes. Missing scripts/deployment files and network/media failures are not
+local-state corruption; resets will not fix them. Unsupported saved versions need
+a compatible app version or a deliberate export/reset, not an automatic downgrade.
+
+Backups contain raw strings, including recovery copies, and may contain personal
+theme names or browsing history. Keep downloads private. There is no arbitrary
+backup import; existing theme import remains strict. If local backup creation fails,
+export first, verify the downloaded file, then explicitly enable the reset override.
+Partial exports cannot enable that override. Without a readable backup, retain the
+original state and seek manual recovery rather than reset valuable progress.
+
+PHONE uncertainty pauses automatic delivery, preserving surviving history and
+unlocks. Ordinary recovery never resets Welcome attempts. Only an explicitly
+confirmed PHONE/full reset can permit previously consumed calls to ring again.
+Valid backpack rows whose products are absent/unavailable are retained in storage,
+but remain unavailable in the demo UI and never become real checkout items.
+
+Focused checks: `node --test tests/storage-recovery.test.mjs` and the relevant
+Phone/theme/ZombNET/Arcade/Store/system-sound tests. Optional isolated Chromium UI
+check: `node tests/storage-recovery-browser.mjs <chrome-executable> <artifact-directory>`.
+
+Settings keeps Custom Theme Editor, UI Sounds and System Recovery in a persistent
+sticky category row while the Settings window content scrolls. The window content
+is keyboard-focusable and uses its native vertical scrollbar; no nested flex
+scroll panel or outer overflow clipping is required. Native buttons support keyboard
+activation and touch; the selected category exposes `aria-pressed`. Startup shows
+a dismissible standalone recovery link only when local storage reports protection
+or unavailability. This notice is independent of desktop initialization and does
+not change recovery policies or reset confirmations.

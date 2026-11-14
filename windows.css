@@ -115,14 +115,14 @@
 #radioIndicator { position: sticky; left: 0; z-index: 1; }
 /* Retro desktop shell; boot screens retain their original styles. */
 #desktopScreen { overflow: hidden; }
-#desktopScreen .retro-desktop { position: absolute; inset: 0 0 52px; min-height: 0; padding: 20px; overflow: auto; }
+#desktopScreen .retro-desktop { position: absolute; inset: 0 0 52px; min-height: 0; padding: 20px; overflow: hidden; display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 8px; }
 .desktop-brand { position: absolute; right: 5%; bottom: 12%; opacity: .18; font-size: clamp(24px, 6vw, 76px); font-weight: bold; letter-spacing: 6px; pointer-events: none; }
 .desktop-brand span { display: block; font-size: 12px; letter-spacing: 2px; }
-#desktopIcons { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; position: relative; }
-.desktop-icon { width: 160px; min-height: 88px; padding: 6px; border: 1px solid transparent; color: var(--green); background: transparent; cursor: pointer; font: inherit; font-size: 12px; overflow-wrap: anywhere; }
+#desktopIcons { display: flex; flex-flow: column wrap; align-items: flex-start; align-content: flex-start; gap: 16px; position: relative; min-height: 0; min-width: 0; overflow-x: auto; overflow-y: hidden; }
+.desktop-icon { flex-shrink: 0; width: 160px; min-height: 88px; padding: 6px; border: 1px solid transparent; color: var(--green); background: transparent; cursor: pointer; font: inherit; font-size: 12px; overflow-wrap: anywhere; }
 .desktop-icon-symbol { display: block; font-size: 30px; margin-bottom: 8px; text-shadow: 2px 2px var(--dark-green); }
 .desktop-icon:hover, .desktop-icon:focus { background: var(--dark-green); border: 1px dotted var(--green); outline: none; }
-.desktop-hint { position: absolute; bottom: 8px; left: 20px; right: 20px; opacity: .55; font-size: 11px; pointer-events: none; }
+.desktop-hint { margin: 0; opacity: .55; font-size: 11px; pointer-events: none; }
 #zombTaskbar { overflow: visible; gap: 6px; padding: 4px; box-shadow: inset 0 2px var(--tone-27); }
 #runningApps { display: flex; flex: 1; min-width: 0; overflow-x: auto; gap: 4px; }
 #zombTaskbar button { font-size: 11px; box-shadow: inset 1px 1px var(--tone-28); }
@@ -219,7 +219,6 @@
 .explorer-content p { padding: 8px; }
 .explorer-status { flex-shrink: 0; padding: 4px; border: 1px inset var(--green); overflow-wrap: anywhere; }
 .file-preview { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; margin: 0; }
-@media (max-height: 650px) { #desktopIcons { flex-direction: row; flex-wrap: wrap; align-content: flex-start; } .desktop-hint { position: static; } }
 .explorer .virtual-hidden { opacity: .62; }
 .explorer-menus label { display: flex; align-items: center; padding: 6px; min-width: 190px; }
 .explorer-menus input[type="checkbox"] { width: auto; accent-color: var(--green); }
@@ -294,6 +293,8 @@ html[data-theme="custom"] [role="tooltip"] { background: var(--ui-tooltipBackgro
 .theme-color-row input[type="color"] { width: 38px; height: 32px; padding: 1px; }
 .theme-color-row input[type="text"] { width: 82px; padding: 5px; }
 .theme-editor > label input, .theme-editor select { max-width: 100%; min-width: 0; }
+.settings-app .theme-editor > .crt-effects-control { display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; }
+.settings-app .theme-editor > .crt-effects-control input[type="checkbox"] { flex: 0 0 22px; width: 22px; min-width: 22px; height: 22px; margin: 0; padding: 0; accent-color: var(--ui-accent, var(--green)); }
 .theme-editor .theme-import { padding: 5px; border: 1px solid var(--green); }
 .theme-import input { max-width: 100%; font-size: 11px; }
 html[data-theme="custom"] :is(#zombTaskbar,#startMenu,.radio,.settings-app,.explorer,.zombnet,.arcade,#emailForm) button { background: var(--ui-buttonBackground); color: var(--ui-buttonText); border-color: var(--ui-border); }
@@ -369,3 +370,26 @@ html[data-theme="custom"] .store-product button { background: var(--ui-storeButt
 html[data-theme="custom"] .store-product button:hover { background: var(--ui-storeHoverBackground); color: var(--ui-storeHoverText); }
 html[data-theme="custom"] .store-product button:disabled { color: var(--ui-storeDisabledText); }
 html[data-theme="custom"] .store-product button:focus-visible { outline-color: var(--ui-storeFocus); }
+
+/* Experiment Logs shares the semantic palette and native window scrolling. */
+.experiment-logs { color: var(--ui-textPrimary); background: var(--ui-windowBackground); min-width: 0; overflow-wrap: anywhere; }
+.experiment-logs h1 { font-size: 22px; margin: 4px 0; }
+.experiment-logs h2 { font-size: 18px; }
+.experiment-logs h3 { font-size: 15px; }
+.experiment-logs .experiment-eyebrow, .experiment-logs .experiment-status { color: var(--ui-textSecondary); font-size: 12px; }
+.experiment-filters, .experiment-links { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+.experiment-filters label { flex: 1 1 180px; min-width: 0; }
+.experiment-logs :is(input,select,button) { font: inherit; min-height: 44px; padding: 8px; max-width: 100%; border: 1px solid var(--ui-border); background: var(--ui-buttonBackground); color: var(--ui-buttonText); }
+.experiment-logs input, .experiment-logs select { width: 100%; background: var(--ui-inputBackground); color: var(--ui-inputText); }
+.experiment-logs a { color: var(--ui-link); display: inline-block; padding: 8px 0; min-height: 44px; }
+.experiment-logs a:hover { color: var(--ui-linkHover); }
+.experiment-logs button:hover { background: var(--ui-hoverBackground); color: var(--ui-hoverText); }
+.experiment-logs :is(a,button,input,select,summary):focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -2px; }
+.experiment-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,240px),1fr)); gap: 12px; }
+.experiment-cards article { padding: 12px; background: var(--ui-panel); border: 1px solid var(--ui-border); min-width: 0; }
+.experiment-timeline { padding-left: 22px; }
+.experiment-timeline li { padding: 8px 0; border-bottom: 1px solid var(--ui-divider); }
+.experiment-logs figure { margin: 16px 0; }
+.experiment-logs img, .experiment-logs video { display: block; max-width: 100%; max-height: 320px; object-fit: contain; }
+.experiment-logs figcaption { font-size: 12px; color: var(--ui-textSecondary); }
+.experiment-logs summary { cursor: pointer; padding: 10px 0; min-height: 44px; }

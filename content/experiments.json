@@ -1,0 +1,867 @@
+{
+  "version": 1,
+  "projects": [
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "window-manager.js",
+          "path": "js/window-manager.js"
+        },
+        {
+          "label": "mobile-shell.js",
+          "path": "js/mobile-shell.js"
+        },
+        {
+          "label": "theme-schema.js",
+          "path": "js/theme-schema.js"
+        },
+        {
+          "label": "system-sounds.js",
+          "path": "js/system-sounds.js"
+        },
+        {
+          "label": "mobile-pwa.md",
+          "path": "docs/mobile-pwa.md"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "settings",
+          "label": "Open Settings"
+        },
+        {
+          "type": "app",
+          "appId": "explorer",
+          "label": "Open File Explorer"
+        }
+      ],
+      "relatedProjects": [
+        "system-recovery"
+      ],
+      "id": "zombos",
+      "title": "ZombOS",
+      "category": "Platform",
+      "summary": "A website presented as a working retro desktop, with a shared interface for phones and installed web apps.",
+      "description": "ZombOS brings the Zomb Labs website into a desktop-style interface. Its applications share window controls, themes and services. A dedicated mobile shell presents the same applications in a focused workspace rather than creating a separate mobile website.",
+      "logIds": [
+        "zombos-implementation"
+      ],
+      "media": [
+        {
+          "type": "image",
+          "src": "assets/pwa/zombos-192.png",
+          "alt": "Existing ZombOS home-screen icon",
+          "caption": "Existing temporary home-screen icon used by the PWA foundation; not a new archive logo."
+        }
+      ]
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "audio-service.js",
+          "path": "js/audio-service.js"
+        },
+        {
+          "label": "radio-app.js",
+          "path": "js/radio-app.js"
+        },
+        {
+          "label": "media-catalog.js",
+          "path": "js/media-catalog.js"
+        },
+        {
+          "label": "generate-media.py",
+          "path": "tools/generate-media.py"
+        },
+        {
+          "label": "README.md",
+          "path": "media/README.md"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "radio",
+          "label": "Open RADIO"
+        }
+      ],
+      "relatedProjects": [
+        "phone"
+      ],
+      "id": "radio",
+      "title": "Zomb Labs RADIO",
+      "category": "Audio",
+      "summary": "A shared audio player backed by a generated music and broadcast catalog.",
+      "description": "RADIO makes the existing Zomb Labs audio library browsable inside ZombOS. Playback is owned by a shared service, so closing the player window does not stop the current track. The generated media catalog remains the source of truth for recordings and artwork.",
+      "logIds": [
+        "radio-implementation"
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "phone.md",
+          "path": "docs/phone.md"
+        },
+        {
+          "label": "phone-service.js",
+          "path": "js/phone-service.js"
+        },
+        {
+          "label": "phone-scheduler.js",
+          "path": "js/phone-scheduler.js"
+        },
+        {
+          "label": "phone-state.js",
+          "path": "js/phone-state.js"
+        },
+        {
+          "label": "Welcome to ZOMB LABS.mp3.json",
+          "path": "media/calls/Welcome to ZOMB LABS.mp3.json"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "phone",
+          "label": "Open PHONE"
+        },
+        {
+          "type": "app",
+          "appId": "radio",
+          "label": "Open RADIO"
+        }
+      ],
+      "relatedProjects": [
+        "radio",
+        "system-recovery"
+      ],
+      "id": "phone",
+      "title": "PHONE",
+      "category": "Audio",
+      "summary": "Event-driven incoming recordings with persistent call history and manual replay.",
+      "description": "PHONE delivers prerecorded calls through a centralized scheduler. It is a telephone interaction rather than another public playlist: recordings only start after answering, and encountered calls can be revisited through Call History according to their delivery rules.",
+      "logIds": [
+        "phone-implementation"
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "zombnet.md",
+          "path": "docs/zombnet.md"
+        },
+        {
+          "label": "zombnet-network.js",
+          "path": "js/zombnet-network.js"
+        },
+        {
+          "label": "zombnet-app.js",
+          "path": "js/zombnet-app.js"
+        },
+        {
+          "label": "zombnet-state.js",
+          "path": "js/zombnet-state.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "store",
+        "arcade"
+      ],
+      "id": "zombnet",
+      "title": "ZombNET",
+      "category": "Navigation",
+      "summary": "An internal browser with fictional addresses, page navigation, bookmarks and history.",
+      "description": "ZombNET is a real interface for browsing the fictional internal network presented by ZombOS. It keeps internal pages inside the application and opens supported external HTTPS destinations separately. The portfolio documents the browser software, not fictional events from those pages.",
+      "logIds": [
+        "zombnet-implementation"
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "store.md",
+          "path": "docs/store.md"
+        },
+        {
+          "label": "product-catalog.js",
+          "path": "js/product-catalog.js"
+        },
+        {
+          "label": "backpack-state.js",
+          "path": "js/backpack-state.js"
+        },
+        {
+          "label": "store-app.js",
+          "path": "js/store-app.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "store",
+          "label": "Open Zomb Store"
+        },
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "zombnet"
+      ],
+      "id": "store",
+      "title": "Zomb Store",
+      "category": "Demonstrations",
+      "summary": "A demo inventory and backpack interface with no purchasing flow.",
+      "description": "Zomb Store implements the M14 backpack foundation using a shared demo product catalog. The same records support inventory cards and ZombNET product inspection. Items demonstrate interface behavior; they are not claims of real merchandise availability.",
+      "logIds": [
+        "store-implementation"
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "arcade.md",
+          "path": "docs/arcade.md"
+        },
+        {
+          "label": "arcade.js",
+          "path": "js/arcade.js"
+        },
+        {
+          "label": "dead-sprint.js",
+          "path": "js/dead-sprint.js"
+        },
+        {
+          "label": "dead-sprint-engine.js",
+          "path": "js/dead-sprint-engine.js"
+        },
+        {
+          "label": "arcade-scores.js",
+          "path": "js/arcade-scores.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "arcade",
+          "label": "Open Arcade"
+        },
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "zombnet"
+      ],
+      "id": "arcade",
+      "title": "ZombNET Arcade",
+      "category": "Games",
+      "summary": "A shared game launcher featuring DEAD SPRINT and browser-local best scores.",
+      "description": "The Arcade application and its ZombNET page use a shared launcher. DEAD SPRINT is the implemented game: a compact keyboard-and-touch chase with a local high score. Its game loop and controls are cleaned up when the view closes.",
+      "logIds": [
+        "arcade-implementation"
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "settings.md",
+          "path": "docs/settings.md"
+        },
+        {
+          "label": "storage-recovery.js",
+          "path": "js/storage-recovery.js"
+        },
+        {
+          "label": "recovery-ui.js",
+          "path": "js/recovery-ui.js"
+        },
+        {
+          "label": "settings-app.js",
+          "path": "js/settings-app.js"
+        },
+        {
+          "label": "recovery-access.js",
+          "path": "js/recovery-access.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "settings",
+          "label": "Open Settings"
+        }
+      ],
+      "relatedProjects": [
+        "zombos",
+        "phone"
+      ],
+      "id": "system-recovery",
+      "title": "System Recovery",
+      "category": "Reliability",
+      "summary": "Local-state validation, protected repairs and visitor-controlled backups and resets.",
+      "description": "System Recovery helps ZombOS stay usable when browser-local data is damaged or incompatible. It preserves recoverable originals before safe repairs and exposes inspection, backup and explicit reset controls inside Settings, with a standalone emergency entry point.",
+      "logIds": [
+        "system-recovery-implementation"
+      ],
+      "media": []
+    }
+  ],
+  "logs": [
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "window-manager.js",
+          "path": "js/window-manager.js"
+        },
+        {
+          "label": "mobile-shell.js",
+          "path": "js/mobile-shell.js"
+        },
+        {
+          "label": "theme-schema.js",
+          "path": "js/theme-schema.js"
+        },
+        {
+          "label": "system-sounds.js",
+          "path": "js/system-sounds.js"
+        },
+        {
+          "label": "mobile-pwa.md",
+          "path": "docs/mobile-pwa.md"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "settings",
+          "label": "Open Settings"
+        },
+        {
+          "type": "app",
+          "appId": "explorer",
+          "label": "Open File Explorer"
+        }
+      ],
+      "relatedProjects": [
+        "system-recovery"
+      ],
+      "id": "zombos-implementation",
+      "projectId": "zombos",
+      "title": "One desktop, shared applications",
+      "summary": "The window manager, theme editor and mobile shell provide the common structure used by the applications.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Keep application behavior shared while making the interface usable with a mouse, keyboard or touch."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "Applications register with a common window manager. Desktop windows can be moved, resized, minimized and maximized. On phones, a launcher and app switcher present the same mounted applications in a focused workspace."
+        },
+        {
+          "type": "heading",
+          "text": "Appearance and feedback"
+        },
+        {
+          "type": "paragraph",
+          "text": "Settings provides built-in palettes and a custom color editor with preview, save and JSON import/export. Short synthesized system sounds have independent mute and volume preferences. The web manifest and home-screen assets provide the PWA foundation."
+        },
+        {
+          "type": "heading",
+          "text": "Current limits"
+        },
+        {
+          "type": "paragraph",
+          "text": "These are implemented features in the repository. This record does not establish a public deployment date or physical-device acceptance. The home-screen icon artwork is identified as temporary in the mobile documentation."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "audio-service.js",
+          "path": "js/audio-service.js"
+        },
+        {
+          "label": "radio-app.js",
+          "path": "js/radio-app.js"
+        },
+        {
+          "label": "media-catalog.js",
+          "path": "js/media-catalog.js"
+        },
+        {
+          "label": "generate-media.py",
+          "path": "tools/generate-media.py"
+        },
+        {
+          "label": "README.md",
+          "path": "media/README.md"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "radio",
+          "label": "Open RADIO"
+        }
+      ],
+      "relatedProjects": [
+        "phone"
+      ],
+      "id": "radio-implementation",
+      "projectId": "radio",
+      "title": "A catalog-backed player with background audio",
+      "summary": "The catalog generator and persistent audio service connect recordings, artwork and playback controls.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Let visitors listen while they explore other applications without maintaining a second playlist or duplicating audio files."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "The media generator scans the recording directories and reads optional metadata. Matching artwork and explicit sidecar information feed the shared catalog. RADIO loads that catalog and provides track selection, seeking, volume, shuffle and repeat controls."
+        },
+        {
+          "type": "heading",
+          "text": "Playback behavior"
+        },
+        {
+          "type": "paragraph",
+          "text": "The audio service survives closing the player window. Shuffle starts enabled for new users and remembers a saved preference. PHONE can temporarily hold playback and restore it through the existing audio coordination."
+        },
+        {
+          "type": "heading",
+          "text": "Content boundary"
+        },
+        {
+          "type": "paragraph",
+          "text": "This record describes the player. It does not duplicate song lists or claim release dates for recordings; the media catalog and RADIO itself provide the current content."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "phone.md",
+          "path": "docs/phone.md"
+        },
+        {
+          "label": "phone-service.js",
+          "path": "js/phone-service.js"
+        },
+        {
+          "label": "phone-scheduler.js",
+          "path": "js/phone-scheduler.js"
+        },
+        {
+          "label": "phone-state.js",
+          "path": "js/phone-state.js"
+        },
+        {
+          "label": "Welcome to ZOMB LABS.mp3.json",
+          "path": "media/calls/Welcome to ZOMB LABS.mp3.json"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "phone",
+          "label": "Open PHONE"
+        },
+        {
+          "type": "app",
+          "appId": "radio",
+          "label": "Open RADIO"
+        }
+      ],
+      "relatedProjects": [
+        "radio",
+        "system-recovery"
+      ],
+      "id": "phone-implementation",
+      "projectId": "phone",
+      "title": "Incoming calls, history and the Welcome attempt",
+      "summary": "Delivery rules and persistent state separate automatic calls from visitor-controlled replay.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Deliver recordings at appropriate moments without playing them automatically before the visitor answers."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "The scheduler supports session delays, scheduled times with explicit time zones, application events, conditions and cooldowns. Only one incoming or active call is handled at a time. Answering starts playback, reveals artwork and unlocks the recording for replay."
+        },
+        {
+          "type": "heading",
+          "text": "Welcome behavior"
+        },
+        {
+          "type": "paragraph",
+          "text": "The Welcome recording is configured for one incoming attempt after ten active seconds. That attempt consumes its automatic delivery and unlocks replay even if the visitor declines or misses it. Existing attempts are recognized without clearing history."
+        },
+        {
+          "type": "heading",
+          "text": "Audio and recovery"
+        },
+        {
+          "type": "paragraph",
+          "text": "Connected calls coordinate with RADIO through its audio hold. If saved delivery state cannot be trusted, automatic calls are paused to avoid repeating previously consumed calls. Surviving unlocked history remains available."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "zombnet.md",
+          "path": "docs/zombnet.md"
+        },
+        {
+          "label": "zombnet-network.js",
+          "path": "js/zombnet-network.js"
+        },
+        {
+          "label": "zombnet-app.js",
+          "path": "js/zombnet-app.js"
+        },
+        {
+          "label": "zombnet-state.js",
+          "path": "js/zombnet-state.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "store",
+        "arcade"
+      ],
+      "id": "zombnet-implementation",
+      "projectId": "zombnet",
+      "title": "Internal addresses and shared application pages",
+      "summary": "A page registry and address parser provide navigation without a second website.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Give ZombOS an internal browsing experience with recognizable addresses and reusable page content."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "The network registry owns internal pages and the parser recognizes zomb:// addresses. The browser provides navigation, saved bookmarks and recent history. Internal pages can mount shared application content and dispose it when navigation changes."
+        },
+        {
+          "type": "heading",
+          "text": "Connections"
+        },
+        {
+          "type": "paragraph",
+          "text": "Arcade and Store product inspection reuse their existing content and application code. Hidden or unlocked fictional pages are presentation features, not a way to keep delivered files private."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "store.md",
+          "path": "docs/store.md"
+        },
+        {
+          "label": "product-catalog.js",
+          "path": "js/product-catalog.js"
+        },
+        {
+          "label": "backpack-state.js",
+          "path": "js/backpack-state.js"
+        },
+        {
+          "label": "store-app.js",
+          "path": "js/store-app.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "store",
+          "label": "Open Zomb Store"
+        },
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "zombnet"
+      ],
+      "id": "store-implementation",
+      "projectId": "store",
+      "title": "A shared demo catalog and persistent backpack",
+      "summary": "The inventory and browser views use the same product records while checkout stays disabled.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Build and exercise inventory browsing and backpack transfers before any separately approved commerce integration."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "The catalog validates product records and distinguishes demonstration data from other product states. Visitors can transfer eligible demo items, adjust quantities and remove them from a browser-local backpack. Product inspection opens the matching ZombNET page."
+        },
+        {
+          "type": "heading",
+          "text": "Safeguards"
+        },
+        {
+          "type": "paragraph",
+          "text": "Demonstration checkout is disabled. No payment or order workflow is implemented by this foundation. This archive does not copy prices, product descriptions or availability; those belong to the shared product catalog."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "arcade.md",
+          "path": "docs/arcade.md"
+        },
+        {
+          "label": "arcade.js",
+          "path": "js/arcade.js"
+        },
+        {
+          "label": "dead-sprint.js",
+          "path": "js/dead-sprint.js"
+        },
+        {
+          "label": "dead-sprint-engine.js",
+          "path": "js/dead-sprint-engine.js"
+        },
+        {
+          "label": "arcade-scores.js",
+          "path": "js/arcade-scores.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "arcade",
+          "label": "Open Arcade"
+        },
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [
+        "zombnet"
+      ],
+      "id": "arcade-implementation",
+      "projectId": "arcade",
+      "title": "DEAD SPRINT in the shared Arcade launcher",
+      "summary": "A playable chase game connects a deterministic game model to a disposable canvas view.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Provide a small playable game that fits the ZombOS window and internal browser lifecycle."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "Space or tapping accelerates the player. Escape and the controls support pausing, resuming and restarting. The rendering code connects to a separate game model, while the shared score service retains best scores locally."
+        },
+        {
+          "type": "heading",
+          "text": "Lifecycle and limits"
+        },
+        {
+          "type": "paragraph",
+          "text": "The game pauses when its view becomes inactive and removes its loop and listeners when closed. A run does not survive closure, but the best score can. There is no account system or online leaderboard."
+        }
+      ],
+      "media": []
+    },
+    {
+      "status": "local-implementation",
+      "visibility": "published",
+      "sources": [
+        {
+          "label": "settings.md",
+          "path": "docs/settings.md"
+        },
+        {
+          "label": "storage-recovery.js",
+          "path": "js/storage-recovery.js"
+        },
+        {
+          "label": "recovery-ui.js",
+          "path": "js/recovery-ui.js"
+        },
+        {
+          "label": "settings-app.js",
+          "path": "js/settings-app.js"
+        },
+        {
+          "label": "recovery-access.js",
+          "path": "js/recovery-access.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "settings",
+          "label": "Open Settings"
+        }
+      ],
+      "relatedProjects": [
+        "zombos",
+        "phone"
+      ],
+      "id": "system-recovery-implementation",
+      "projectId": "system-recovery",
+      "title": "Protecting local progress during recovery",
+      "summary": "Recovery checks individual subsystems while keeping unrelated browser storage intact.",
+      "date": null,
+      "article": [
+        {
+          "type": "heading",
+          "text": "Objective"
+        },
+        {
+          "type": "paragraph",
+          "text": "Recover usable preferences and progress without silently clearing local storage or replaying consumed PHONE calls."
+        },
+        {
+          "type": "heading",
+          "text": "Implementation"
+        },
+        {
+          "type": "paragraph",
+          "text": "Subsystem loaders validate their own records through a shared recovery guard. Safe repairs retain valid fields and save raw originals first. Unsupported versions and unreadable records are protected from accidental replacement. Settings exposes health inspection, backup export and confirmed resets."
+        },
+        {
+          "type": "heading",
+          "text": "Access and limits"
+        },
+        {
+          "type": "paragraph",
+          "text": "System Recovery is a normal Settings section. A separate emergency page uses readable colors independently of a saved theme. If delivery history is uncertain, PHONE automatic calls pause. Missing deployment files and network failures are reported separately from storage problems."
+        },
+        {
+          "type": "heading",
+          "text": "Reset boundary"
+        },
+        {
+          "type": "paragraph",
+          "text": "Only explicit confirmation authorizes a subsystem or full local reset. Ordinary recovery does not clear Welcome-call history. Exported backups are not automatically imported as trusted application data."
+        }
+      ],
+      "media": []
+    }
+  ]
+}

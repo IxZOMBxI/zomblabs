@@ -36,7 +36,8 @@ export class PhoneService extends EventTarget {
         this.catalog = calls.filter(call => !duplicates.has(call.callId));
         this.scheduler.catalog = this.catalog;
         this.state.recover(this.catalog,this.now()); this.ready = true;
-        if (invalid || duplicates.size) this.error = 'Some call metadata is invalid. Those calls are disabled.';
+        if (this.state.automaticBlocked) this.error = 'Local PHONE state needs recovery. Automatic calls are paused to prevent repeats. Open Settings > System Recovery; available history can still be replayed.';
+        else if (invalid || duplicates.size) this.error = 'Some call metadata is invalid. Those calls are disabled.';
         this.emit();
     }
     setActive(active) {
@@ -56,6 +57,12 @@ export class PhoneService extends EventTarget {
         if (!call) return;
         this.current = call; this.mode = 'ringing'; this.error = '';
         this.attempt = this.state.begin(call,this.now());
+        if (!this.state.persistent) {
+            this.state.automaticBlocked = true;
+            this.finish('missed',false);
+            this.error = 'Local PHONE delivery could not be saved. Automatic calls are paused to prevent repeat notifications. Open Settings > System Recovery.';
+            this.emit(); return;
+        }
         this.ringUntil = this.now() + call.delivery.ringSeconds*1000;
         this.emit();
     }

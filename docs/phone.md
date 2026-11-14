@@ -54,9 +54,11 @@ recording is disabled. Malformed sidecars fall back to disabled delivery. Invali
 delivery rules and duplicate call IDs are rejected by Phone. No JavaScript edits
 are needed to add recordings using the events below.
 
-The existing Welcome recording's sidecar retains its current ID and rules:
-one-time delivery after 10 active seconds, a 30-second ring window and 30-second
-retry delay. Regeneration now preserves those rules.
+The Welcome recording retains its ID, 10-active-second initial delay and
+30-second ring window. Its `onAttempt: "consume"` and `unlockOn: ["ringing"]`
+rules persist consumption and unlock manual replay at the first incoming attempt,
+even without an answer. Existing saved attempts are also consumed and unlocked
+without replacing history. Catalog regeneration preserves these sidecar rules.
 
 ## Delivery timing
 
@@ -78,7 +80,8 @@ Notifications are visual; no recording or ringtone autoplays before Answer.
 | `cooldownSeconds` | Delay after completion/consume for repeatable calls; default `3600` |
 | `conditions` | Optional eligibility requirements described below |
 | `onDeclined`, `onMissed`, `onInterrupted` | `"retry"` (default) or `"consume"` |
-| `unlockOn` | Additional outcomes that unlock replay; default `[]` |
+| `onAttempt` | `"retry"` (default) or `"consume"`; consume marks a one-time call delivered at its first ring, including existing saved attempts |
+| `unlockOn` | Additional states that unlock replay: `"ringing"`, `"declined"`, `"missed"`, `"interrupted"`; default `[]` |
 
 Delays/cooldowns accept seconds up to 31536000; retries/cooldowns must be at least
 one second. Active time excludes boot, hidden tabs and unfocused browser time and
@@ -127,6 +130,16 @@ connected/replay audio. Resume is explicit on return. Minimizing Phone preserves
 its state. Replay never changes the original history outcome or consumes a call.
 
 ## Audio, storage and lifecycle
+
+The shared storage recovery guard retains raw originals before safe repairs.
+Unreadable or unsupported PHONE state protects the original and disables automatic
+delivery. Partial repairs preserve valid history/delivery flags and persist
+`recoveryHold: true` in the existing version-1 envelope; automatic calls stay paused
+after reload. Surviving answered/completed history restores positive delivery and
+unlock evidence. Valid Welcome attempt migration remains intact. Available unlocked
+history can still be replayed manually. Settings → System Recovery explains the
+problem and offers export or a deliberate reset; ordinary recovery never clears
+PHONE progress. Clearing PHONE explicitly allows one-time calls again.
 
 Phone holds exclusive audio while connected or replaying, even when paused.
 Radio's source and position are preserved; selection/play/seek are blocked during

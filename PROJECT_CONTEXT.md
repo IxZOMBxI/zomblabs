@@ -127,3 +127,15 @@ Explorer implements tree expansion, navigation history, address bar, list/detail
 Handoff checks passed: five Node test files (`arcade`, `filesystem-content`, `theme-schema`, `virtual-filesystem`, `zombnet`), two Python unittest methods (including ID3 subcases), syntax checks for script.js/all js modules, and read-only generation yielding 10 music/3 broadcasts with all 10 music covers. Runtime was Node 24.19.0 and Python 3.12.14. Tests exercise models/schema, not full browser rendering, media decoding, live signup or deployment.
 
 No browser suite is committed. Earlier cloud browser harnesses were temporary and must not be assumed available locally. No new browser/live-site tests were run for this docs-only handoff. Local acceptance should cover all apps, themes/contrast, minimum/mobile layouts, focus/disposal, real-track playback and artwork, and signup with intercepted submission. Other debt: stale committed catalog; one custom slot; schema migration needed for future keys; large original covers; independent discovery stores; browser-specific audio/visualization support; no persisted window sessions. Do not turn these observations into unrequested fixes.
+
+
+## Experiment Logs
+
+`js/experiment-app.js` is the shared real-project archive app (`experiments`).
+`content/experiments.json` supplies projects and development entries; the strict
+validator and static-file checks are in `js/experiment-catalog.js` and
+`tools/validate-experiments.mjs`. Hash links reopen records after normal boot.
+See `docs/experiment-logs.md` for authoring, evidence, draft visibility and checks.
+Real development records, media catalogs, the shared Store catalog and the separate
+Lore Bible each remain authoritative for their respective content. Never duplicate
+prices/playlists or invent development history, deployment status or fictional canon.
