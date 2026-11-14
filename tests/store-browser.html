@@ -2,9 +2,10 @@
 <html lang="en" data-theme="toxic"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Store isolated browser checks</title><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="windows.css"></head>
 <body><div id="windowWorkspace"></div><nav id="tasks"></nav><pre id="result">RUNNING</pre>
 <script type="module">
-import { products } from './js/product-catalog.js';
+import { products } from './tests/store-fixtures.js';
+import { products as activeProducts } from './js/product-catalog.js';
 import { BackpackState } from './js/backpack-state.js';
-import { storeApp, productPages } from './js/store-app.js';
+import { storeApp } from './js/store-app.js';
 import { ZombNetwork } from './js/zombnet-network.js';
 import { ZombnetState } from './js/zombnet-state.js';
 import { zombnetApp, createZombnetNavigation } from './js/zombnet-app.js';
@@ -14,27 +15,34 @@ const assert=(value,message)=>{if(!value)throw Error(message);};
 const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 try {
     const values=new Map(), storage={getItem:key=>values.get(key),setItem:(key,value)=>values.set(key,value)};
+    const emptyBox=document.createElement('div');document.body.append(emptyBox);
+    const emptyBag=new BackpackState(activeProducts,storage), disposeEmpty=storeApp(activeProducts,emptyBag,()=>{throw Error('Unexpected inspection');}).mount(emptyBox);
+    assert(emptyBox.textContent.includes('No products available right now.'),'Empty stock message');
+    assert(emptyBox.textContent.includes('Your Backpack is empty.'),'Empty visitor backpack');
+    assert(emptyBox.querySelector('.store-summary button').disabled,'Checkout remains disabled');
+    assert(!emptyBox.querySelector('.store-card'),'No obsolete products');
+    emptyBox.querySelector('input').value='demo';emptyBox.querySelector('input').dispatchEvent(new Event('input'));
+    assert(emptyBox.textContent.includes('No products available right now.'),'Empty search');
+    disposeEmpty();emptyBox.remove();
     const bag=new BackpackState(products,storage), network=new ZombNetwork(), nav=createZombnetNavigation();
     const manager=new WindowManager(document.querySelector('#windowWorkspace'),document.querySelector('#tasks')), apps=new AppRegistry(manager), instances=new Map();
     function launch(id) { if(manager.windows.has(instances.get(id)))manager.focus(instances.get(id),true);else instances.set(id,apps.open(id)); }
-    for(const page of productPages(products,bag,launch))network.register(page);
     apps.register(zombnetApp(network,new ZombnetState(storage),launch,nav));
-    apps.register(storeApp(products,bag,url=>{launch('zombnet');nav.open(url);}));
+    apps.register(storeApp(products,bag));
     launch('store'); await frame();
     const root=()=>document.querySelector('.zomb-store');
     const click=(scope,label)=>{const found=[...scope.querySelectorAll('button')].find(b=>b.getAttribute('aria-label')===label || b.textContent===label);assert(found,'Missing button '+label);found.click();};
     click(root(),'Transfer Demo Lab Badge to Your Backpack');assert(bag.count===1,'Transfer');
     click(root(),'Increase Demo Lab Badge');assert(bag.count===2,'Quantity');
-    click(root(),'Inspect Demo Lab Badge');assert(document.querySelector('.zombnet-address input').value===products[0].url,'Inspect navigation');
-    assert(document.querySelector('.store-product h1').textContent===products[0].title,'Shared product page');
-    click(document.querySelector('.store-product'),'Transfer Demo Lab Badge to Your Backpack');assert(bag.count===3,'Page transfer');
-    click(document.querySelector('.store-product'),'Back to Zomb Store');assert(bag.count===3,'Return preserves cart');
-    click(document.querySelector('.zombnet'),'Back');assert(document.querySelector('.zombnet-address input').value==='zomb://home','Browser history');
-    manager.close(instances.get('zombnet'));
+    click(root(),'Inspect Demo Lab Badge');assert(!document.querySelector('.zombnet'),'Inspect stays in Store');assert(getComputedStyle(root().querySelector('.store-layout')).display==='none','Catalog hidden during details');
+    assert(root().querySelector('.store-product h2').textContent===products[0].title,'Product details');
+    click(root().querySelector('.store-product'),'Transfer Demo Lab Badge to Your Backpack');assert(bag.count===3,'Detail transfer');
+    click(root(),'Back to backpacks');assert(bag.count===3 && !root().querySelector('.store-layout').hidden,'Back preserves cart');
     click(root(),'Empty backpack');click(root(),'Keep items');assert(bag.count===3,'Cancel empty');
     manager.close(instances.get('store'));launch('store');assert(bag.count===3,'Reopen');
     assert(new BackpackState(products,storage).count===3,'Reloaded storage');
     const state=manager.windows.get(instances.get('store'));state.width=320;state.height=480;manager.place(state);await frame();
+    click(root(),'Inspect Demo Lab Badge');await frame();assert(root().scrollWidth<=root().clientWidth+1,'Narrow detail overflow');click(root(),'Back to backpacks');
     assert(root().scrollWidth<=root().clientWidth+1,'Narrow content overflow');
     const left=root().querySelector('.store-stock').getBoundingClientRect(),right=root().querySelector('.store-cart').getBoundingClientRect();
     assert(right.top>=left.bottom,'Backpacks stack');
@@ -42,6 +50,6 @@ try {
     for(const b of document.querySelectorAll('button'))if(b.textContent==='Checkout unavailable')assert(b.disabled,'Checkout must be disabled');
     click(root(),'Remove Demo Lab Badge');assert(bag.count===0,'Remove');
     search.value='';search.dispatchEvent(new Event('input'));click(root(),'Transfer Demo Lab Badge to Your Backpack');click(root(),'Empty backpack');click(root(),'Empty all demo items');assert(bag.count===0,'Confirm empty');
-    document.querySelector('#result').textContent='PASS: transfer, quantity, Inspect, product page, history, reopen, persistence, narrow layout, search, remove, confirmation, disabled checkout';
+    document.querySelector('#result').textContent='PASS: transfer, quantity, Inspect, in-app product details, reopen, persistence, narrow layout, search, remove, confirmation, disabled checkout';
 } catch(error) {document.querySelector('#result').textContent='FAIL: '+error.stack;}
 </script></body></html>

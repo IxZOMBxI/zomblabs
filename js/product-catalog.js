@@ -19,23 +19,11 @@ export function validateCatalog(records) {
         if (p.kind === 'demo' && p.review.canon !== 'fixture') throw Error('Demos are non-canonical fixtures');
         if (!Array.isArray(p.variants) || p.variants.length > 50 || p.variants.some(v=>!v || typeof v.id !== 'string' || !idPattern.test(v.id) || !text(v.label,100)) || new Set(p.variants.map(v=>v.id)).size !== p.variants.length) throw Error('Invalid variants');
         if (p.provider !== null && (!p.provider || !text(p.provider.name,80) || !text(p.provider.productId,120) || Object.keys(p.provider).some(key=>!['name','productId'].includes(key)))) throw Error('Invalid inert provider reference');
-        if (!/^zomb:\/\/[a-z0-9-]+\/products\/[a-z0-9-]+$/.test(p.url) || urls.has(p.url)) throw Error('Invalid product destination');
+        if (p.url != null && (!/^zomb:\/\/[a-z0-9-]+\/products\/[a-z0-9-]+$/.test(p.url) || urls.has(p.url))) throw Error('Invalid product destination');
         ids.add(p.id); urls.add(p.url); return p;
     }));
 }
-const fixtures = [
-    ['badge','Demo Lab Badge','Accessories','physical','A sample identification badge with a blank display.'],
-    ['patch','Demo Signal Patch','Accessories','physical','A sample stitched patch with a simple signal motif.'],
-    ['archive','Demo Archive Pack','Digital','digital','A sample archive icon for testing digital-product presentation. No files are included.'],
-    ['sticker','Demo Laboratory Sticker','Stationery','physical','A sample laboratory sticker with a simple flask motif.']
-];
-export const products = validateCatalog(fixtures.map(([slug,title,category,type,description]) => ({
-    id:`demo-${slug}`, title, description, details:`${description} This is an interface testing fixture only, not an official product, inventory listing, or approved universe lore.`,
-    category, type, kind:'demo', status:'demo', price:null, currency:null, variants:[], provider:null,
-    images:[{src:`assets/store/demo-${slug}.svg`,alt:`Illustration of ${title}`}],
-    brand:{label:'Demo fixtures / no canonical company',fictional:true},
-    review:{canon:'fixture',note:'Presentation testing only. Lore Bible approval is separate.'},
-    url:`zomb://demo-lab/products/demo-${slug}`
-})));
+// No products are currently available. Test fixtures live under tests/.
+export const products = validateCatalog([]);
 export const publishedProducts = catalog => catalog.filter(p=>p.status !== 'draft');
 export const canTransferDemo = product => product?.kind === 'demo' && product.status === 'demo' && product.id.startsWith('demo-');

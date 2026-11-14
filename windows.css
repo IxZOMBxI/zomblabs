@@ -416,3 +416,14 @@ html[data-theme="custom"] .store-product button:focus-visible { outline-color: v
 .horde-calendar a { display: inline-block; color: var(--ui-link); min-height: 44px; padding: 8px 0; }
 .horde-calendar a:hover { color: var(--ui-linkHover); }
 .calendar-warning { border: 1px solid var(--ui-border); padding: 8px; }
+
+/* Network landing pages only; individual sites retain their scoped identity. */
+.zombnet-page:is([data-site="network-home"],[data-site="network-directory"]) { overflow-wrap: anywhere; }
+.zombnet-page[data-site="network-home"] > h1 { letter-spacing: .12em; border-bottom: 2px solid currentColor; padding-bottom: 12px; }
+.zombnet-destinations { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,210px),1fr)); gap: 12px; list-style: none; padding: 0; }
+.zombnet-destinations li { min-width: 0; border: 1px solid currentColor; padding: 10px; }
+.zombnet-destinations a { display: flex; align-items: center; min-height: 44px; font-weight: bold; }
+.zombnet-destinations small { display: block; overflow-wrap: anywhere; margin-top: 4px; }
+.zombnet-destinations p { margin-bottom: 0; }
+
+.zomb-store > [hidden] { display: none; }

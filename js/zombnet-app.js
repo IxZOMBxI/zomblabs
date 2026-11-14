@@ -80,9 +80,18 @@ export function zombnetApp(network, state, launch, navigation) {
                 const heading = document.createElement('h1'); heading.textContent = page?.heading || '404 — Destination unavailable';
                 const text = document.createElement('p'); text.textContent = page?.description || `No accessible internal page exists at ${current}.`;
                 viewport.append(heading, text);
-                if (page?.directory) {
-                    const list = document.createElement('ul');
-                    network.directory().forEach(entry => { const item = document.createElement('li'); addLink(item, entry.title, entry.url); list.append(item); }); viewport.append(list);
+                if (page?.home || page?.directory) {
+                    if(page.home) {const title=document.createElement('h2');title.textContent='Featured destinations';viewport.append(title);}
+                    const list = document.createElement('ul');list.className='zombnet-destinations';
+                    const entries=network.directory().filter(entry=>!page.home || entry.featured);
+                    entries.forEach(entry => {
+                        const item=document.createElement('li');addLink(item,entry.title,entry.url);
+                        const address=document.createElement('small');address.textContent=entry.url;item.append(address);
+                        if(entry.category) {const category=document.createElement('small');category.textContent=entry.category;item.append(category);}
+                        if(entry.description) {const description=document.createElement('p');description.textContent=entry.description;item.append(description);}
+                        list.append(item);
+                    });viewport.append(list);
+                    if(!entries.length) {const empty=document.createElement('p');empty.textContent='No advertiser websites available right now.';viewport.append(empty);}
                 }
                 for (const block of page?.blocks || []) {
                     if (block.type === 'link') addLink(viewport, block.label, block.url);
@@ -94,6 +103,13 @@ export function zombnetApp(network, state, launch, navigation) {
                 state.visit(current, page?.title || current); updateButtons(); renderPanel();
                 status(page ? 'Ready · Fictional internal ZombNET page' : '404 · Unknown or unavailable internal destination');
             }
+            // Mounted sites can use ordinary anchors without escaping the browser history path.
+            get('.zombnet-page').onclick = event => {
+                if(event.defaultPrevented)return;
+                const link=event.target.closest('a[href]');
+                if(!link || !get('.zombnet-page').contains(link))return;
+                event.preventDefault();navigate(link.getAttribute('href'));
+            };
             get('form').onsubmit = event => { event.preventDefault(); navigate(get('input').value); };
             get('[data-back]').onclick = () => { if (cursor > 0) navigate(stack[--cursor], false); };
             get('[data-forward]').onclick = () => { if (cursor < stack.length - 1) navigate(stack[++cursor], false); };

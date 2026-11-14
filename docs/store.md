@@ -7,8 +7,8 @@ delegated system button sounds cover transfers; there is no separate audio syste
 
 ## Catalog and fixtures
 
-`js/product-catalog.js` exports a validated, deeply frozen `products` array. Store
-and ZombNET page closures reference the same records. The four original SVGs in
+`js/product-catalog.js` exports a validated, deeply frozen `products` array. The active catalog is empty: Store shows "No products available right now." and
+no product pages are registered in ZombNET. Store details reference the same records. Test-only records live in `tests/store-fixtures.js`. The four original SVGs in
 `assets/store/` are test illustrations, not product photographs or official artwork.
 
 Records contain `id`, `title`, `description`, `details`, `category`, `images`
@@ -23,7 +23,7 @@ Drafts are excluded from both browsing and generated pages. Unavailable/disconti
 records can be inspected but not transferred. Validation rejects duplicate IDs or
 destinations, unsafe image paths, malformed variants, and incompatible demo data.
 
-To add another demo, extend the fixture list with a unique `demo-` ID and an original
+For isolated tests only, extend the test fixture list with a unique `demo-` ID and an original
 image under `assets/store/`, or pass a complete record through `validateCatalog`.
 Demo prices, currency, and provider references MUST be null, canon MUST be `fixture`,
 and status cannot be active. No stock counts, shipping claims, or reviews are supplied.
@@ -33,7 +33,8 @@ An empty fixture list cleanly disables sample content. No generator is needed.
 
 `js/backpack-state.js` stores `{version:1, mode:'demo', items:[{id,quantity}]}` under
 `zombos.store.demo.v1`. Quantities are integers 1–99; zero removes a row. Missing,
-unpublished, unavailable, invalid, or non-demo products are discarded on restoration.
+unpublished, unavailable, invalid, or non-demo products are excluded from visible inventory on restoration. Their raw records are retained
+for recovery, not shown or counted, and cannot be transferred.
 Storage denial falls back to memory with visible feedback. No other ZombOS storage
 is read or cleared. There is no cross-tab synchronization in M14.
 
@@ -42,12 +43,14 @@ keyboard/touch controls. No drag-and-drop is required or implemented. A status r
 announces transfers. There are no animations, so reduced-motion users get identical
 functionality. At narrow window widths the two panels stack; the window content scrolls.
 
-`productPages()` creates each `zomb://demo-lab/products/...` page from its record.
-`createZombnetNavigation()` binds to the mounted browser's normal navigate function.
-Inspect launches/focuses ZombNET, then navigates through existing history/bookmarks.
-Closing the browser removes the bridge binding; reopening rebinds it. Product pages
-share transfer logic and offer a return to Store. Future company layouts can wrap
-the shared renderer without copying catalog records. The demo host is not canon.
+Inspect opens an in-app detail view from the same authoritative product record.
+Back to backpacks restores the existing filters, quantities and cart DOM. Details
+show description/specifications (`details`), all catalog images, type, availability,
+configured real price and informational variant labels. Existing demo transfer behavior
+is retained only for isolated tests. Real transfers/option selection and checkout
+remain disabled pending separately approved commerce work. No media schema was added.
+Legacy `url` metadata is optional and inert; Store never registers product routes or
+launches ZombNET for inspection. No copy of product information lives in ZombNET.
 
 ## Commerce is intentionally absent
 

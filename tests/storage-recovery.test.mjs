@@ -10,7 +10,7 @@ import { normalizeCall } from '../js/phone-rules.js';
 import { ZombnetState } from '../js/zombnet-state.js';
 import { ArcadeScores } from '../js/arcade-scores.js';
 import { BackpackState, BACKPACK_KEY } from '../js/backpack-state.js';
-import { products } from '../js/product-catalog.js';
+import { products } from './store-fixtures.js';
 const api=globalThis.ZombStorage, PHONE='zombos.phone.v1', SETTINGS='zombos.settings.v1';
 function memory(seed={}) {
     const data=new Map(Object.entries(seed));
