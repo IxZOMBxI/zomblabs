@@ -60,7 +60,8 @@ test('Phone ringing stops before recording and on decline, timeout, inactivity a
             async play() { assert.equal(repeats.size,0); assert.equal(sounds.nodes.size,0); this.paused=false; }
         }
         let now = 0;
-        const phone = new PhoneService({sounds,audio:new Audio(),radio:{holdForPhone:()=>()=>{}},now:()=>now,monotonic:()=>now});
+        const data=new Map(), storage={getItem:key=>data.get(key),setItem:(key,value)=>data.set(key,value)};
+        const phone = new PhoneService({storage,sounds,audio:new Audio(),radio:{holdForPhone:()=>()=>{}},now:()=>now,monotonic:()=>now});
         phone.setCatalog([{section:'calls',callId:'test',caller:'Test',src:'test.mp3',delivery:{}}]);
         phone.setActive(true); phone.tick(); assert.equal(repeats.size,1);
         phone.emit(); assert.equal(repeats.size,1);

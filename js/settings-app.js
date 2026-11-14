@@ -1,4 +1,5 @@
 import { mountThemeEditor } from './theme-editor.js';
+import { mountRecovery } from './recovery-ui.js';
 function mountSounds(container, settings) {
     const heading = document.createElement('h2'); heading.textContent = 'UI Sounds';
     const enabled = document.createElement('input'); enabled.type = 'checkbox';
@@ -13,18 +14,27 @@ function mountSounds(container, settings) {
     enabled.onchange = save; volume.oninput = save;
     return settings.subscribe(sync);
 }
-const categories = [{ id: 'appearance', title: 'Custom Theme Editor', mount: mountThemeEditor }, { id: 'sounds', title: 'UI Sounds', mount: mountSounds }];
+const categories = [{ id: 'appearance', title: 'Custom Theme Editor', mount: mountThemeEditor }, { id: 'sounds', title: 'UI Sounds', mount: mountSounds }, { id: 'recovery', title: 'System Recovery', mount: mountRecovery }];
 export function settingsApp(settings) {
     return { id: 'settings', title: 'Settings', width: 520, height: 560, minWidth: 300, minHeight: 280,
         mount(container) {
             container.classList.add('settings-app');
+            container.tabIndex=0; container.setAttribute('aria-label','Settings content');
             const navigation = document.createElement('nav'); navigation.setAttribute('aria-label', 'Settings categories');
-            const panel = document.createElement('section');
+            const panel = document.createElement('section'); panel.className='settings-panel';
             container.append(navigation, panel);
             let cleanup;
             for (const category of categories) {
                 const button = document.createElement('button'); button.textContent = category.title;
-                button.onclick = () => { cleanup?.(); panel.replaceChildren(); cleanup = category.mount(panel, settings); };
+                button.type='button'; button.dataset.settingsCategory=category.id;
+                button.setAttribute('aria-pressed','false');
+                if (category.id === 'recovery') button.className='system-recovery-access';
+                button.onclick = () => {
+                    cleanup?.(); panel.replaceChildren(); container.scrollTop=0;
+                    for (const control of navigation.children) control.setAttribute('aria-pressed',String(control === button));
+                    panel.setAttribute('aria-label',category.title);
+                    cleanup = category.mount(panel, settings);
+                };
                 navigation.append(button);
             }
             navigation.firstChild.click();

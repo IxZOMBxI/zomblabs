@@ -161,8 +161,11 @@
         "enabled": true,
         "once": true,
         "delaySeconds": 10,
-        "retrySeconds": 30,
-        "ringSeconds": 30
+        "ringSeconds": 30,
+        "onAttempt": "consume",
+        "unlockOn": [
+          "ringing"
+        ]
       }
     }
   ]

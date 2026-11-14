@@ -16,10 +16,11 @@ export function mountThemeEditor(container, settings) {
         'Taskbar buttons':'Desktop app buttons in normal, active, hover and focus states.', 'System tray':'Desktop clock, connection and Radio indicators.',
         'Zomb Store':'Both backpacks and ZombNET product pages. Original product artwork is unaffected.'
     };
-    const crtLabel = document.createElement('label');
+    const crtLabel = document.createElement('label'); crtLabel.className='crt-effects-control';
     const crtEffects = document.createElement('input'); crtEffects.type = 'checkbox';
     crtEffects.checked = settings.get().crtEffects;
-    crtLabel.append(crtEffects, 'Enable CRT Effects'); container.prepend(crtLabel);
+    const crtText = document.createElement('span'); crtText.textContent='Enable CRT Effects';
+    crtLabel.append(crtEffects, crtText); container.prepend(crtLabel);
     crtEffects.onchange = () => {
         const saved = settings.apply({crtEffects:crtEffects.checked});
         preview();

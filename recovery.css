@@ -1,0 +1,20 @@
+/* Recovery controls remain readable even with an unusable custom palette. */
+.system-recovery { background: #030704 !important; color: #65ff7d !important; padding: 12px; overflow-wrap: anywhere; font: 14px/1.5 monospace; min-width: 0; }
+.system-recovery :is(h2,p,li,label,a) { color: #65ff7d !important; background: transparent !important; }
+.system-recovery :is(button,input,select), .system-recovery-access { background: #030704 !important; color: #65ff7d !important; border: 1px solid #65ff7d !important; font: inherit; padding: 10px !important; min-height: 44px; max-width: 100%; box-sizing: border-box; }
+.system-recovery :is(button,input,select,a):focus-visible, .system-recovery-access:focus-visible { outline: 2px solid #fff !important; outline-offset: -3px; }
+.system-recovery label { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.system-recovery input { width: 100%; }
+.system-recovery input[type="checkbox"] { width: 24px; min-height: 24px; flex: 0 0 24px; }
+.system-recovery button { white-space: normal; margin: 4px 4px 4px 0; }
+.system-recovery ul { padding-left: 20px; }
+
+/* Keep the three Settings categories discoverable while their content scrolls. */
+.settings-app { flex: 1; overflow-y: auto !important; }
+.settings-app > nav { display: flex; flex-wrap: wrap; gap: 6px; position: sticky; top: 0; z-index: 2; background: var(--ui-windowBackground, var(--black)); }
+.settings-app > nav button { min-height: 44px; }
+.settings-app > nav button[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 4px; }
+.settings-app > .settings-panel { min-width: 0; }
+#storageRecoveryNotice { position: fixed; z-index: 100000; top: max(12px, env(safe-area-inset-top)); left: 12px; right: 12px; max-width: 440px; max-height: 40vh; overflow: auto; margin: auto; border: 1px solid #65ff7d; }
+#storageRecoveryNotice[hidden] { display: none; }
+#storageRecoveryNotice a { display: inline-block; padding: 10px; }

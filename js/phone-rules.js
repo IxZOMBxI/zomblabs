@@ -37,7 +37,7 @@ export function normalizeCall(entry) {
     if (!text(entry.callId) || !text(entry.caller) || typeof entry.src !== 'string') throw Error('Call ID, caller and source are required.');
     const raw = entry.delivery;
     if (raw == null) return {...entry, delivery:{enabled:false}};
-    keys(raw, ['enabled','once','delaySeconds','schedule','event','priority','cooldownSeconds','retrySeconds','ringSeconds','conditions','onDeclined','onMissed','onInterrupted','unlockOn']);
+    keys(raw, ['enabled','once','delaySeconds','schedule','event','priority','cooldownSeconds','retrySeconds','ringSeconds','conditions','onAttempt','onDeclined','onMissed','onInterrupted','unlockOn']);
     if (raw.event !== undefined && !text(raw.event)) throw Error('Invalid event.');
     const conditions = raw.conditions ?? {};
     keys(conditions, ['completed','answered','notCompleted','events']);
@@ -47,7 +47,7 @@ export function normalizeCall(entry) {
         return raw[key] || 'retry';
     };
     const unlockOn = raw.unlockOn ?? [];
-    if (!Array.isArray(unlockOn) || unlockOn.some(value => !['declined','missed','interrupted'].includes(value))) throw Error('Invalid replay unlock policy.');
+    if (!Array.isArray(unlockOn) || unlockOn.some(value => !['ringing','declined','missed','interrupted'].includes(value))) throw Error('Invalid replay unlock policy.');
     return {...entry, extension:typeof entry.extension === 'string' ? entry.extension.slice(0,60) : '', delivery:{
         enabled:boolean(raw.enabled,true), once:boolean(raw.once,true),
         delaySeconds:number(raw.delaySeconds,0,0,31536000),
@@ -56,6 +56,6 @@ export function normalizeCall(entry) {
         cooldownSeconds:number(raw.cooldownSeconds,3600,1,31536000),
         retrySeconds:number(raw.retrySeconds,300,1,31536000),
         ringSeconds:number(raw.ringSeconds,30,5,300), conditions, unlockOn,
-        onDeclined:policy('onDeclined'), onMissed:policy('onMissed'), onInterrupted:policy('onInterrupted')
+        onAttempt:policy('onAttempt'), onDeclined:policy('onDeclined'), onMissed:policy('onMissed'), onInterrupted:policy('onInterrupted')
     }};
 }

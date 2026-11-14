@@ -51,6 +51,74 @@ function setup(entries=[entry()],storage=memory()) {
     return {service,audio,radio,storage,advance(seconds){clock+=seconds*1000;mono+=seconds*1000;service.tick();}};
 }
 
+const welcome = JSON.parse(readFileSync(new URL('../media/library.json',import.meta.url),'utf8')).entries.find(call=>call.callId==='calls/Welcome to ZOMB LABS.mp3');
+for (const outcome of ['completed','declined','missed','interrupted','inactive','refresh']) {
+    test(`Welcome attempt persists and unlocks manual replay after ${outcome}`,()=>{
+        const s=setup([welcome]); s.service.setActive(true);
+        s.advance(9); assert.equal(s.service.mode,'idle');
+        s.advance(1); assert.equal(s.service.mode,'ringing'); assert.equal(s.audio.plays,0);
+        const saved=new PhoneState(s.storage).get(welcome.callId);
+        assert.equal(saved.consumed,true); assert.equal(saved.unlocked,true);
+        if (outcome==='completed' || outcome==='interrupted') {
+            s.service.answer();
+            if (outcome==='completed') s.audio.end(); else s.service.end();
+        } else if (outcome==='declined') s.service.decline();
+        else if (outcome==='missed') s.advance(31);
+        else if (outcome==='inactive') s.service.setActive(false);
+        if (outcome!=='refresh') {
+            s.service.setActive(true); s.advance(3600); assert.equal(s.service.mode,'idle');
+        }
+        const restored=setup([welcome],s.storage);
+        restored.service.setActive(true); restored.advance(3600);
+        assert.equal(restored.service.mode,'idle'); assert.equal(restored.audio.plays,0);
+        assert.equal(restored.service.state.history.length,1);
+        const history=JSON.stringify(restored.service.state.history);
+        const delivery=JSON.stringify([...restored.service.state.delivery]);
+        restored.service.replay(welcome.callId); assert.equal(restored.audio.plays,1);
+        restored.service.stopReplay(); restored.advance(3600);
+        assert.equal(restored.service.mode,'idle');
+        assert.equal(JSON.stringify(restored.service.state.history),history);
+        assert.equal(JSON.stringify([...restored.service.state.delivery]),delivery);
+    });
+}
+
+test('existing Welcome attempts migrate without losing outcomes or changing other call policies',()=>{
+    for (const outcome of ['completed','declined','missed','interrupted','ringing']) {
+        const storage=memory(), state=new PhoneState(storage);
+        const old=normalizeCall({...welcome,delivery:{once:true,delaySeconds:10,retrySeconds:30}});
+        const row=state.begin(old,1000);
+        if (outcome==='completed' || outcome==='interrupted') state.answer(row);
+        if (outcome!=='ringing') state.finish(row,old,outcome,2000);
+        const other=normalizeCall(entry('other'));
+        state.finish(state.begin(other,1000),other,'declined',2000);
+        const restored=setup([welcome,entry('other')],storage);
+        assert.equal(restored.service.state.get(welcome.callId).consumed,true);
+        assert.equal(restored.service.state.get(welcome.callId).unlocked,true);
+        assert.equal(restored.service.state.history.length,2);
+        assert.equal(restored.service.state.history[0].status,outcome==='ringing'?'missed':outcome);
+        assert.equal(restored.service.state.get('other').consumed,false);
+        assert.equal(restored.service.state.get('other').unlocked,false);
+        restored.service.setActive(true); restored.advance(3600);
+        assert.equal(restored.service.current.callId,'other');
+    }
+});
+
+test('Welcome migration recognizes history-only and delivery-only evidence',()=>{
+    for (const evidence of ['history','delivery']) {
+        const storage=memory(), state=new PhoneState(storage);
+        const old=normalizeCall({...welcome,delivery:{}});
+        state.finish(state.begin(old,1000),old,'declined',2000);
+        if (evidence==='history') state.delivery.clear(); else state.history=[];
+        state.save();
+        const restored=setup([welcome],storage);
+        restored.service.setActive(true); restored.advance(3600);
+        assert.equal(restored.service.mode,'idle');
+        assert.equal(restored.service.state.get(welcome.callId).unlocked,true);
+        assert.equal(restored.service.state.history.length,evidence==='history'?1:0);
+    }
+    assert.throws(()=>normalizeCall(entry('invalid',{onAttempt:'ignore'})));
+});
+
 test('strict delivery validation, explicit time zones and DST',()=>{
     assert.equal(normalizeCall({...entry(),delivery:null}).delivery.enabled,false);
     assert.equal(scheduledInstant({at:'2026-11-02T12:00:00',timeZone:'America/Chicago'}),Date.parse('2026-11-02T18:00:00Z'));

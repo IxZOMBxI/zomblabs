@@ -11,7 +11,7 @@ export class PhoneScheduler {
     event(name) { if (this.active) this.events.set(name,(this.events.get(name)||0)+1); }
     eligible(call, now) {
         const rule = call.delivery, saved = this.state.get(call.callId);
-        if (!this.active || !rule.enabled || saved.consumed || now < saved.nextAt || this.activeSeconds < rule.delaySeconds || (rule.at !== null && now < rule.at)) return false;
+        if (this.state.automaticBlocked || this.state.recovery?.automaticBlocked || !this.active || !rule.enabled || saved.consumed || now < saved.nextAt || this.activeSeconds < rule.delaySeconds || (rule.at !== null && now < rule.at)) return false;
         if (rule.event && (this.events.get(rule.event)||0) <= (this.usedEvents.get(call.callId)||0)) return false;
         const c = rule.conditions;
         return (c.completed || []).every(id => this.state.get(id).completed) &&

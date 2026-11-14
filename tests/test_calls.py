@@ -12,6 +12,18 @@ spec.loader.exec_module(generator)
 
 
 class CallCatalogTests(unittest.TestCase):
+    def test_welcome_attempt_rules_survive_regeneration(self):
+        root = Path(__file__).resolve().parents[1]
+        metadata = json.loads((root / 'media/calls/Welcome to ZOMB LABS.mp3.json').read_text(encoding='utf-8'))
+        generated = generator.generate(root)
+        committed = json.loads((root / 'media/library.json').read_text(encoding='utf-8'))
+        for catalog in [generated, committed]:
+            call = next(entry for entry in catalog['entries'] if entry.get('callId') == metadata['callId'])
+            self.assertEqual(call['delivery'], metadata['delivery'])
+            self.assertEqual(call['delivery']['delaySeconds'], 10)
+            self.assertEqual(call['delivery']['onAttempt'], 'consume')
+            self.assertEqual(call['delivery']['unlockOn'], ['ringing'])
+
     def test_call_metadata_artwork_encoding_and_radio_isolation(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -18,6 +18,8 @@
     <meta name="zombos-build" content="m15-mobile-pwa-1">
 
     <script src="js/theme-schema.js"></script>
+    <link rel="stylesheet" href="recovery.css">
+    <script src="js/storage-recovery.js"></script>
     <script src="js/settings-state.js"></script>
     <link rel="stylesheet" href="themes.css">
     <link rel="stylesheet" href="style.css">
@@ -26,6 +28,12 @@
 </head>
 
 <body>
+
+    <aside id="storageRecoveryNotice" class="system-recovery" aria-label="Local storage recovery" hidden>
+        <p role="status">Some saved local data needs attention. You can continue using ZombOS or open System Recovery to inspect it and export a backup.</p>
+        <a href="recovery.html">Open standalone System Recovery</a>
+        <button type="button" data-dismiss-recovery>Continue using ZombOS</button>
+    </aside>
 
     <main class="terminal">
 
@@ -285,6 +293,7 @@
     </div>
     <script src="script.js"></script>
     <script type="module" src="js/desktop.js"></script>
+    <script defer src="js/recovery-access.js"></script>
 
 </body>
 </html>
