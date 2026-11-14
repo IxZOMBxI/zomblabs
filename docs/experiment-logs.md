@@ -111,3 +111,21 @@ isolated Chromium checks against a temporary local server. Test-only injected
 content checks safe rendering and error states; it is not production content.
 Real iPhone/Android installation, software keyboards, safe-area behavior, codecs
 and external video playback still require physical-device acceptance.
+
+## Evidence notes for the post-M17 entries
+
+The M18A Social Network entry is backed by the social markup in root `index.html`:
+the Music Streaming section contains Amazon Music, Spotify and Apple Music links;
+the single YouTube entry uses the supplied channel, alongside Kick and TikTok.
+`js/desktop.js` mounts this existing social content. The desktop-column entry is
+backed by root `windows.css`: `#desktopIcons` uses `flex-flow: column wrap` and
+suppresses vertical overflow; `.retro-desktop` reserves taskbar space. These root
+files are named here because catalog source paths currently allow only the public
+subdirectories, not root HTML/CSS. No validator or application changes were made.
+
+The archive now preserves its seven original projects and entries, adds Calendar,
+and records post-M17 work with undated local-implementation entries. Social Network
+is documented under ZombOS. Earlier entries remain historical; current project
+summaries and the M19 entries clarify superseded Store and Arcade browser integration.
+Calendar has no app shortcut in this catalog because the existing archive link
+allowlist does not yet include `calendar`; the app remains in the ZombOS launcher.
