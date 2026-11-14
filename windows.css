@@ -393,3 +393,26 @@ html[data-theme="custom"] .store-product button:focus-visible { outline-color: v
 .experiment-logs img, .experiment-logs video { display: block; max-width: 100%; max-height: 320px; object-fit: contain; }
 .experiment-logs figcaption { font-size: 12px; color: var(--ui-textSecondary); }
 .experiment-logs summary { cursor: pointer; padding: 10px 0; min-height: 44px; }
+
+/* Read-only Calendar, shared by desktop and the mobile workspace. */
+.horde-calendar { min-width: 0; color: var(--ui-textPrimary); background: var(--ui-windowBackground); overflow-wrap: anywhere; }
+.horde-calendar h1 { font-size: 22px; }
+.horde-calendar h2 { font-size: 18px; }
+.calendar-eyebrow, .calendar-legend { font-size: 12px; color: var(--ui-textSecondary); }
+.calendar-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.horde-calendar button { font: inherit; min-height: 44px; padding: 8px; max-width: 100%; color: var(--ui-buttonText); background: var(--ui-buttonBackground); border: 1px solid var(--ui-border); cursor: pointer; }
+.horde-calendar button:hover { color: var(--ui-hoverText); background: var(--ui-hoverBackground); }
+.horde-calendar button[aria-pressed="true"] { color: var(--ui-selectionText); background: var(--ui-selectionBackground); }
+.horde-calendar :is(button,a):focus-visible { outline: 2px dashed var(--ui-focus); outline-offset: -3px; }
+.calendar-month { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 3px; }
+.calendar-month button { min-width: 0; padding: 4px 1px; font-size: 12px; }
+.calendar-month .has-events { border: 2px solid var(--ui-accent); }
+.calendar-month small { display: block; font-size: 10px; }
+.calendar-month [aria-current="date"] { text-decoration: underline; font-weight: bold; }
+.calendar-weekday { text-align: center; font-size: 11px; }
+.calendar-events { list-style: none; padding: 0; }
+.calendar-events li { border-bottom: 1px solid var(--ui-divider); padding: 10px 0; }
+.calendar-events [data-status="canceled"] button { text-decoration: line-through; }
+.horde-calendar a { display: inline-block; color: var(--ui-link); min-height: 44px; padding: 8px 0; }
+.horde-calendar a:hover { color: var(--ui-linkHover); }
+.calendar-warning { border: 1px solid var(--ui-border); padding: 8px; }
