@@ -1,3 +1,4 @@
+import { experimentApp } from './experiment-app.js';
 import { mountPwaChrome } from './pwa.js';
 import { mountMobileShell } from './mobile-shell.js';
 import { products } from './product-catalog.js';
@@ -118,6 +119,12 @@ for (const page of productPages(products, backpack, launch)) network.register(pa
 apps.register(zombnetApp(network, new ZombnetState(networkStorage), launch, networkNavigation));
 apps.register(storeApp(products, backpack, url => { launch('zombnet'); networkNavigation.open(url); }));
 apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
+apps.register(experimentApp(launch));
+function openExperimentRoute() { if (!workspace.hidden && /^#experiments(?:\/|$)/.test(location.hash)) launch('experiments'); }
+window.addEventListener('hashchange',openExperimentRoute);
+const experimentBootObserver=new MutationObserver(openExperimentRoute);
+experimentBootObserver.observe(workspace,{attributes:true,attributeFilter:['hidden']});
+window.addEventListener('pagehide',event=>{if(!event.persisted){experimentBootObserver.disconnect();window.removeEventListener('hashchange',openExperimentRoute);}});
 const installed = [
     { id: 'store', title: 'Zomb Store', symbol: '[▤]' },
     { id: 'social', title: 'Social Network', symbol: '[↗]' },
@@ -127,7 +134,8 @@ const installed = [
     { id: 'settings', title: 'Settings', symbol: '[⚙]' },
     { id: 'explorer', title: 'File Explorer', symbol: '[▣]' },
     { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' },
-    { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' }
+    { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' },
+    { id: 'experiments', title: 'Experiment Logs', symbol: '[≡]' }
 ];
 const disposePwaChrome = mountPwaChrome();
 const disposeMobileShell = mountMobileShell({manager, installed, launch, workspace});
