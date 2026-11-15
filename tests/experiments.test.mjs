@@ -7,7 +7,7 @@ const catalog=JSON.parse(readFileSync(new URL('../content/experiments.json',impo
 const copy=()=>structuredClone(catalog);
 test('production records have valid metadata, source files and assets, with no invented dates',()=>{
     assert.equal(validateLocalReferences(validateExperimentCatalog(catalog)),catalog);
-    assert.equal(catalog.projects.length,7);assert.equal(catalog.logs.length,7);
+    assert.equal(catalog.projects.length,8);assert.equal(catalog.logs.length,12);
     assert.ok(catalog.logs.every(log=>log.date===null));
 });
 test('duplicate IDs, absent parents, broken references and required metadata are rejected',()=>{
@@ -21,7 +21,7 @@ test('invalid links, unsafe paths, bad dates and missing local assets fail valid
 });
 test('drafts never render publicly and a public entry cannot belong to a draft project',()=>{
     const d=copy();d.logs[0].visibility='draft';const visible=publishedExperiments(validateExperimentCatalog(d));assert.equal(visible.logs.some(log=>log.id===d.logs[0].id),false);
-    d.projects[0].visibility='draft';assert.equal(publishedExperiments(validateExperimentCatalog(d)).projects.some(p=>p.id===d.projects[0].id),false);
+    d.projects[0].visibility='draft';d.logs.filter(log=>log.projectId===d.projects[0].id).forEach(log=>{log.visibility='draft';});assert.equal(publishedExperiments(validateExperimentCatalog(d)).projects.some(p=>p.id===d.projects[0].id),false);
     d.logs[0].visibility='published';assert.throws(()=>validateExperimentCatalog(d));
 });
 test('search, filters, chronological dates and permanent routes',()=>{
@@ -33,7 +33,7 @@ test('search, filters, chronological dates and permanent routes',()=>{
 test('loader separates missing deployment errors from local storage and filters drafts',async()=>{
     const original=globalThis.fetch;
     try {globalThis.fetch=async()=>({ok:false});await assert.rejects(loadExperimentCatalog(),/local storage does not need resetting/);
-    const d=copy();d.logs[0].visibility='draft';globalThis.fetch=async()=>({ok:true,json:async()=>d});assert.equal((await loadExperimentCatalog()).logs.length,6);
+    const d=copy();d.logs[0].visibility='draft';globalThis.fetch=async()=>({ok:true,json:async()=>d});assert.equal((await loadExperimentCatalog()).logs.length,11);
     globalThis.fetch=async()=>({ok:true,json:async()=>({version:99})});await assert.rejects(loadExperimentCatalog(),/version 1/);
     } finally {globalThis.fetch=original;}
 });
