@@ -14,10 +14,13 @@ const blocked=new ZombnetState({getItem(){throw Error()},setItem(){throw Error()
 console.log('PASS URL validation, hidden/locked pages, bounded persistence, corruption/storage failure, bookmark removal/history clearing');
 
 const live=new ZombNetwork();
-assert.deepEqual(live.directory(),[]);
+const sites=['zomb://crypt-crunch','zomb://dead-air','zomb://grim-glow'];
+assert.deepEqual(live.directory().map(p=>p.url),sites);
+assert.ok(live.directory().every(p=>p.featured && typeof p.mount==='function'));
+for(const path of ['crypt-crunch/the-crunch','dead-air/da-100','grim-glow/the-tonic']){assert.ok(live.get('zomb://'+path));assert.equal(live.get('zomb://'+path).listed,false);}
 for(const url of ['zomb://radio','zomb://arcade','zomb://demo-lab/products/demo-badge'])assert.equal(live.get(url),null);
 assert.ok(live.get('zomb://home'));assert.ok(live.get('zomb://directory'));
 live.register({url:'zomb://test-advertiser',listed:true,advertiser:true});
 live.register({url:'zomb://test-unrelated',listed:true});
-assert.deepEqual(live.directory().map(p=>p.url),['zomb://test-advertiser']);
-console.log('PASS advertiser-only directory, empty production network and removed app routes');
+assert.deepEqual(live.directory().map(p=>p.url),[...sites,'zomb://test-advertiser']);
+console.log('PASS advertiser-only directory, three approved advertiser sites and removed app routes');

@@ -18,11 +18,24 @@ try {
  for(const [width,height] of [[650,480],[390,700],[844,300]]) {
  box.style.width=width+'px';box.style.height=height+'px';click('[data-home]');await frame();
  assert(box.querySelector('.zombnet-page h1').textContent==='ZombNET','Home');
- assert(box.querySelectorAll('.zombnet-destinations li').length===0,'No invented featured advertisers');
- click('a[href="zomb://directory"]');assert(box.querySelectorAll('.zombnet-destinations li').length===0,'Empty advertiser directory');
+ assert(box.querySelectorAll('.zombnet-destinations li').length===3,'Three featured advertisers');
+ click('a[href="zomb://directory"]');assert(box.querySelectorAll('.zombnet-destinations li').length===3,'Three listed advertisers');
  assert(box.scrollWidth<=box.clientWidth+1,'No horizontal overflow');
  address('zomb://radio');assert(box.querySelector('[data-title]').textContent.includes('404'),'Removed Radio destination');
  click('[data-back]');assert(box.querySelector('input').value==='zomb://directory','Back');click('[data-forward]');assert(box.querySelector('input').value==='zomb://radio','Forward');
+ }
+ for(const [site,path] of [['crypt-crunch','the-crunch'],['dead-air','da-100'],['grim-glow','the-tonic']]) {
+  for(const width of [320,390,650,844]) {
+   box.style.width=width+'px';address('zomb://'+site);await frame();
+   assert(box.querySelector('.ad-art img').getAttribute('src').startsWith('media/artwork/'),'Local original artwork');
+   assert(box.scrollWidth<=box.clientWidth+1,'Site overflow '+site+' '+width);
+   click('.ad-copy a');assert(box.querySelector('input').value==='zomb://'+site+'/'+path,'Product subpage');
+   assert(box.querySelector('details'),'Artwork disclosure');if(site==='dead-air'){assert(box.querySelector('.ad-device-details').textContent.includes('Communication device'),'Dead Air device identity');assert(box.querySelector('.ad-device-details').textContent.includes('Mode and Output knobs'),'Established controls');}click('[data-back]');click('[data-forward]');
+   assert(box.querySelector('input').value==='zomb://'+site+'/'+path,'Site Back/Forward');
+  }
+  click('[data-bookmarks]');if(!box.querySelector('[data-panel]').hidden)click('[data-panel] button');
+  if(!box.querySelector('[data-panel]').hidden)click('[data-bookmarks]');
+  assert(state.bookmarks.some(p=>p.url==='zomb://'+site+'/'+path),'Site bookmark');
  }
  address('zomb://directory');click('[data-bookmarks]');click('[data-panel] button');assert(state.bookmarks.some(p=>p.url==='zomb://directory'),'Bookmark');
  assert(new ZombnetState(storage).history.some(p=>p.url==='zomb://directory'),'Persisted history');

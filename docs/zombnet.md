@@ -30,7 +30,7 @@ its placeholders only with approved content and a verified RADIO advertisement a
 Page data is trusted application source, while text and URLs are rendered with DOM
 APIs, not HTML interpolation. Add scoped `.zombnet-page[data-site="your-site"]` CSS
 for a distinct layout/palette; browser chrome remains themed independently. No
-external sites are embedded. Only Home and Network Directory are registered; no advertiser websites currently exist. Home features only publicly
+external sites are embedded. Home and Network Directory are joined by Crypt Crunch, Dead Air and Grim Glow. Home features only publicly
 listed advertiser entries explicitly marked `featured: true`; the directory uses the same registry
 and optional `category` and `description` metadata. No demo product pages are active.
 
@@ -100,7 +100,7 @@ security boundary: do not include actual secrets or private data.
    ```
 
    Also syntax-check any new site module. When approved public content is added,
-   update the test's intentional empty-production-directory expectation to the
+   update the test's production-directory expectation to the
    exact approved routes; retain hidden/unlisted and removed-app-route checks.
    Serve the repository over HTTP using `LOCAL_DEVELOPMENT.md`. Open ZombNET and
    verify the directory, direct address, Back/Forward, bookmark/reopen, internal
@@ -112,7 +112,7 @@ security boundary: do not include actual secrets or private data.
    special deployment system is required. Do not dispatch `media-library.yml` as
    a site preview test.
 
-The current registry remains unchanged and its advertiser directory remains empty.
+The registry lists the three approved M20 advertisers; their secondary pages are unlisted.
 The optional module and asset paths above are authoring conventions, not existing
 sites or files to create before approved content exists.
 
@@ -175,3 +175,37 @@ Real merchandise and product inspection belong entirely to Zomb Store. Existing
 bookmarks/history are retained; obsolete destinations use the normal unavailable
 page, and visitors may remove bookmarks through existing controls. Calendar,
 Experiment Logs and Social Network retain their own responsibilities.
+
+## M20 advertiser pages
+
+`js/advertiser-sites.js` exports the six mounted pages imported by the existing
+registry. Public, featured landing pages: `zomb://crypt-crunch`, `zomb://dead-air`,
+`zomb://grim-glow`. Unlisted subpages: `/the-crunch`, `/da-100`, `/the-tonic`,
+respectively. All navigation uses existing ZombNET anchors and history.
+
+Evidence: `media/library.json` associates the three broadcast names with their
+existing `media/artwork/` PNGs. Product identity and campaign phrases come from
+those inspected images: Crypt Crunch snack packaging, Dead Air DA-100 tactical
+noise equipment, and Grim Glow luminous citrus tonic. No audio transcript was
+available; no additional spoken claims, company history, ingredients, performance
+measurements, locations or relationships were inferred. New copy is limited to
+product-focused presentation. Existing campaign artwork is reused unchanged.
+
+Site-specific palettes and graphics (halftone, hazard stripe and glow treatments)
+are CSS in `windows.css`; no generated raster assets, external fonts, autoplay,
+commerce or Store routes were added. These are fictional marketing presentations,
+not real safety, nutrition or purchasing advice. Original posters can be expanded
+on the second page. Test site routes in `tests/zombnet-browser.html` and use
+`tests/advertiser-browser.mjs` for isolated desktop/mobile screenshots and touch.
+
+### Dead Air communication-device clarification
+
+The owner identifies Dead Air as a fictional communication device, similar to a
+radio. Its site now leads with that identity and a consumer-electronics device
+reference. DA-100, Mode/Output controls, PWR/BATT/EXT panel labels, display labels,
+handle, antenna and grille are visible in the existing campaign artwork. These
+are visual observations, not claims about frequencies, communication range,
+transmission capabilities, battery requirements or operating specifications.
+Those unconfirmed details are omitted. The original poster remains unchanged and
+retains its older noise-generator campaign wording; that wording is not expanded
+into new communication specifications. No other models or purchase flow are added.
