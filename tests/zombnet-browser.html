@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="toxic"><head><meta charset="utf-8"><base href="../"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="themes.css"><link rel="stylesheet" href="windows.css"><title>ZombNET isolated checks</title></head><body><pre id="result">RUNNING</pre><div id="app" class="zomb-window-content" style="box-sizing:border-box;max-width:100%;height:480px"></div>
+<script type="module">
+import {ZombNetwork} from './js/zombnet-network.js';
+import {ZombnetState} from './js/zombnet-state.js';
+import {zombnetApp} from './js/zombnet-app.js';
+import {products} from './js/product-catalog.js';
+const assert=(ok,message)=>{if(!ok)throw Error(message);};
+const frame=()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+const box=document.querySelector('#app'), values=new Map(), storage={getItem:k=>values.get(k),setItem:(k,v)=>values.set(k,v)};
+const network=new ZombNetwork(),state=new ZombnetState(storage);let cleaned=0;
+network.register({url:'zomb://test-hidden',title:'Test only',listed:true,hidden:true,featured:true,layout:'test-only',mount(root){const a=document.createElement('a');a.href='zomb://directory';a.textContent='Test link';root.append(a);return ()=>cleaned++;}});
+const style=document.createElement('style');style.textContent='.zombnet-page[data-site="test-only"] {color:rgb(1,2,3);font-family:serif}';document.head.append(style);
+const dispose=zombnetApp(network,state,()=>{}).mount(box);
+const click=s=>box.querySelector(s).click();
+const address=url=>{box.querySelector('input').value=url;box.querySelector('form').dispatchEvent(new Event('submit',{cancelable:true}));};
+try {
+ for(const [width,height] of [[650,480],[390,700],[844,300]]) {
+ box.style.width=width+'px';box.style.height=height+'px';click('[data-home]');await frame();
+ assert(box.querySelector('.zombnet-page h1').textContent==='ZombNET','Home');
+ assert(box.querySelectorAll('.zombnet-destinations li').length===0,'No invented featured advertisers');
+ click('a[href="zomb://directory"]');assert(box.querySelectorAll('.zombnet-destinations li').length===0,'Empty advertiser directory');
+ assert(box.scrollWidth<=box.clientWidth+1,'No horizontal overflow');
+ address('zomb://radio');assert(box.querySelector('[data-title]').textContent.includes('404'),'Removed Radio destination');
+ click('[data-back]');assert(box.querySelector('input').value==='zomb://directory','Back');click('[data-forward]');assert(box.querySelector('input').value==='zomb://radio','Forward');
+ }
+ address('zomb://directory');click('[data-bookmarks]');click('[data-panel] button');assert(state.bookmarks.some(p=>p.url==='zomb://directory'),'Bookmark');
+ assert(new ZombnetState(storage).history.some(p=>p.url==='zomb://directory'),'Persisted history');
+ address('zomb://test-hidden');assert(getComputedStyle(box.querySelector('.zombnet-page')).color==='rgb(1, 2, 3)','Scoped site style');
+ assert(getComputedStyle(box.querySelector('.zombnet-brand')).color!=='rgb(1, 2, 3)','Chrome unaffected');
+ click('.zombnet-page a');assert(box.querySelector('input').value==='zomb://directory' && cleaned===1,'Mounted anchor and cleanup');
+ assert(getComputedStyle(box.querySelector('.zombnet-page')).color!=='rgb(1, 2, 3)','Style cleared on navigation');
+ address('zomb://missing');assert(box.querySelector('[data-title]').textContent.includes('404'),'Missing page');
+ address('javascript:alert(1)');assert(box.querySelector('[data-status]').textContent.includes('Unsupported'),'Unsafe link rejection');
+ document.documentElement.dataset.theme='amber';click('[data-home]');await frame();assert(box.scrollWidth<=box.clientWidth+1,'Theme layout');
+ assert(products.length===0,'Store remains empty');
+ dispose();assert(cleaned===1,'No duplicate cleanup');
+ document.querySelector('#result').textContent='PASS: homepage, directory, links, Back/Forward, persisted bookmarks/history, hidden direct access, scoped styling and cleanup, invalid routes, narrow/landscape layout, theme and empty Store';
+} catch(e){dispose();document.querySelector('#result').textContent='FAIL: '+e.stack;}
+</script></body></html>

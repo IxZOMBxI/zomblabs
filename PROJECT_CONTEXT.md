@@ -139,3 +139,25 @@ See `docs/experiment-logs.md` for authoring, evidence, draft visibility and chec
 Real development records, media catalogs, the shared Store catalog and the separate
 Lore Bible each remain authoritative for their respective content. Never duplicate
 prices/playlists or invent development history, deployment status or fictional canon.
+
+## Calendar
+
+`js/calendar-app.js` registers the read-only Calendar through the shared app registry
+and installed list. `content/calendar.json` is the sole owner-controlled source for
+individual events, weekly schedules and occurrence exceptions. Date-only announcements
+show Time TBA without a placeholder instant.
+`js/calendar-catalog.js` validates version 1 records and generates bounded occurrences,
+reusing the existing zoned wall-time helper without changing PHONE behavior. Visitors
+see browser-local dates; Upcoming covers 90 days. No visitor storage, editing or new
+service-worker caching is used. See `docs/calendar.md` for publishing, draft visibility,
+DST handling and `tools/validate-calendar.mjs` usage.
+
+## Application boundaries (M19 decision)
+
+ZombNET hosts only fictional websites tied to established RADIO advertisements;
+there are currently no registered advertiser websites. Home/Directory remain browser
+navigation. RADIO and Arcade are standalone, without duplicate internal routes.
+Zomb Store owns real product information and in-app Inspect/Back views, using its
+single catalog (currently empty). Legacy product URL metadata is optional and inert;
+no product routes are generated. Calendar owns real events, Experiment Logs real
+project history, and Social Network external links. No lore or commerce is added.

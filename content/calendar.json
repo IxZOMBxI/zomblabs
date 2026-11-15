@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "events": [
+    {
+      "id": "gta-vi-first-kick-stream",
+      "title": "GTA VI — First Kick Stream",
+      "date": "2026-11-19",
+      "platform": "Kick",
+      "category": "Livestream",
+      "description": "The Horde assembles for Zomb's first GTA VI livestream on Kick. Join us as we explore the game and see what kind of chaos we can get into.",
+      "status": "scheduled",
+      "visibility": "published"
+    }
+  ],
+  "schedules": [],
+  "exceptions": []
+}

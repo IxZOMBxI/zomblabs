@@ -1,9 +1,10 @@
+import { calendarApp } from './calendar-app.js';
 import { experimentApp } from './experiment-app.js';
 import { mountPwaChrome } from './pwa.js';
 import { mountMobileShell } from './mobile-shell.js';
 import { products } from './product-catalog.js';
 import { BackpackState } from './backpack-state.js';
-import { storeApp, productPages } from './store-app.js';
+import { storeApp } from './store-app.js';
 import { SystemSounds } from './system-sounds.js';
 import { mountArcade } from './arcade.js';
 import { ZombNetwork } from './zombnet-network.js';
@@ -115,11 +116,11 @@ const network = new ZombNetwork();
 network.addEventListener('discovery', () => sounds.play('discovery'));
 const backpack = new BackpackState(products, networkStorage);
 const networkNavigation = createZombnetNavigation();
-for (const page of productPages(products, backpack, launch)) network.register(page);
 apps.register(zombnetApp(network, new ZombnetState(networkStorage), launch, networkNavigation));
-apps.register(storeApp(products, backpack, url => { launch('zombnet'); networkNavigation.open(url); }));
+apps.register(storeApp(products, backpack));
 apps.register({ id: 'arcade', title: 'ZombNET Arcade', width: 700, height: 460, minWidth: 320, minHeight: 300, mount: mountArcade });
 apps.register(experimentApp(launch));
+apps.register(calendarApp());
 function openExperimentRoute() { if (!workspace.hidden && /^#experiments(?:\/|$)/.test(location.hash)) launch('experiments'); }
 window.addEventListener('hashchange',openExperimentRoute);
 const experimentBootObserver=new MutationObserver(openExperimentRoute);
@@ -135,7 +136,8 @@ const installed = [
     { id: 'explorer', title: 'File Explorer', symbol: '[▣]' },
     { id: 'zombnet', title: 'ZombNET', symbol: '[◎]' },
     { id: 'arcade', title: 'ZombNET Arcade', symbol: '[▶]' },
-    { id: 'experiments', title: 'Experiment Logs', symbol: '[≡]' }
+    { id: 'experiments', title: 'Experiment Logs', symbol: '[≡]' },
+    { id: 'calendar', title: 'Calendar', symbol: '[▦]' }
 ];
 const disposePwaChrome = mountPwaChrome();
 const disposeMobileShell = mountMobileShell({manager, installed, launch, workspace});

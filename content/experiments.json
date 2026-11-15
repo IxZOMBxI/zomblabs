@@ -47,7 +47,9 @@
       "summary": "A website presented as a working retro desktop, with a shared interface for phones and installed web apps.",
       "description": "ZombOS brings the Zomb Labs website into a desktop-style interface. Its applications share window controls, themes and services. A dedicated mobile shell presents the same applications in a focused workspace rather than creating a separate mobile website.",
       "logIds": [
-        "zombos-implementation"
+        "zombos-implementation",
+        "social-network-m18a",
+        "zombos-desktop-icon-columns"
       ],
       "media": [
         {
@@ -190,9 +192,10 @@
       "title": "ZombNET",
       "category": "Navigation",
       "summary": "An internal browser with fictional addresses, page navigation, bookmarks and history.",
-      "description": "ZombNET is a real interface for browsing the fictional internal network presented by ZombOS. It keeps internal pages inside the application and opens supported external HTTPS destinations separately. The portfolio documents the browser software, not fictional events from those pages.",
+      "description": "ZombNET is the browser for fictional websites associated with established RADIO advertisements. Home and Directory remain available alongside internal navigation, bookmarks and history. No advertiser websites are currently registered. The logs document the real browser software, not fictional events.",
       "logIds": [
-        "zombnet-implementation"
+        "zombnet-implementation",
+        "zombnet-m19-boundaries"
       ],
       "media": []
     },
@@ -235,10 +238,11 @@
       "id": "store",
       "title": "Zomb Store",
       "category": "Demonstrations",
-      "summary": "A demo inventory and backpack interface with no purchasing flow.",
-      "description": "Zomb Store implements the M14 backpack foundation using a shared demo product catalog. The same records support inventory cards and ZombNET product inspection. Items demonstrate interface behavior; they are not claims of real merchandise availability.",
+      "summary": "An inventory and backpack interface with in-app details, an empty active catalog and purchasing disabled.",
+      "description": "Zomb Store retains its backpack foundation while keeping product details inside the application. Development demo products have been removed from the active catalog. Earlier entries describe the original foundation; the later Store entry records the current empty state and navigation changes.",
       "logIds": [
-        "store-implementation"
+        "store-implementation",
+        "store-m19-in-app-details"
       ],
       "media": []
     },
@@ -286,7 +290,7 @@
       "title": "ZombNET Arcade",
       "category": "Games",
       "summary": "A shared game launcher featuring DEAD SPRINT and browser-local best scores.",
-      "description": "The Arcade application and its ZombNET page use a shared launcher. DEAD SPRINT is the implemented game: a compact keyboard-and-touch chase with a local high score. Its game loop and controls are cleaned up when the view closes.",
+      "description": "The standalone Arcade application features DEAD SPRINT, a compact keyboard-and-touch chase with a local high score. Its game loop and controls are cleaned up when the view closes. The former duplicate ZombNET destination was removed under the M19 application boundaries; the original entry remains as development history.",
       "logIds": [
         "arcade-implementation"
       ],
@@ -337,6 +341,45 @@
         "system-recovery-implementation"
       ],
       "media": []
+    },
+    {
+      "id": "calendar",
+      "title": "ZombOS Calendar",
+      "category": "Scheduling",
+      "summary": "A read-only calendar for streams and events, maintained by Zomb.",
+      "description": "Calendar brings monthly browsing and upcoming announcements into ZombOS. Zomb maintains the schedule in a repository catalog; visitors browse it without editing or submitting events.",
+      "status": "local-implementation",
+      "visibility": "published",
+      "logIds": [
+        "calendar-m18b"
+      ],
+      "relatedProjects": [
+        "zombos"
+      ],
+      "links": [],
+      "media": [],
+      "sources": [
+        {
+          "label": "calendar-app.js",
+          "path": "js/calendar-app.js"
+        },
+        {
+          "label": "calendar-catalog.js",
+          "path": "js/calendar-catalog.js"
+        },
+        {
+          "label": "calendar.json",
+          "path": "content/calendar.json"
+        },
+        {
+          "label": "validate-calendar.mjs",
+          "path": "tools/validate-calendar.mjs"
+        },
+        {
+          "label": "calendar.md",
+          "path": "docs/calendar.md"
+        }
+      ]
     }
   ],
   "logs": [
@@ -861,6 +904,244 @@
           "text": "Only explicit confirmation authorizes a subsystem or full local reset. Ordinary recovery does not clear Welcome-call history. Exported backups are not automatically imported as trusted application data."
         }
       ],
+      "media": []
+    },
+    {
+      "id": "calendar-m18b",
+      "projectId": "calendar",
+      "title": "M18B — A shared Calendar for The Horde",
+      "summary": "Browse a month or the next 90 days, with schedule changes and local times kept together.",
+      "date": null,
+      "status": "local-implementation",
+      "visibility": "published",
+      "article": [
+        {
+          "type": "paragraph",
+          "text": "Calendar is a dedicated application shared by the desktop and mobile workspace. Visitors can move between months, return to today, select a date and read event details. Upcoming lists the next 90 days."
+        },
+        {
+          "type": "paragraph",
+          "text": "The schedule supports individual events and weekly streaming patterns. Owners can cancel an occurrence, update its details or move it without leaving a duplicate. Canceled occurrences remain visible on their original dates but are excluded from active upcoming events."
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmed times are converted to the visitor’s local time zone. Weekly schedules keep their source-local start time across daylight-saving changes; ambiguous or nonexistent times are reported rather than guessed. Date-only announcements show Time TBA without an invented start time."
+        },
+        {
+          "type": "paragraph",
+          "text": "Publishing is owner-controlled through content/calendar.json and its validator. Visitors have read-only access. This entry documents local implementation, not a release date or an announcement of any particular stream."
+        }
+      ],
+      "sources": [
+        {
+          "label": "calendar-app.js",
+          "path": "js/calendar-app.js"
+        },
+        {
+          "label": "calendar-catalog.js",
+          "path": "js/calendar-catalog.js"
+        },
+        {
+          "label": "calendar.json",
+          "path": "content/calendar.json"
+        },
+        {
+          "label": "validate-calendar.mjs",
+          "path": "tools/validate-calendar.mjs"
+        },
+        {
+          "label": "calendar.md",
+          "path": "docs/calendar.md"
+        }
+      ],
+      "links": [],
+      "relatedProjects": [],
+      "media": []
+    },
+    {
+      "id": "social-network-m18a",
+      "projectId": "zombos",
+      "title": "M18A — Music links in Social Network",
+      "summary": "Artist-profile links join the existing social destinations.",
+      "date": null,
+      "status": "local-implementation",
+      "visibility": "published",
+      "article": [
+        {
+          "type": "paragraph",
+          "text": "Social Network now includes a Music Streaming section with Amazon Music, Spotify and Apple Music artist-profile links. The YouTube entry points to the supplied channel, while the existing Kick and TikTok destinations remain."
+        },
+        {
+          "type": "paragraph",
+          "text": "These are ordinary external links that open separately from ZombOS, not embedded players or account integrations. This records the local application content; it does not establish a public rollout date or verify third-party service availability."
+        }
+      ],
+      "sources": [
+        {
+          "label": "experiment-logs.md",
+          "path": "docs/experiment-logs.md"
+        },
+        {
+          "label": "desktop.js",
+          "path": "js/desktop.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "social",
+          "label": "Open Social Network"
+        }
+      ],
+      "relatedProjects": [],
+      "media": []
+    },
+    {
+      "id": "store-m19-in-app-details",
+      "projectId": "store",
+      "title": "Store — Empty shelves and in-app details",
+      "summary": "Development products are removed, and product inspection belongs inside Store.",
+      "date": null,
+      "status": "local-implementation",
+      "visibility": "published",
+      "article": [
+        {
+          "type": "paragraph",
+          "text": "The four development demo products have been removed from the active catalog. Store now says “No products available right now.” No replacement products or stock quantities have been added."
+        },
+        {
+          "type": "paragraph",
+          "text": "The backpack transfer, quantity and persistence infrastructure remains. Previously saved items absent from the catalog are not displayed or counted; their recoverable raw records are retained."
+        },
+        {
+          "type": "paragraph",
+          "text": "Inspect now opens product details within Store, with a Back action that retains the catalog and backpack state. It uses the same catalog records for images, descriptions, physical or digital type, availability, configured prices and informational options. There are no active products to inspect today."
+        },
+        {
+          "type": "paragraph",
+          "text": "Generated ZombNET product pages have been removed. Checkout stays disabled: this local implementation does not offer purchases, payments or orders."
+        }
+      ],
+      "sources": [
+        {
+          "label": "product-catalog.js",
+          "path": "js/product-catalog.js"
+        },
+        {
+          "label": "store-app.js",
+          "path": "js/store-app.js"
+        },
+        {
+          "label": "backpack-state.js",
+          "path": "js/backpack-state.js"
+        },
+        {
+          "label": "desktop.js",
+          "path": "js/desktop.js"
+        },
+        {
+          "label": "store.md",
+          "path": "docs/store.md"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "store",
+          "label": "Open Zomb Store"
+        }
+      ],
+      "relatedProjects": [],
+      "media": []
+    },
+    {
+      "id": "zombnet-m19-boundaries",
+      "projectId": "zombnet",
+      "title": "M19 — A network for fictional RADIO advertisers",
+      "summary": "ZombNET keeps its browser tools while giving standalone applications their own space.",
+      "date": null,
+      "status": "local-implementation",
+      "visibility": "published",
+      "article": [
+        {
+          "type": "paragraph",
+          "text": "ZombNET is reserved for fictional websites associated with established RADIO advertisements. Duplicate RADIO and Arcade destinations and generated real-product detail routes have been removed. Those applications retain their standalone roles."
+        },
+        {
+          "type": "paragraph",
+          "text": "Home, Directory, internal links, Back and Forward, bookmarks and browsing history remain. Old saved addresses are retained; removed destinations show the normal unavailable-page response."
+        },
+        {
+          "type": "paragraph",
+          "text": "There are currently no registered advertiser websites, so the directory remains empty. No sites, advertiser relationships or lore were invented to fill it."
+        },
+        {
+          "type": "paragraph",
+          "text": "The publishing guide documents registration, public and unlisted pages, independently scoped colors, typography and layouts, and cleanup when leaving a page. Unlisted pages can be reached by their valid addresses without appearing in the directory. This describes local code and documentation, not published advertiser sites."
+        }
+      ],
+      "sources": [
+        {
+          "label": "zombnet-network.js",
+          "path": "js/zombnet-network.js"
+        },
+        {
+          "label": "zombnet-app.js",
+          "path": "js/zombnet-app.js"
+        },
+        {
+          "label": "zombnet-state.js",
+          "path": "js/zombnet-state.js"
+        },
+        {
+          "label": "zombnet.md",
+          "path": "docs/zombnet.md"
+        },
+        {
+          "label": "desktop.js",
+          "path": "js/desktop.js"
+        }
+      ],
+      "links": [
+        {
+          "type": "app",
+          "appId": "zombnet",
+          "label": "Open ZombNET"
+        }
+      ],
+      "relatedProjects": [],
+      "media": []
+    },
+    {
+      "id": "zombos-desktop-icon-columns",
+      "projectId": "zombos",
+      "title": "Desktop icons wrap into columns",
+      "summary": "More applications can fit without pushing icons below the desktop.",
+      "date": null,
+      "status": "local-implementation",
+      "visibility": "published",
+      "article": [
+        {
+          "type": "paragraph",
+          "text": "Desktop icons flow from top to bottom and wrap into another column when the available height is filled. The workspace reserves room for the taskbar, and the icon area suppresses vertical overflow. Column spacing responds to the existing responsive styles."
+        },
+        {
+          "type": "paragraph",
+          "text": "This is a desktop layout change, not a new launcher or a change to application windows. The source establishes the implementation; this entry makes no physical-device or public deployment claim."
+        }
+      ],
+      "sources": [
+        {
+          "label": "experiment-logs.md",
+          "path": "docs/experiment-logs.md"
+        },
+        {
+          "label": "desktop.js",
+          "path": "js/desktop.js"
+        }
+      ],
+      "links": [],
+      "relatedProjects": [],
       "media": []
     }
   ]
