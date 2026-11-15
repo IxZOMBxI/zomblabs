@@ -1,3 +1,4 @@
+import { advertiserPages } from './advertiser-sites.js';
 // Public fictional pages. Hidden/unlocked flags are presentation, not security.
 export function parseAddress(value) {
     if (typeof value !== 'string' || value.length > 2048) return null;
@@ -11,6 +12,7 @@ export function parseAddress(value) {
     } catch { return null; }
 }
 export const internalPages = [
+    ...advertiserPages,
     { url: 'zomb://home', title: 'ZombNET — Home', layout: 'network-home', listed: true,
         heading: 'ZombNET', description: 'Fictional websites associated with RADIO advertisements.', category: 'Navigation', home: true,
         blocks: [{type:'link',label:'Browse the network directory',url:'zomb://directory'}] },

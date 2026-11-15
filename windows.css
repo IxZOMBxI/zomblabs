@@ -427,3 +427,59 @@ html[data-theme="custom"] .store-product button:focus-visible { outline-color: v
 .zombnet-destinations p { margin-bottom: 0; }
 
 .zomb-store > [hidden] { display: none; }
+
+/* Approved RADIO advertisers. All branding remains inside the current site viewport. */
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) { padding: 0; container-type: inline-size; background: var(--ad-bg); color: var(--ad-ink); }
+.zombnet-page[data-site="crypt-crunch"] { --ad-bg:#f8ebbf; --ad-ink:#281134; --ad-accent:#5a1769; font-family: Arial, sans-serif; }
+.zombnet-page[data-site="dead-air"] { --ad-bg:#141919; --ad-ink:#edf0e4; --ad-accent:#d2ed40; font-family: 'Courier New',monospace; }
+.zombnet-page[data-site="grim-glow"] { --ad-bg:#180d26; --ad-ink:#f1e5ff; --ad-accent:#ccf78d; font-family: Georgia,serif; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site { overflow-wrap:anywhere; line-height:1.55; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site * { box-sizing:border-box; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:16px 20px; border-bottom:1px solid currentColor; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-header > a { font-size:22px; font-weight:900; text-decoration:none; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-header nav { display:flex; flex-wrap:wrap; gap:12px; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site a, .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site summary { color:inherit; display:inline-flex; align-items:center; min-height:44px; cursor:pointer; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); align-items:center; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-copy { padding:28px 22px; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-eyebrow { font:700 11px/1.6 Arial,sans-serif; letter-spacing:.16em; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-copy h1 { font:900 clamp(30px,7cqi,62px)/.98 Arial,sans-serif; letter-spacing:-.04em; margin:20px 0; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-copy > a, .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-closing a { background:var(--ad-accent); color:var(--ad-bg); font:bold 13px Arial,sans-serif; padding:12px 18px; text-decoration:none; margin-top:12px; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-art { margin:0; min-width:0; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site img { display:block; width:100%; height:auto; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-strip { margin:0; padding:14px 18px; background:var(--ad-accent); color:var(--ad-bg); text-align:center; font:900 16px Arial,sans-serif; letter-spacing:.08em; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; padding:26px 20px; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-features article { border-top:2px solid var(--ad-accent); padding-top:14px; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-features h2 { font-size:18px; line-height:1.2; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-number { color:var(--ad-accent); font:900 28px Arial,sans-serif; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-closing, .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-campaign { padding:28px 22px; border-top:1px solid currentColor; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-closing h2 { font-size:30px; margin:0; }
+.zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .advertiser-site footer { padding:22px; border-top:1px solid currentColor; font:12px/1.6 Arial,sans-serif; }
+.zombnet-page[data-site="crypt-crunch"] .ad-copy { background:radial-gradient(#dca7c4 1px,transparent 1px) 0 0/9px 9px; }
+.zombnet-page[data-site="crypt-crunch"] .ad-copy h1 { text-transform:uppercase; transform:rotate(-3deg); text-shadow:3px 3px #e5bc3b; }
+.zombnet-page[data-site="crypt-crunch"] .ad-strip { background:#c7ef28; color:#281134; transform:skewY(-1deg); }
+.zombnet-page[data-site="dead-air"] .ad-hero { border-bottom:6px solid #d2ed40; }
+.zombnet-page[data-site="dead-air"] .ad-copy h1 { text-transform:uppercase; font-stretch:condensed; }
+.zombnet-page[data-site="dead-air"] .ad-strip { background:repeating-linear-gradient(135deg,#d2ed40 0 14px,#bad32c 14px 28px); color:#141919; }
+.zombnet-page[data-site="dead-air"] .ad-features { grid-template-columns:1fr; gap:0; }
+.zombnet-page[data-site="dead-air"] .ad-features article { display:grid; grid-template-columns:75px 1fr 1.5fr; gap:12px; align-items:center; padding:16px 0; }
+.zombnet-page[data-site="dead-air"] .ad-number { font-size:14px; }
+.zombnet-page[data-site="grim-glow"] .ad-hero { background:radial-gradient(ellipse at 30% 40%,#42205b,transparent 70%); }
+.zombnet-page[data-site="grim-glow"] .ad-copy h1 { font-family:Georgia,serif; font-weight:400; font-style:italic; color:#ccf78d; text-shadow:0 0 18px #786346; }
+.zombnet-page[data-site="grim-glow"] .ad-strip { background:#291638; color:#ddbaef; font-family:Georgia,serif; font-style:italic; padding:24px; }
+.zombnet-page[data-site="grim-glow"] .ad-features article { border:1px solid #79518e; border-radius:80px 80px 0 0; padding:28px 14px 14px; text-align:center; }
+@container (max-width:480px) {
+ .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-hero { grid-template-columns:1fr; }
+ .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-copy { padding:24px 18px; }
+ .zombnet-page:is([data-site="crypt-crunch"],[data-site="dead-air"],[data-site="grim-glow"]) .ad-features { grid-template-columns:1fr; }
+ .zombnet-page[data-site="dead-air"] .ad-features article { grid-template-columns:1fr; gap:0; }
+}
+
+/* Dead Air consumer-device presentation; specifications are limited to approved evidence. */
+.zombnet-page[data-site="dead-air"] { font-family:Arial,sans-serif; --ad-bg:#13191d; --ad-ink:#edf1f2; }
+.zombnet-page[data-site="dead-air"] .ad-copy h1 { text-transform:none; letter-spacing:-.035em; font-weight:700; }
+.zombnet-page[data-site="dead-air"] .ad-strip { background:#252e33; color:#d2ed40; text-align:left; font:700 12px/1.6 'Courier New',monospace; }
+.zombnet-page[data-site="dead-air"] .ad-device-details { padding:24px 22px; background:#e8eceb; color:#172126; }
+.zombnet-page[data-site="dead-air"] .ad-device-details h2 { font-size:24px; margin-top:0; }
+.zombnet-page[data-site="dead-air"] .ad-device-details dl { margin:20px 0 0; }
+.zombnet-page[data-site="dead-air"] .ad-device-details dt { font-weight:bold; border-top:1px solid #a8b4b4; padding-top:12px; }
+.zombnet-page[data-site="dead-air"] .ad-device-details dd { margin:4px 0 12px; }
